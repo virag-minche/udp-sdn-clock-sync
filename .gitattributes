@@ -1,0 +1,4 @@
+# Ensure all shell and Python scripts use Unix LF line endings when cloned on Linux
+*.sh text eol=lf
+*.py text eol=lf
+*.md text eol=lf

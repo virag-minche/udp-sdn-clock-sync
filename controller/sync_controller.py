@@ -93,13 +93,12 @@ DPID_S1 = 1  # Switch 1: Client side
 DPID_S2 = 2  # Switch 2: Server side
 
 # Inter-Switch Port Mapping (matches Mininet topology port assignment)
-# Default port assignment in Mininet when links are added in order:
-# Primary Link: s1-eth2 <-> s2-eth2
-# Backup Link:  s1-eth3 <-> s2-eth3
-PORT_S1_PRIMARY = 2
-PORT_S1_BACKUP = 3
-PORT_S2_PRIMARY = 2
-PORT_S2_BACKUP = 3
+# Primary Link: s1-eth1 <-> s2-eth1 (OpenFlow Port 1)
+# Backup Link:  s1-eth2 <-> s2-eth2 (OpenFlow Port 2)
+PORT_S1_PRIMARY = 1
+PORT_S1_BACKUP = 2
+PORT_S2_PRIMARY = 1
+PORT_S2_BACKUP = 2
 
 # Network Addresses and Ports
 TIME_SERVER_IP = "10.0.0.100"
@@ -426,9 +425,24 @@ class SyncController(app_manager.RyuApp):
             f"Installed table-miss rule on DPID {dpid}"
         )
 
+        # Install high-priority drop rules on blocked backup ports to prevent L2 flood loops in OVS
+        self._install_blocked_port_drops(datapath)
+
         # If priority mode is already active, install QoS classification flows
         if self.priority_mode:
             self._install_qos_flows(datapath)
+
+    def _install_blocked_port_drops(self, datapath):
+        """
+        Installs high-priority (500) drop rules in OVS Table 0 for any currently
+        blocked standby port on this switch so that broadcast/flood frames sent
+        via OFPP_FLOOD are immediately dropped at the standby ingress in kernel space.
+        """
+        parser = datapath.ofproto_parser
+        dpid = datapath.id
+        for bport in self.blocked_ports.get(dpid, set()):
+            match = parser.OFPMatch(in_port=bport)
+            self._add_flow(datapath, priority=500, match=match, actions=[])
 
     def _clear_all_flows(self, datapath):
         """
@@ -587,15 +601,20 @@ class SyncController(app_manager.RyuApp):
 
     def _install_qos_flows(self, datapath):
         """
-        Installs proactive high-priority flow rules for bidirectional Time Sync traffic
-        and background traffic across the inter-switch links.
+        Installs proactive high-priority flow rules for directional Time Sync traffic
+        and background traffic egressing onto the inter-switch bottleneck links.
 
-        Direction 1: Client -> Server
-          Match: IPv4, UDP, udp_dst=9999, ip_dscp=46
-          Action: OFPActionSetQueue(queue_id=1), Forward to active inter-switch port
-        Direction 2: Server -> Client
-          Match: IPv4, UDP, udp_src=9999, ip_dscp=46
-          Action: OFPActionSetQueue(queue_id=1), Forward to active inter-switch port
+        - On Switch s1 (DPID_S1, Client side):
+            * Sync requests (Client -> Server: IPv4, UDP dst=9999, DSCP=46)
+              -> SetQueue(1), Output(active_inter_switch_port)
+            * Background load (lg -> ls: IPv4, UDP dst=5201)
+              -> SetQueue(bg_queue), Output(active_inter_switch_port)
+        - On Switch s2 (DPID_S2, Server side):
+            * Sync replies (Server -> Client: IPv4, UDP src=9999, DSCP=46)
+              -> SetQueue(1), Output(active_inter_switch_port)
+            * Reverse background load (ls -> lg: IPv4, UDP src=5201)
+              -> SetQueue(bg_queue), Output(active_inter_switch_port)
+        - Local host delivery (s2 -> srv, s1 -> c1..cN) is learned dynamically via PacketIn.
         """
         parser = datapath.ofproto_parser
         dpid = datapath.id
@@ -607,63 +626,64 @@ class SyncController(app_manager.RyuApp):
         if not out_port:
             return
 
-        self.logger.info("Installing QoS Priority Flows on DPID %s (out_port=%s)", dpid, out_port)
-
-        # 1. Forward direction: UDP dst_port=9999, DSCP=46 (Client -> Server)
-        match_sync_fwd = parser.OFPMatch(
-            eth_type=0x0800,
-            ip_proto=17,
-            ip_dscp=DSCP_EF,
-            udp_dst=SYNC_UDP_PORT
-        )
-        actions_sync_fwd = [
-            parser.OFPActionSetQueue(queue_id=QUEUE_SYNC_PRIORITY),
-            parser.OFPActionOutput(out_port)
-        ]
-        self._add_flow(datapath, PRIORITY_SYNC_HIGH, match_sync_fwd, actions_sync_fwd)
-
-        # 2. Reverse direction: UDP src_port=9999, DSCP=46 (Server -> Client)
-        match_sync_rev = parser.OFPMatch(
-            eth_type=0x0800,
-            ip_proto=17,
-            ip_dscp=DSCP_EF,
-            udp_src=SYNC_UDP_PORT
-        )
-        actions_sync_rev = [
-            parser.OFPActionSetQueue(queue_id=QUEUE_SYNC_PRIORITY),
-            parser.OFPActionOutput(out_port)
-        ]
-        self._add_flow(datapath, PRIORITY_SYNC_HIGH, match_sync_rev, actions_sync_rev)
-
-        # 3. Background Traffic classification (e.g. iperf3 UDP 5201 or generic UDP)
-        # Choose queue based on congestion and escalation state
         bg_queue = QUEUE_BG_THROTTLED if (self.congested_state or self.app_escalated_state) else QUEUE_BG_NORMAL
+        self.logger.info("Installing QoS Priority Flows on DPID %s (inter-switch out_port=%s)", dpid, out_port)
 
-        match_bg_dst = parser.OFPMatch(
-            eth_type=0x0800,
-            ip_proto=17,
-            udp_dst=BG_UDP_PORT
-        )
-        actions_bg_dst = [
-            parser.OFPActionSetQueue(queue_id=bg_queue),
-            parser.OFPActionOutput(out_port)
-        ]
-        self._add_flow(datapath, PRIORITY_BG_DEFAULT, match_bg_dst, actions_bg_dst)
+        if dpid == DPID_S1:
+            # 1. Forward direction on s1: Client -> Server (UDP dst=9999, DSCP=46)
+            match_sync_fwd = parser.OFPMatch(
+                eth_type=0x0800,
+                ip_proto=17,
+                ip_dscp=DSCP_EF,
+                udp_dst=SYNC_UDP_PORT
+            )
+            actions_sync_fwd = [
+                parser.OFPActionSetQueue(queue_id=QUEUE_SYNC_PRIORITY),
+                parser.OFPActionOutput(out_port)
+            ]
+            self._add_flow(datapath, PRIORITY_SYNC_HIGH, match_sync_fwd, actions_sync_fwd)
 
-        match_bg_src = parser.OFPMatch(
-            eth_type=0x0800,
-            ip_proto=17,
-            udp_src=BG_UDP_PORT
-        )
-        actions_bg_src = [
-            parser.OFPActionSetQueue(queue_id=bg_queue),
-            parser.OFPActionOutput(out_port)
-        ]
-        self._add_flow(datapath, PRIORITY_BG_DEFAULT, match_bg_src, actions_bg_src)
+            # 2. Forward background load on s1: lg -> ls (UDP dst=5201)
+            match_bg_dst = parser.OFPMatch(
+                eth_type=0x0800,
+                ip_proto=17,
+                udp_dst=BG_UDP_PORT
+            )
+            actions_bg_dst = [
+                parser.OFPActionSetQueue(queue_id=bg_queue),
+                parser.OFPActionOutput(out_port)
+            ]
+            self._add_flow(datapath, PRIORITY_BG_DEFAULT, match_bg_dst, actions_bg_dst)
+
+        elif dpid == DPID_S2:
+            # 1. Reverse direction on s2: Server -> Client (UDP src=9999, DSCP=46)
+            match_sync_rev = parser.OFPMatch(
+                eth_type=0x0800,
+                ip_proto=17,
+                ip_dscp=DSCP_EF,
+                udp_src=SYNC_UDP_PORT
+            )
+            actions_sync_rev = [
+                parser.OFPActionSetQueue(queue_id=QUEUE_SYNC_PRIORITY),
+                parser.OFPActionOutput(out_port)
+            ]
+            self._add_flow(datapath, PRIORITY_SYNC_HIGH, match_sync_rev, actions_sync_rev)
+
+            # 2. Reverse background load on s2: ls -> lg (UDP src=5201)
+            match_bg_src = parser.OFPMatch(
+                eth_type=0x0800,
+                ip_proto=17,
+                udp_src=BG_UDP_PORT
+            )
+            actions_bg_src = [
+                parser.OFPActionSetQueue(queue_id=bg_queue),
+                parser.OFPActionOutput(out_port)
+            ]
+            self._add_flow(datapath, PRIORITY_BG_DEFAULT, match_bg_src, actions_bg_src)
 
         self._log_decision_event(
             "QOS_FLOWS_INSTALLED",
-            f"Installed sync (Queue 1) and bg (Queue {bg_queue}) flows on DPID {dpid}"
+            f"Installed directional sync (Queue 1) and bg (Queue {bg_queue}) flows on DPID {dpid} -> port {out_port}"
         )
 
     def _reinstall_all_flows(self):
@@ -680,6 +700,9 @@ class SyncController(app_manager.RyuApp):
             match = parser.OFPMatch()
             actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER, ofproto.OFPCML_NO_BUFFER)]
             self._add_flow(datapath, PRIORITY_TABLE_MISS, match, actions)
+
+            # Reinstall blocked standby port drop rules
+            self._install_blocked_port_drops(datapath)
 
             # Reinstall QoS flows if priority mode is enabled
             if self.priority_mode:

@@ -314,8 +314,9 @@ def run_client(host, port, cid, skew, rounds, interval, log,
     with log_context as f:
         writer = csv.writer(f) if f else None
         if writer:
-            # CHANGED: Added true_error_before_ms, true_error_after_ms, full_correction_error_ms
-            # Retained true_error_ms at position 5 for full backward compatibility with existing scripts
+            # CHANGED: Added true_error_before_ms, true_error_after_ms, full_correction_error_ms,
+            # plus jitter_ms and sync_error_ms for Role 3's experiments/analyze.py compatibility.
+            # Retained true_error_ms at position 5 for full backward compatibility with existing scripts.
             writer.writerow([
                 "timestamp",
                 "client_id",
@@ -325,9 +326,12 @@ def run_client(host, port, cid, skew, rounds, interval, log,
                 "true_error_ms",
                 "true_error_before_ms",
                 "true_error_after_ms",
-                "full_correction_error_ms"
+                "full_correction_error_ms",
+                "jitter_ms",
+                "sync_error_ms"
             ])
 
+        prev_rtt_ms = None
         try:
             for seq in range(rounds):
                 if stop_event and stop_event.is_set():
@@ -341,6 +345,9 @@ def run_client(host, port, cid, skew, rounds, interval, log,
                     t1, t2, t3, t4 = result
                     rtt = (t4 - t1) - (t3 - t2)
                     offset = ((t2 - t1) + (t3 - t4)) / 2
+                    rtt_ms = rtt * 1000.0
+                    jitter_ms = abs(rtt_ms - prev_rtt_ms) if prev_rtt_ms is not None else 0.0
+                    prev_rtt_ms = rtt_ms
 
                     # CHANGED: Record error before correction, apply correction, and record error after
                     err_before = clock.error()
@@ -348,7 +355,7 @@ def run_client(host, port, cid, skew, rounds, interval, log,
                     clock.skew += gain * offset          # Proportional clock correction
                     err_after = clock.error()            # Error immediately after applying gain * offset
 
-                    print(f"[Client {cid}] seq {seq:02d} | rtt {rtt*1000:7.2f} ms | "
+                    print(f"[Client {cid}] seq {seq:02d} | rtt {rtt_ms:7.2f} ms | "
                           f"offset {offset*1000:8.2f} ms | before {err_before*1000:8.2f} ms | "
                           f"after {err_after*1000:8.2f} ms")
 
@@ -357,21 +364,23 @@ def run_client(host, port, cid, skew, rounds, interval, log,
                             time.time(),
                             cid,
                             seq,
-                            rtt * 1000,
+                            rtt_ms,
                             offset * 1000,
                             err_before * 1000,        # true_error_ms (backward compatible)
                             err_before * 1000,        # true_error_before_ms
                             err_after * 1000,         # true_error_after_ms
-                            full_corr_err * 1000      # full_correction_error_ms
+                            full_corr_err * 1000,     # full_correction_error_ms
+                            jitter_ms,                # jitter_ms (Role 3 analyze.py)
+                            abs(err_after * 1000)     # sync_error_ms (Role 3 analyze.py)
                         ])
 
                     # CHANGED: Report metrics to SDN controller in background thread
                     if reporter and (seq % report_every == 0):
                         payload = {
                             "client_id": cid,
-                            "rtt_ms": rtt * 1000,
+                            "rtt_ms": rtt_ms,
                             "offset_ms": offset * 1000,
-                            "error_ms": err_before * 1000,
+                            "error_ms": abs(err_after * 1000),
                             "timestamp": time.time()
                         }
                         reporter.report(payload)
