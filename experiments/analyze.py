@@ -1,247 +1,327 @@
 #!/usr/bin/env python3
 """
-Experiment Data Analysis & Visualization (Role 3 Integration)
-=============================================================
-Reads client synchronization CSV logs produced by timesync_core.py, computes
-summary statistics (Average, Minimum, Maximum, Standard Deviation) for:
-  - rtt_ms        (Round-Trip Time in ms)
-  - jitter_ms     (Inter-packet RTT variation in ms)
-  - sync_error_ms (Post-correction clock synchronization error |θ| in ms)
+experiments/analyze.py
+================================================================================
+Unified Post-Experiment Analysis & Visualization
+SDN-Assisted Network Time Synchronization System (Computer Networks Topic 23)
+================================================================================
+Reads synchronization client CSV logs, computes summary statistics (RTT mean,
+std, jitter, clock sync error, and convergence time), and produces:
+  1. results/experiment_summary.csv   - Full statistical summary table
+  2. results/comparison_chart.png      - Dual-axis bar chart (RTT vs Clock Error)
+  3. results/convergence_plot.png      - Convergence curves with 1.0 ms threshold
 
-Supports both:
-  1. Single CSV analysis (via --csv <path> or interactive prompt)
-  2. Batch directory analysis (via --results-dir results/, default when CSVs exist)
+Usage:
+  # Batch analysis of all CSVs in results/ (default):
+  python3 experiments/analyze.py --results-dir results/
 
-Generates plots in results/:
-  - results/rtt_ms.png
-  - results/jitter_ms.png
-  - results/sync_error_ms.png
-  - results/experiment_summary.csv
+  # Single CSV analysis:
+  python3 experiments/analyze.py --csv results/client_101.csv
 """
 
 import argparse
 import csv
 import glob
+import math
 import os
 import statistics
 import sys
+from typing import Any, Dict, List, Optional
 
 try:
     import matplotlib
-    matplotlib.use("Agg")
+    matplotlib.use("Agg")  # Headless backend safe for Linux servers, WSL2, Windows
     import matplotlib.pyplot as plt
     HAS_MATPLOTLIB = True
 except ImportError:
     HAS_MATPLOTLIB = False
 
 
-METRICS = ["rtt_ms", "jitter_ms", "sync_error_ms"]
+# ==============================================================================
+# Statistical Helper Functions
+# ==============================================================================
 
-METRIC_LABELS = {
-    "rtt_ms": "Round-Trip Time (RTT)",
-    "jitter_ms": "Packet Delay Jitter",
-    "sync_error_ms": "Clock Synchronization Error |θ|",
-}
-
-
-def extract_metric_values(rows, metric):
-    """Extract float values for a metric column, with fallback computation if needed."""
-    values = []
-    prev_rtt = None
-
-    for row in rows:
-        try:
-            if metric in row and row[metric] not in (None, ""):
-                values.append(float(row[metric]))
-            elif metric == "sync_error_ms":
-                # Fallback to true_error_after_ms or true_error_ms
-                for fallback in ("true_error_after_ms", "true_error_ms"):
-                    if fallback in row and row[fallback] not in (None, ""):
-                        values.append(abs(float(row[fallback])))
-                        break
-            elif metric == "jitter_ms" and "rtt_ms" in row:
-                curr_rtt = float(row["rtt_ms"])
-                if prev_rtt is not None:
-                    values.append(abs(curr_rtt - prev_rtt))
-                else:
-                    values.append(0.0)
-                prev_rtt = curr_rtt
-        except (KeyError, ValueError, TypeError):
-            continue
-
-    return values
+def compute_mean(values: List[float]) -> float:
+    return sum(values) / len(values) if values else 0.0
 
 
-def analyze_single_csv(filename, out_dir="results"):
-    """Analyze a single CSV file (Role 3 original workflow enhanced)."""
-    if not os.path.exists(filename):
-        print(f"Error: File not found: {filename}")
+def compute_std(values: List[float], mean_val: Optional[float] = None) -> float:
+    if len(values) < 2:
+        return 0.0
+    m = mean_val if mean_val is not None else compute_mean(values)
+    var = sum((x - m) ** 2 for x in values) / (len(values) - 1)
+    return math.sqrt(var)
+
+
+def compute_jitter(rtts: List[float]) -> float:
+    if len(rtts) < 2:
+        return 0.0
+    diffs = [abs(rtts[i + 1] - rtts[i]) for i in range(len(rtts) - 1)]
+    return compute_mean(diffs)
+
+
+def find_convergence_round(errors: List[float], threshold_ms: float = 1.0) -> Optional[int]:
+    for idx, err in enumerate(errors):
+        if abs(err) < threshold_ms:
+            return idx + 1
+    return None
+
+
+# ==============================================================================
+# Data Extraction & Normalization
+# ==============================================================================
+
+def normalize_field(name: str) -> str:
+    return name.strip().lower().replace(" ", "_").replace("-", "_")
+
+
+def parse_client_csv(filepath: str) -> Optional[Dict[str, Any]]:
+    if not os.path.exists(filepath):
         return None
 
-    with open(filename, "r", newline="", encoding="utf-8") as file:
-        rows = list(csv.DictReader(file))
+    rounds: List[int] = []
+    rtts: List[float] = []
+    errors: List[float] = []
 
-    if not rows:
-        print(f"No experiment data found in {filename}.")
+    with open(filepath, "r", encoding="utf-8", errors="replace") as f:
+        reader = csv.reader(f)
+        headers = next(reader, None)
+        if not headers:
+            return None
+
+        col_map = {normalize_field(h): i for i, h in enumerate(headers)}
+
+        rtt_idx = (
+            col_map.get("rtt_ms") or
+            col_map.get("rtt") or
+            col_map.get("round_trip_time_ms")
+        )
+        err_idx = (
+            col_map.get("sync_error_ms") or
+            col_map.get("true_error_after_ms") or
+            col_map.get("true_error_ms") or
+            col_map.get("true_error_before_ms") or
+            col_map.get("offset_ms")
+        )
+        round_idx = (
+            col_map.get("seq") or
+            col_map.get("round") or
+            col_map.get("step")
+        )
+
+        for row_num, row in enumerate(reader, start=1):
+            if not row:
+                continue
+            try:
+                r_val = int(float(row[round_idx])) if round_idx is not None and round_idx < len(row) else row_num
+                rtt_val = float(row[rtt_idx]) if rtt_idx is not None and rtt_idx < len(row) else None
+                err_val = float(row[err_idx]) if err_idx is not None and err_idx < len(row) else 0.0
+
+                if rtt_val is not None:
+                    rounds.append(r_val)
+                    rtts.append(rtt_val)
+                    errors.append(abs(err_val))
+            except (ValueError, IndexError):
+                continue
+
+    if not rtts:
         return None
 
-    os.makedirs(out_dir, exist_ok=True)
-    summary = {"file": os.path.basename(filename), "samples": len(rows)}
+    label = os.path.splitext(os.path.basename(filepath))[0]
+    parent = os.path.basename(os.path.dirname(os.path.abspath(filepath)))
+    if parent not in ("results", "src", ".", ""):
+        label = f"{parent}/{label}"
 
-    print(f"\n============================================================")
-    print(f" Analyzing: {filename} ({len(rows)} samples)")
-    print(f"============================================================")
+    mean_rtt = compute_mean(rtts)
+    std_rtt = compute_std(rtts, mean_rtt)
+    mean_err = compute_mean(errors)
+    std_err = compute_std(errors, mean_err)
+    jitter = compute_jitter(rtts)
+    conv_round = find_convergence_round(errors, threshold_ms=1.0)
+    tail_err = compute_mean(errors[-10:]) if len(errors) >= 10 else compute_mean(errors)
 
-    for metric in METRICS:
-        values = extract_metric_values(rows, metric)
-
-        if not values:
-            print(f"Missing data for {metric}")
-            continue
-
-        avg_val = statistics.mean(values)
-        min_val = min(values)
-        max_val = max(values)
-        std_val = statistics.pstdev(values) if len(values) > 1 else 0.0
-
-        summary[f"{metric}_avg"] = avg_val
-        summary[f"{metric}_min"] = min_val
-        summary[f"{metric}_max"] = max_val
-        summary[f"{metric}_std"] = std_val
-
-        print(f"\n{metric} ({METRIC_LABELS.get(metric, metric)})")
-        print(f"  Average       : {avg_val:.4f} ms")
-        print(f"  Minimum       : {min_val:.4f} ms")
-        print(f"  Maximum       : {max_val:.4f} ms")
-        print(f"  Std deviation : {std_val:.4f} ms")
-
-        if HAS_MATPLOTLIB:
-            plt.figure(figsize=(8, 4.5))
-            plt.plot(range(len(values)), values, marker="o", markersize=3.5, linewidth=1.5)
-            plt.title(f"{METRIC_LABELS.get(metric, metric)} ({os.path.basename(filename)})")
-            plt.xlabel("Synchronization Round")
-            plt.ylabel("Milliseconds (ms)")
-            plt.grid(True, linestyle=":", alpha=0.6)
-            plt.tight_layout()
-            out_path = os.path.join(out_dir, f"{metric}.png")
-            plt.savefig(out_path, dpi=150)
-            plt.close()
-
-    return summary
+    return {
+        "file": label,
+        "path": filepath,
+        "count": len(rtts),
+        "rounds": rounds,
+        "rtts": rtts,
+        "errors": errors,
+        "rtt_mean": mean_rtt,
+        "rtt_std": std_rtt,
+        "rtt_min": min(rtts),
+        "rtt_max": max(rtts),
+        "jitter": jitter,
+        "err_mean": mean_err,
+        "err_std": std_err,
+        "err_final": tail_err,
+        "conv_round": conv_round,
+    }
 
 
-def analyze_batch_csvs(csv_files, out_dir="results"):
-    """Analyze multiple client CSV files and produce overlay plots + summary table."""
-    os.makedirs(out_dir, exist_ok=True)
-    all_summaries = []
-    series_by_metric = {m: {} for m in METRICS}
+# ==============================================================================
+# Visualization Generators
+# ==============================================================================
 
-    for path in sorted(csv_files):
-        with open(path, "r", newline="", encoding="utf-8") as f:
-            rows = list(csv.DictReader(f))
-        if not rows:
-            continue
-
-        label = os.path.splitext(os.path.basename(path))[0]
-        parent = os.path.basename(os.path.dirname(os.path.abspath(path)))
-        if parent not in ("results", "src", ".", ""):
-            label = f"{parent}/{label}"
-
-        summary = {"file": label, "samples": len(rows)}
-        for metric in METRICS:
-            vals = extract_metric_values(rows, metric)
-            if vals:
-                series_by_metric[metric][label] = vals
-                summary[f"{metric}_avg"] = statistics.mean(vals)
-                summary[f"{metric}_min"] = min(vals)
-                summary[f"{metric}_max"] = max(vals)
-                summary[f"{metric}_std"] = statistics.pstdev(vals) if len(vals) > 1 else 0.0
-        all_summaries.append(summary)
-
-    if not all_summaries:
-        print("No valid client CSV data found.")
+def generate_comparison_chart(datasets: List[Dict[str, Any]], out_path: str):
+    if not HAS_MATPLOTLIB or not datasets:
         return
 
-    print("\n" + "=" * 92)
-    print(f"{'Dataset / Client':<24} | {'RTT Avg (ms)':>12} | {'RTT Std':>9} | {'Jitter Avg':>10} | {'Sync Err Avg':>12} | {'Final Err':>10}")
-    print("-" * 92)
-    for s in all_summaries:
-        label = s["file"]
-        vals_err = series_by_metric["sync_error_ms"].get(label, [])
-        tail_err = statistics.mean(vals_err[-10:]) if vals_err else 0.0
-        print(
-            f"{label:<24} | "
-            f"{s.get('rtt_ms_avg', 0.0):>12.3f} | "
-            f"{s.get('rtt_ms_std', 0.0):>9.3f} | "
-            f"{s.get('jitter_ms_avg', 0.0):>10.3f} | "
-            f"{s.get('sync_error_ms_avg', 0.0):>12.3f} | "
-            f"{tail_err:>10.3f}"
-        )
-    print("=" * 92)
+    labels = [d["file"] for d in datasets]
+    rtt_means = [d["rtt_mean"] for d in datasets]
+    rtt_stds = [d["rtt_std"] for d in datasets]
+    err_means = [d["err_mean"] for d in datasets]
+    err_stds = [d["err_std"] for d in datasets]
 
-    # Save summary CSV
-    summary_csv = os.path.join(out_dir, "experiment_summary.csv")
-    fieldnames = [
-        "file", "samples",
-        "rtt_ms_avg", "rtt_ms_min", "rtt_ms_max", "rtt_ms_std",
-        "jitter_ms_avg", "jitter_ms_min", "jitter_ms_max", "jitter_ms_std",
-        "sync_error_ms_avg", "sync_error_ms_min", "sync_error_ms_max", "sync_error_ms_std"
-    ]
-    with open(summary_csv, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
-        writer.writeheader()
-        writer.writerows(all_summaries)
-    print(f"[SAVED] Summary statistics written to: {summary_csv}")
+    x = range(len(labels))
+    width = 0.35
 
-    if HAS_MATPLOTLIB:
-        for metric in METRICS:
-            if not series_by_metric[metric]:
-                continue
-            plt.figure(figsize=(8.5, 4.8))
-            for label, vals in series_by_metric[metric].items():
-                plt.plot(range(len(vals)), vals, marker="o", markersize=3, linewidth=1.5, label=label)
-            plt.title(f"{METRIC_LABELS.get(metric, metric)} Across Clients")
-            plt.xlabel("Synchronization Round")
-            plt.ylabel("Milliseconds (ms)")
-            plt.grid(True, linestyle=":", alpha=0.6)
-            plt.legend(loc="best", fontsize=8)
-            plt.tight_layout()
-            out_path = os.path.join(out_dir, f"{metric}.png")
-            plt.savefig(out_path, dpi=150)
-            plt.close()
-            print(f"[SAVED] Plot written to: {out_path}")
+    fig, ax1 = plt.subplots(figsize=(10, 5.5))
+    ax2 = ax1.twinx()
 
+    bar1 = ax1.bar(
+        [i - width / 2 for i in x],
+        rtt_means,
+        width,
+        yerr=rtt_stds,
+        capsize=4,
+        label="RTT Mean (ms)",
+        color="#345995",
+        edgecolor="#1D2A44",
+        alpha=0.9
+    )
+
+    bar2 = ax2.bar(
+        [i + width / 2 for i in x],
+        err_means,
+        width,
+        yerr=err_stds,
+        capsize=4,
+        label="Sync Error |θ| Mean (ms)",
+        color="#E06D53",
+        edgecolor="#7A2E1D",
+        alpha=0.9
+    )
+
+    ax1.set_xlabel("Experiment Condition / Client", fontsize=11, fontweight="bold")
+    ax1.set_ylabel("Round-Trip Time (ms)", color="#345995", fontsize=11, fontweight="bold")
+    ax2.set_ylabel("Clock Sync Error |θ| (ms)", color="#E06D53", fontsize=11, fontweight="bold")
+    ax1.set_xticks(list(x))
+    ax1.set_xticklabels(labels, rotation=15 if len(labels) > 4 else 0, ha="right" if len(labels) > 4 else "center")
+
+    ax1.grid(True, linestyle=":", alpha=0.5, axis="y")
+    plt.title("Time Synchronization Performance: RTT & Clock Error", fontsize=12, fontweight="bold")
+
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper right")
+
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=160)
+    plt.close()
+    print(f"[SAVED] Performance comparison chart: {out_path}")
+
+
+def generate_convergence_plot(datasets: List[Dict[str, Any]], out_path: str):
+    if not HAS_MATPLOTLIB or not datasets:
+        return
+
+    plt.figure(figsize=(9, 5))
+    for d in datasets:
+        errs = d["errors"]
+        rounds = d["rounds"]
+        plt.semilogy(rounds, errs, marker="o", markersize=2.5, linewidth=1.5, label=d["file"])
+
+    plt.axhline(
+        y=1.0,
+        color="#D90429",
+        linestyle="--",
+        linewidth=1.3,
+        label="Pass Threshold (1.0 ms)"
+    )
+
+    plt.xlabel("Synchronization Round (Sequence)", fontsize=11, fontweight="bold")
+    plt.ylabel("Absolute Clock Error |θ| (ms, Log Scale)", fontsize=11, fontweight="bold")
+    plt.title("Clock Synchronization Error Convergence Over Rounds", fontsize=12, fontweight="bold")
+    plt.grid(True, which="both", linestyle=":", alpha=0.5)
+    plt.legend(loc="upper right", fontsize=8.5)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=160)
+    plt.close()
+    print(f"[SAVED] Convergence plot: {out_path}")
+
+
+# ==============================================================================
+# Main Entry Point
+# ==============================================================================
 
 def main():
-    parser = argparse.ArgumentParser(description="Analyze Time Sync CSV logs (Role 3)")
-    parser.add_argument("--csv", default=None, help="Path to a single client CSV file")
+    parser = argparse.ArgumentParser(description="Analyze Time Sync Experiment Results")
+    parser.add_argument("--csv", default=None, help="Path to single client CSV file")
     parser.add_argument("--results-dir", default="results", help="Directory containing client_*.csv files")
     args = parser.parse_args()
 
+    out_dir = args.results_dir
+    os.makedirs(out_dir, exist_ok=True)
+
     if args.csv:
-        analyze_single_csv(args.csv, out_dir=args.results_dir)
-        print("\nAnalysis completed.")
+        csv_files = [args.csv]
+    else:
+        pattern1 = glob.glob(os.path.join(args.results_dir, "**", "client_*.csv"), recursive=True)
+        pattern2 = glob.glob(os.path.join(args.results_dir, "client_*.csv"))
+        pattern3 = glob.glob("client_*.csv")
+        csv_files = sorted(set(pattern1 + pattern2 + pattern3))
+
+    if not csv_files:
+        print(f"No client CSV files found in '{args.results_dir}'.")
         return
 
-    # Discover client_*.csv files in results_dir or current directory
-    pattern1 = glob.glob(os.path.join(args.results_dir, "**", "client_*.csv"), recursive=True)
-    pattern2 = glob.glob(os.path.join(args.results_dir, "client_*.csv"))
-    pattern3 = glob.glob("client_*.csv")
-    discovered = sorted(set(pattern1 + pattern2 + pattern3))
+    datasets: List[Dict[str, Any]] = []
+    for cp in csv_files:
+        parsed = parse_client_csv(cp)
+        if parsed:
+            datasets.append(parsed)
 
-    if discovered:
-        analyze_batch_csvs(discovered, out_dir=args.results_dir)
-        print("\nAnalysis completed.")
-    else:
-        # Fallback to interactive input prompt (Role 3 original behavior)
-        try:
-            filename = input("Enter CSV file path: ").strip()
-        except EOFError:
-            print("No CSV file specified and none found in results/.")
-            return
-        if filename:
-            analyze_single_csv(filename, out_dir=args.results_dir)
-            print("\nAnalysis completed.")
+    if not datasets:
+        print("No valid synchronization telemetry could be extracted.")
+        return
+
+    print("\n" + "=" * 98)
+    print("                    TIME SYNCHRONIZATION EXPERIMENT SUMMARY TABLE")
+    print("=" * 98)
+    print(f"{'Condition / Client':<22} | {'RTT Mean':>10} | {'RTT Std':>8} | {'Jitter':>8} | {'Error Mean':>11} | {'Final Err':>9} | {'Conv Round':>10}")
+    print("-" * 98)
+    for d in datasets:
+        conv_str = str(d["conv_round"]) if d["conv_round"] is not None else "N/A"
+        print(
+            f"{d['file']:<22} | "
+            f"{d['rtt_mean']:>8.3f} ms | "
+            f"{d['rtt_std']:>8.3f} | "
+            f"{d['jitter']:>6.3f} ms | "
+            f"{d['err_mean']:>9.3f} ms | "
+            f"{d['err_final']:>7.3f} ms | "
+            f"{conv_str:>10}"
+        )
+    print("=" * 98 + "\n")
+
+    # Save summary CSV
+    summary_path = os.path.join(out_dir, "experiment_summary.csv")
+    fieldnames = [
+        "file", "count", "rtt_mean", "rtt_std", "rtt_min", "rtt_max",
+        "jitter", "err_mean", "err_std", "err_final", "conv_round"
+    ]
+    with open(summary_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(datasets)
+    print(f"[SAVED] Statistical summary CSV: {summary_path}")
+
+    # Generate charts
+    chart_path = os.path.join(out_dir, "comparison_chart.png")
+    generate_comparison_chart(datasets, chart_path)
+
+    conv_path = os.path.join(out_dir, "convergence_plot.png")
+    generate_convergence_plot(datasets, conv_path)
 
 
 if __name__ == "__main__":

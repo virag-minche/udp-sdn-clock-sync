@@ -31,16 +31,16 @@ udp-sdn-clock-sync/
 │   └── probe.py                           # Standalone DSCP-46 UDP echo client/server probe
 ├── experiments/                           # Role 2 & Role 3: Experiment Automation & Analysis
 │   ├── run_experiments.sh                 # Automated runner for Experiments E1–E6 (3, 5, 10 clients)
-│   ├── analyze.py                         # Role 3 statistical analyzer & plot generator
-│   └── analyze_role2.py                   # Cross-condition comparison chart & convergence plotter
-├── docs/                                  # Complete Project Documentation & Viva Prep
+│   └── analyze.py                         # Unified statistical analyzer, comparison bar chart & convergence plotter
+├── docs/                                  # Complete Project Documentation, Viva Prep & Guides
 │   ├── architecture.md                    # System architecture, problem statement & packet format
 │   ├── setup.md                           # Ubuntu 22.04 installation & troubleshooting guide
 │   ├── sdn_layer.md                       # OpenFlow 1.3 flow table spec & state machine diagrams
 │   ├── test_cases.md                      # Verification test plan & results across Roles 1, 2, 3
 │   ├── network_interface_for_role3.md     # REST API, CLI & CSV interface reference
 │   ├── viva_role2.md                      # 28 viva Q&As, basics guide & 5-minute demo script
-│   └── report.md                          # Complete final project report
+│   ├── report.md                          # Complete final project report
+│   └── guide/                             # University project guide & rubrics documents
 └── results/                               # Generated CSV telemetry & publication-ready graphs
 ```
 
@@ -51,7 +51,7 @@ udp-sdn-clock-sync/
 | Role | Member Focus | Core Files |
 | :--- | :--- | :--- |
 | **Role 1** | **UDP Socket Application Owner** | `src/timesync_core.py`, `src/test_multiclient.py` |
-| **Role 2** | **Mininet Topology & SDN Controller Owner** | `controller/sync_controller.py`, `topology/topo.py`, `scripts/*`, `tests/*`, `experiments/analyze_role2.py` |
+| **Role 2** | **Mininet Topology & SDN Controller Owner** | `controller/sync_controller.py`, `topology/topo.py`, `scripts/*`, `tests/*` |
 | **Role 3** | **Load Generator, Automation & Evaluation Owner** | `src/loadgen.py`, `experiments/run_experiments.sh`, `experiments/analyze.py`, `docs/report.md` |
 
 ---
@@ -82,7 +82,6 @@ sudo bash tests/test_network.sh
 ```bash
 sudo bash experiments/run_experiments.sh
 python3 experiments/analyze.py --results-dir results/
-python3 experiments/analyze_role2.py --results-dir results/
 ```
 
 ---

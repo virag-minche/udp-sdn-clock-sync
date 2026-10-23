@@ -130,6 +130,5 @@ echo "============================================================"
 echo " Running Post-Experiment Analysis & Graph Generation"
 echo "============================================================"
 python3 experiments/analyze.py --results-dir results/
-python3 experiments/analyze_role2.py --results-dir results/
 
 echo "[OK] All experiments E1-E6 and graphs completed in results/"
