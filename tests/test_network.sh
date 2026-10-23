@@ -127,7 +127,7 @@ fi
 echo ""
 
 # run python tests
-echo -e "${BOLD}[STEP 5/5] Launching Comprehensive Python Test Suite (tests/test_network.py)...${NC}"
+echo -e "${BOLD}[STEP 5/5] Launching Python Test Suite (tests/test_network.py)...${NC}"
 if [ -f "${PYTHON_TEST_SCRIPT}" ]; then
     python3 "${PYTHON_TEST_SCRIPT}" --switch "${SWITCH}" --interface "${BOTTLENECK_PORT}"
     TEST_EXIT_CODE=$?

@@ -24,8 +24,11 @@ pkill -9 -f timesync_core.py >/dev/null 2>&1 || true
 pkill -9 -f loadgen.py >/dev/null 2>&1 || true
 sleep 1
 
-# activate ryu venv if present
-if [ -f "${HOME}/ryu-venv/bin/activate" ]; then
+# activate virtual environment if present
+if [ -f "${PROJ_ROOT}/venv/bin/activate" ]; then
+    # shellcheck disable=SC1091
+    source "${PROJ_ROOT}/venv/bin/activate"
+elif [ -f "${HOME}/ryu-venv/bin/activate" ]; then
     # shellcheck disable=SC1091
     source "${HOME}/ryu-venv/bin/activate"
 fi

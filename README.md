@@ -67,7 +67,7 @@ python3 src/test_multiclient.py
 ```bash
 # Install Mininet, Open vSwitch, iperf3, and Ryu 4.34 virtualenv
 sudo bash scripts/install.sh
-source ~/ryu-venv/bin/activate
+source venv/bin/activate  # or source ~/ryu-venv/bin/activate
 
 # Start Ryu Controller + Mininet Topology + OVS HTB Queues
 sudo bash scripts/run_all.sh

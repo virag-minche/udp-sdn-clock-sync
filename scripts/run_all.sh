@@ -8,7 +8,13 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VENV_PYTHON="${PROJECT_DIR}/venv/bin/python3"
 VENV_RYU="${PROJECT_DIR}/venv/bin/ryu-manager"
 
-# use venv if present, otherwise system commands
+# check home ryu-venv fallback
+if [[ ! -x "$VENV_PYTHON" && -x "${HOME}/ryu-venv/bin/python3" ]]; then
+    VENV_PYTHON="${HOME}/ryu-venv/bin/python3"
+    VENV_RYU="${HOME}/ryu-venv/bin/ryu-manager"
+fi
+
+# use system commands if neither venv exists
 if [[ ! -x "$VENV_PYTHON" ]]; then
     VENV_PYTHON="python3"
 fi
@@ -16,7 +22,7 @@ if [[ ! -x "$VENV_RYU" ]]; then
     VENV_RYU="ryu-manager"
 fi
 
-CONTROLLER_APP="${PROJECT_DIR}/src/controller.py"
+CONTROLLER_APP="${PROJECT_DIR}/controller/sync_controller.py"
 # fallback to simple switch if controller script is missing
 if [[ ! -f "$CONTROLLER_APP" ]]; then
     CONTROLLER_APP="ryu.app.simple_switch_13"

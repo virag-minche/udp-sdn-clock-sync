@@ -73,12 +73,24 @@ def run_in_host(host_name, cmd, timeout=10):
         return run_cmd(cmd, timeout=timeout)
 
 
+def get_test_client():
+    # returns c1 if running topo.py, otherwise h1
+    if get_mininet_host_pid("c1"):
+        return "c1"
+    return "h1"
+
+
 # test 1: host connectivity
 def test_1_connectivity(hosts, results):
     log_header("1. End-to-End Host Connectivity")
     
-    # ip mapping for hosts
+    # ip mapping for hosts (supports both c1..cN/srv and h1..hN/server)
     ip_map = {
+        "c1": "10.0.0.1",
+        "c2": "10.0.0.2",
+        "c3": "10.0.0.3",
+        "c4": "10.0.0.4",
+        "srv": "10.0.0.100",
         "h1": "10.0.0.1",
         "h2": "10.0.0.2",
         "h3": "10.0.0.3",
@@ -219,15 +231,16 @@ def test_3_dscp_queue(switch, bottleneck_port, results):
 def test_4_priority_effect(controller_url, results):
     log_header("4. Priority Isolation Effect Under Congestion")
 
+    client = get_test_client()
     # normal ping without dscp mark (best effort)
     print("  Testing Best-Effort (DSCP 0) UDP probe latency...")
     ping_be = ["ping", "-c", "5", "-i", "0.2", "-Q", "0", "10.0.0.100"]
-    rc_be, out_be, _ = run_in_host("h1", ping_be, timeout=6)
+    rc_be, out_be, _ = run_in_host(client, ping_be, timeout=6)
 
     # ping with dscp 46 (tos = 46 * 4 = 184)
     print("  Testing Expedited Forwarding (DSCP 46 / TOS 184) UDP probe latency...")
     ping_ef = ["ping", "-c", "5", "-i", "0.2", "-Q", "184", "10.0.0.100"]
-    rc_ef, out_ef, _ = run_in_host("h1", ping_ef, timeout=6)
+    rc_ef, out_ef, _ = run_in_host(client, ping_ef, timeout=6)
 
     passed = (rc_be == 0 or rc_ef == 0)
     details = "DSCP 46 packet transmission successful across data path."
@@ -375,8 +388,9 @@ def test_7_link_failure(switch, interface, results):
     run_cmd(["ip", "link", "set", interface, "down"])
     time.sleep(1.0)
 
+    client = get_test_client()
     # ping while link is down
-    rc_down, _, _ = run_in_host("h1", ["ping", "-c", "1", "-W", "1", "10.0.0.100"], timeout=3)
+    rc_down, _, _ = run_in_host(client, ["ping", "-c", "1", "-W", "1", "10.0.0.100"], timeout=3)
     down_detected = (rc_down != 0)
 
     # bring link back up
@@ -385,7 +399,7 @@ def test_7_link_failure(switch, interface, results):
     time.sleep(1.5)  # wait for openflow port status to propagate
 
     # check ping after recovery
-    rc_up, _, _ = run_in_host("h1", ["ping", "-c", "2", "-W", "1", "10.0.0.100"], timeout=4)
+    rc_up, _, _ = run_in_host(client, ["ping", "-c", "2", "-W", "1", "10.0.0.100"], timeout=4)
     recovery_time = time.time() - t0
 
     recovered = (rc_up == 0)
@@ -427,9 +441,10 @@ def test_8_dscp_wire(interface, results):
         )
         time.sleep(0.5)  # wait for tcpdump to start
 
+        client = get_test_client()
         # send a dscp 46 probe packet (tos 184)
         probe_cmd = ["ping", "-c", "1", "-Q", "184", "10.0.0.100"]
-        run_in_host("h1", probe_cmd, timeout=3)
+        run_in_host(client, probe_cmd, timeout=3)
 
         # wait for capture
         try:
@@ -509,7 +524,10 @@ def main():
     print(f"{'#' * 75}{COLOR_RESET}\n")
 
     results = []
-    hosts = ["h1", "h2", "h3", "h4", "server"]
+    if get_mininet_host_pid("c1"):
+        hosts = ["c1", "c2", "c3", "srv"]
+    else:
+        hosts = ["h1", "h2", "h3", "server"]
 
     # run tests
     try:
