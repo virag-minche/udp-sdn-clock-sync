@@ -11,3 +11,8 @@ ryu-venv/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Test output files
+client_*.csv
+convergence.png
+*.log

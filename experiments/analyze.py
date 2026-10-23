@@ -1,51 +1,28 @@
 #!/usr/bin/env python3
-"""
-experiments/analyze.py
-================================================================================
-Unified Post-Experiment Analysis & Visualization
-SDN-Assisted Network Time Synchronization System (Computer Networks Topic 23)
-================================================================================
-Reads synchronization client CSV logs, computes summary statistics (RTT mean,
-std, jitter, clock sync error, and convergence time), and produces:
-  1. results/experiment_summary.csv   - Full statistical summary table
-  2. results/comparison_chart.png      - Dual-axis bar chart (RTT vs Clock Error)
-  3. results/convergence_plot.png      - Convergence curves with 1.0 ms threshold
-
-Usage:
-  # Batch analysis of all CSVs in results/ (default):
-  python3 experiments/analyze.py --results-dir results/
-
-  # Single CSV analysis:
-  python3 experiments/analyze.py --csv results/client_101.csv
-"""
+# Analyzes client CSV logs and generates summary stats and plots.
+# Outputs experiment_summary.csv, comparison_chart.png, and convergence_plot.png.
 
 import argparse
 import csv
 import glob
 import math
 import os
-import statistics
 import sys
-from typing import Any, Dict, List, Optional
 
 try:
     import matplotlib
-    matplotlib.use("Agg")  # Headless backend safe for Linux servers, WSL2, Windows
+    matplotlib.use("Agg")  # headless backend for servers
     import matplotlib.pyplot as plt
     HAS_MATPLOTLIB = True
 except ImportError:
     HAS_MATPLOTLIB = False
 
 
-# ==============================================================================
-# Statistical Helper Functions
-# ==============================================================================
-
-def compute_mean(values: List[float]) -> float:
+def compute_mean(values):
     return sum(values) / len(values) if values else 0.0
 
 
-def compute_std(values: List[float], mean_val: Optional[float] = None) -> float:
+def compute_std(values, mean_val=None):
     if len(values) < 2:
         return 0.0
     m = mean_val if mean_val is not None else compute_mean(values)
@@ -53,35 +30,34 @@ def compute_std(values: List[float], mean_val: Optional[float] = None) -> float:
     return math.sqrt(var)
 
 
-def compute_jitter(rtts: List[float]) -> float:
+def compute_jitter(rtts):
+    # Mean difference between successive RTT values
     if len(rtts) < 2:
         return 0.0
     diffs = [abs(rtts[i + 1] - rtts[i]) for i in range(len(rtts) - 1)]
     return compute_mean(diffs)
 
 
-def find_convergence_round(errors: List[float], threshold_ms: float = 1.0) -> Optional[int]:
+def find_convergence_round(errors, threshold_ms=1.0):
+    # Returns the first round where absolute error drops below threshold
     for idx, err in enumerate(errors):
         if abs(err) < threshold_ms:
             return idx + 1
     return None
 
 
-# ==============================================================================
-# Data Extraction & Normalization
-# ==============================================================================
-
-def normalize_field(name: str) -> str:
+def normalize_field(name):
     return name.strip().lower().replace(" ", "_").replace("-", "_")
 
 
-def parse_client_csv(filepath: str) -> Optional[Dict[str, Any]]:
+def parse_client_csv(filepath):
+    # Reads a client CSV log and calculates latency and sync error stats
     if not os.path.exists(filepath):
         return None
 
-    rounds: List[int] = []
-    rtts: List[float] = []
-    errors: List[float] = []
+    rounds = []
+    rtts = []
+    errors = []
 
     with open(filepath, "r", encoding="utf-8", errors="replace") as f:
         reader = csv.reader(f)
@@ -159,11 +135,8 @@ def parse_client_csv(filepath: str) -> Optional[Dict[str, Any]]:
     }
 
 
-# ==============================================================================
-# Visualization Generators
-# ==============================================================================
-
-def generate_comparison_chart(datasets: List[Dict[str, Any]], out_path: str):
+def generate_comparison_chart(datasets, out_path):
+    # Bar chart comparing RTT and clock error across clients
     if not HAS_MATPLOTLIB or not datasets:
         return
 
@@ -222,7 +195,8 @@ def generate_comparison_chart(datasets: List[Dict[str, Any]], out_path: str):
     print(f"[SAVED] Performance comparison chart: {out_path}")
 
 
-def generate_convergence_plot(datasets: List[Dict[str, Any]], out_path: str):
+def generate_convergence_plot(datasets, out_path):
+    # Plot showing how clock sync error decreases over rounds
     if not HAS_MATPLOTLIB or not datasets:
         return
 
@@ -251,10 +225,6 @@ def generate_convergence_plot(datasets: List[Dict[str, Any]], out_path: str):
     print(f"[SAVED] Convergence plot: {out_path}")
 
 
-# ==============================================================================
-# Main Entry Point
-# ==============================================================================
-
 def main():
     parser = argparse.ArgumentParser(description="Analyze Time Sync Experiment Results")
     parser.add_argument("--csv", default=None, help="Path to single client CSV file")
@@ -276,7 +246,7 @@ def main():
         print(f"No client CSV files found in '{args.results_dir}'.")
         return
 
-    datasets: List[Dict[str, Any]] = []
+    datasets = []
     for cp in csv_files:
         parsed = parse_client_csv(cp)
         if parsed:
@@ -286,6 +256,7 @@ def main():
         print("No valid synchronization telemetry could be extracted.")
         return
 
+    # Print summary table to console
     print("\n" + "=" * 98)
     print("                    TIME SYNCHRONIZATION EXPERIMENT SUMMARY TABLE")
     print("=" * 98)
@@ -304,7 +275,7 @@ def main():
         )
     print("=" * 98 + "\n")
 
-    # Save summary CSV
+    # Save summary table to CSV
     summary_path = os.path.join(out_dir, "experiment_summary.csv")
     fieldnames = [
         "file", "count", "rtt_mean", "rtt_std", "rtt_min", "rtt_max",

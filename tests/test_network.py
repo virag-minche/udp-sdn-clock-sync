@@ -1,28 +1,6 @@
 #!/usr/bin/env python3
-"""
-tests/test_network.py
-================================================================================
-Comprehensive Network Verification Suite for SDN Time Synchronization System
---------------------------------------------------------------------------------
-Targets: Ubuntu 22.04 LTS, Mininet 2.3.0, OVS 2.17+, Ryu 4.34, OpenFlow 1.3.
-
-This test suite runs against an ACTIVE Mininet topology and Ryu controller.
-It performs 8 rigorous verification tests covering data plane, control plane,
-QoS queueing, dynamic SDN adaptation, and REST interfaces:
-
-  Test 1: Connectivity (Ping between all standard topology hosts)
-  Test 2: Flow Rules (Verify OpenFlow 1.3 rules, DSCP match, enqueue actions)
-  Test 3: DSCP Queue Utilization (Verify DSCP-46 packets increment high-priority queue)
-  Test 4: Priority vs Non-Priority Effect (RTT under synthetic congestion)
-  Test 5: Controller Congestion Detection (Log / REST validation)
-  Test 6: REST API Endpoint Compliance (GET /sdn/status, POST /sdn/mode, POST /sync/report)
-  Test 7: Failover & Link Recovery Time (Link perturbation and recovery)
-  Test 8: DSCP On-The-Wire Verification (tcpdump tos 0xb8 validation)
-
-Run Standalone:
-    sudo python3 tests/test_network.py [--controller http://127.0.0.1:8080] [--switch s1]
-================================================================================
-"""
+# Network integration tests for SDN time sync project
+# Tests connectivity, flow rules, queues, priority, and link failure in Mininet
 
 import os
 import sys
@@ -31,11 +9,10 @@ import json
 import socket
 import argparse
 import subprocess
-from typing import Dict, List, Tuple, Optional
 import urllib.request
 import urllib.error
 
-# ANSI color escape sequences for student-readable terminal output
+# terminal colors
 COLOR_GREEN = "\033[92m"
 COLOR_RED = "\033[91m"
 COLOR_YELLOW = "\033[93m"
@@ -44,30 +21,24 @@ COLOR_BOLD = "\033[1m"
 COLOR_RESET = "\033[0m"
 
 
-# ==============================================================================
-# Helper Utilities
-# ==============================================================================
+# helpers
 
-def log_header(title: str) -> None:
-    """Print an eye-catching test header."""
+def log_header(title):
     print(f"\n{COLOR_CYAN}{'=' * 75}{COLOR_RESET}")
     print(f"{COLOR_BOLD}  TEST: {title}{COLOR_RESET}")
     print(f"{COLOR_CYAN}{'=' * 75}{COLOR_RESET}")
 
 
-def record_result(test_name: str, passed: bool, message: str, results_list: List[Tuple[str, bool, str]]) -> bool:
-    """Format and record a test result."""
+def record_result(test_name, passed, message, results_list):
+    # record test result and print status
     status = f"{COLOR_GREEN}[PASS]{COLOR_RESET}" if passed else f"{COLOR_RED}[FAIL]{COLOR_RESET}"
     print(f"{status} {COLOR_BOLD}{test_name}{COLOR_RESET}: {message}")
     results_list.append((test_name, passed, message))
     return passed
 
 
-def run_cmd(cmd: List[str], timeout: int = 10) -> Tuple[int, str, str]:
-    """
-    Execute a shell command with a strict timeout using subprocess.
-    Returns (returncode, stdout, stderr).
-    """
+def run_cmd(cmd, timeout=10):
+    # run a shell command with timeout
     try:
         proc = subprocess.run(
             cmd,
@@ -83,11 +54,8 @@ def run_cmd(cmd: List[str], timeout: int = 10) -> Tuple[int, str, str]:
         return -2, "", f"Exception executing {' '.join(cmd)}: {str(exc)}"
 
 
-def get_mininet_host_pid(host_name: str) -> Optional[int]:
-    """
-    Find the process ID of a Mininet host by inspecting process arguments.
-    Mininet spawns hosts using bash/python with identifiers like `mininet:h1`.
-    """
+def get_mininet_host_pid(host_name):
+    # find mininet host pid using pgrep
     rc, stdout, _ = run_cmd(["pgrep", "-f", f"mininet:{host_name}"])
     if rc == 0 and stdout:
         pids = stdout.split()
@@ -95,32 +63,21 @@ def get_mininet_host_pid(host_name: str) -> Optional[int]:
     return None
 
 
-def run_in_host(host_name: str, cmd: List[str], timeout: int = 10) -> Tuple[int, str, str]:
-    """
-    Execute a command inside a Mininet host namespace using mnexec.
-    Falls back to direct command if host pid is not found.
-    """
+def run_in_host(host_name, cmd, timeout=10):
+    # run command inside host namespace using mnexec
     pid = get_mininet_host_pid(host_name)
     if pid is not None:
         mn_cmd = ["mnexec", "-a", str(pid)] + cmd
         return run_cmd(mn_cmd, timeout=timeout)
     else:
-        # Fallback: attempt direct execution or check if ip netns exists
         return run_cmd(cmd, timeout=timeout)
 
 
-# ==============================================================================
-# TEST 1: Connectivity Test
-# ==============================================================================
-
-def test_1_connectivity(hosts: List[str], results: List[Tuple[str, bool, str]]) -> bool:
-    """
-    Test 1: Ping all hosts and verify 0% packet loss.
-    Assumes standard Mininet IP convention (h1=10.0.0.1, h2=10.0.0.2, etc.).
-    """
+# test 1: host connectivity
+def test_1_connectivity(hosts, results):
     log_header("1. End-to-End Host Connectivity")
     
-    # Host IP mapping (Standard Mininet convention or time server at 10.0.0.100)
+    # ip mapping for hosts
     ip_map = {
         "h1": "10.0.0.1",
         "h2": "10.0.0.2",
@@ -142,7 +99,7 @@ def test_1_connectivity(hosts: List[str], results: List[Tuple[str, bool, str]]) 
                 continue
 
             tested_pairs += 1
-            # Send 2 ICMP echo requests with 1-second timeout
+            # send 2 pings with 1s timeout
             ping_cmd = ["ping", "-c", "2", "-W", "1", dst_ip]
             rc, stdout, stderr = run_in_host(src, ping_cmd, timeout=5)
 
@@ -169,18 +126,8 @@ def test_1_connectivity(hosts: List[str], results: List[Tuple[str, bool, str]]) 
     )
 
 
-# ==============================================================================
-# TEST 2: Flow Rules Test
-# ==============================================================================
-
-def test_2_flow_rules(switch: str, results: List[Tuple[str, bool, str]]) -> bool:
-    """
-    Test 2: Check expected OpenFlow 1.3 flow rules are present on the switch.
-    Verifies:
-      1. Switch connects to controller and responds to OpenFlow 1.3 dump-flows.
-      2. Priority QoS rules matching DSCP 46 (ip_dscp=46 or nw_tos=184/0xb8).
-      3. Action contains enqueue / set_queue for priority handling.
-    """
+# test 2: flow rules
+def test_2_flow_rules(switch, results):
     log_header(f"2. OpenFlow 1.3 Flow Table Verification on {switch}")
 
     dump_cmd = ["ovs-ofctl", "dump-flows", switch, "-O", "OpenFlow13"]
@@ -198,13 +145,12 @@ def test_2_flow_rules(switch: str, results: List[Tuple[str, bool, str]]) -> bool
     flow_lines = [l for l in lines if "cookie=" in l or "priority=" in l]
     print(f"  Retrieved {len(flow_lines)} active OpenFlow rules on {switch}.")
 
-    # Check for DSCP 46 matching:
-    # In OpenFlow 1.3: ip_dscp=46 or nw_tos=184 (46 << 2) or nw_tos=0xb8
+    # check for dscp 46 matching (tos 184 or 0xb8)
     has_dscp_rule = any(
         ("ip_dscp=46" in line or "nw_tos=184" in line or "nw_tos=0xb8" in line)
         for line in flow_lines
     )
-    # Check for queue action: set_queue:0/1 or output queue
+    # check for queue actions
     has_queue_action = any(
         ("set_queue" in line or "enqueue" in line)
         for line in flow_lines
@@ -229,25 +175,17 @@ def test_2_flow_rules(switch: str, results: List[Tuple[str, bool, str]]) -> bool
     )
 
 
-# ==============================================================================
-# TEST 3: DSCP Queue Test
-# ==============================================================================
-
-def test_3_dscp_queue(switch: str, bottleneck_port: str, results: List[Tuple[str, bool, str]]) -> bool:
-    """
-    Test 3: Verify DSCP-46 packets map to the high-priority queue.
-    Inspects Linux HTB/HFSC traffic control queues via `tc -s class show dev <port>`.
-    Alternatively verifies OpenFlow queue statistics via ovs-ofctl queue-stats.
-    """
+# test 3: dscp queue check
+def test_3_dscp_queue(switch, bottleneck_port, results):
     log_header(f"3. DSCP Queue Verification on Port {bottleneck_port}")
 
-    # Check via tc
+    # check tc queues
     tc_cmd = ["tc", "-s", "class", "show", "dev", bottleneck_port]
     rc, stdout, stderr = run_cmd(tc_cmd, timeout=5)
 
     if rc == 0 and stdout:
         print(f"  [tc output for {bottleneck_port}]:\n{stdout}")
-        # Look for queue classes e.g. class htb 1:1, class htb 1:2
+        # check for htb or hfsc classes
         has_classes = ("class htb" in stdout) or ("class hfsc" in stdout) or ("class cbq" in stdout)
         if has_classes:
             return record_result(
@@ -257,7 +195,7 @@ def test_3_dscp_queue(switch: str, bottleneck_port: str, results: List[Tuple[str
                 results
             )
 
-    # Fallback / Complement: check ovs-ofctl queue-stats
+    # fallback: check ovs queue stats
     q_cmd = ["ovs-ofctl", "queue-stats", switch, "-O", "OpenFlow13"]
     rc_q, stdout_q, stderr_q = run_cmd(q_cmd, timeout=5)
     if rc_q == 0 and "queue" in stdout_q.lower():
@@ -269,7 +207,6 @@ def test_3_dscp_queue(switch: str, bottleneck_port: str, results: List[Tuple[str
             results
         )
 
-    # If neither returned active queues, report failure or diagnostic
     return record_result(
         "DSCP Queue Test",
         False,
@@ -278,23 +215,16 @@ def test_3_dscp_queue(switch: str, bottleneck_port: str, results: List[Tuple[str
     )
 
 
-# ==============================================================================
-# TEST 4: Priority Effect Under Congestion Test
-# ==============================================================================
-
-def test_4_priority_effect(controller_url: str, results: List[Tuple[str, bool, str]]) -> bool:
-    """
-    Test 4: Verify priority isolation under background congestion.
-    Simulates traffic burst and compares high-priority probe vs best-effort probe.
-    """
+# test 4: priority vs best effort under congestion
+def test_4_priority_effect(controller_url, results):
     log_header("4. Priority Isolation Effect Under Congestion")
 
-    # Step A: Measure RTT without DSCP marking (best-effort)
+    # normal ping without dscp mark (best effort)
     print("  Testing Best-Effort (DSCP 0) UDP probe latency...")
     ping_be = ["ping", "-c", "5", "-i", "0.2", "-Q", "0", "10.0.0.100"]
     rc_be, out_be, _ = run_in_host("h1", ping_be, timeout=6)
 
-    # Step B: Measure RTT with DSCP 46 (TOS = 46 * 4 = 184 = 0xb8)
+    # ping with dscp 46 (tos = 46 * 4 = 184)
     print("  Testing Expedited Forwarding (DSCP 46 / TOS 184) UDP probe latency...")
     ping_ef = ["ping", "-c", "5", "-i", "0.2", "-Q", "184", "10.0.0.100"]
     rc_ef, out_ef, _ = run_in_host("h1", ping_ef, timeout=6)
@@ -309,18 +239,11 @@ def test_4_priority_effect(controller_url: str, results: List[Tuple[str, bool, s
     )
 
 
-# ==============================================================================
-# TEST 5: Congestion Detection Test
-# ==============================================================================
-
-def test_5_congestion_detection(controller_url: str, log_file: str, results: List[Tuple[str, bool, str]]) -> bool:
-    """
-    Test 5: Verify controller detects network congestion or logs sync telemetry.
-    Checks controller REST status or controller_log.csv in results directory.
-    """
+# test 5: congestion detection
+def test_5_congestion_detection(controller_url, log_file, results):
     log_header("5. Controller Congestion Detection Telemetry")
 
-    # Check 1: REST API /sdn/status
+    # check 1: controller rest status
     url = f"{controller_url.rstrip('/')}/sdn/status"
     rest_ok = False
     status_data = {}
@@ -335,7 +258,7 @@ def test_5_congestion_detection(controller_url: str, log_file: str, results: Lis
     except Exception as exc:
         print(f"  Note: Could not reach {url} ({exc}). Checking disk log file...")
 
-    # Check 2: Disk CSV log file
+    # check 2: log file on disk
     csv_ok = False
     if os.path.exists(log_file):
         try:
@@ -360,17 +283,8 @@ def test_5_congestion_detection(controller_url: str, log_file: str, results: Lis
     )
 
 
-# ==============================================================================
-# TEST 6: REST Endpoint Test
-# ==============================================================================
-
-def test_6_rest_endpoints(controller_url: str, results: List[Tuple[str, bool, str]]) -> bool:
-    """
-    Test 6: Verify all required REST endpoints:
-      - GET  /sdn/status
-      - POST /sdn/mode
-      - POST /sync/report
-    """
+# test 6: rest endpoints
+def test_6_rest_endpoints(controller_url, results):
     log_header("6. Ryu Controller REST API Endpoints")
     base = controller_url.rstrip("/")
     endpoints_tested = 0
@@ -442,18 +356,11 @@ def test_6_rest_endpoints(controller_url: str, results: List[Tuple[str, bool, st
     )
 
 
-# ==============================================================================
-# TEST 7: Link Failure & Failover Test
-# ==============================================================================
-
-def test_7_link_failure(switch: str, interface: str, results: List[Tuple[str, bool, str]]) -> bool:
-    """
-    Test 7: Bring down primary link, verify failover/recovery, measure time, restore link.
-    Uses `ovs-ofctl mod-port` or `ip link` to simulate link perturbation.
-    """
+# test 7: link failure and recovery
+def test_7_link_failure(switch, interface, results):
     log_header(f"7. Link Failure Resilience & Recovery on {switch}:{interface}")
 
-    # Check if interface exists in system
+    # check if interface exists
     rc_chk, _, _ = run_cmd(["ip", "link", "show", interface])
     if rc_chk != 0:
         return record_result(
@@ -468,16 +375,16 @@ def test_7_link_failure(switch: str, interface: str, results: List[Tuple[str, bo
     run_cmd(["ip", "link", "set", interface, "down"])
     time.sleep(1.0)
 
-    # Test connectivity during link down
+    # ping while link is down
     rc_down, _, _ = run_in_host("h1", ["ping", "-c", "1", "-W", "1", "10.0.0.100"], timeout=3)
     down_detected = (rc_down != 0)
 
-    # Restore interface
+    # bring link back up
     print(f"  Restoring link UP on {interface}...")
     run_cmd(["ip", "link", "set", interface, "up"])
-    time.sleep(1.5)  # Allow spanning tree / OpenFlow port-status event to propagate
+    time.sleep(1.5)  # wait for openflow port status to propagate
 
-    # Test connectivity after restoration
+    # check ping after recovery
     rc_up, _, _ = run_in_host("h1", ["ping", "-c", "2", "-W", "1", "10.0.0.100"], timeout=4)
     recovery_time = time.time() - t0
 
@@ -492,15 +399,8 @@ def test_7_link_failure(switch: str, interface: str, results: List[Tuple[str, bo
     )
 
 
-# ==============================================================================
-# TEST 8: DSCP On-The-Wire Verification Test
-# ==============================================================================
-
-def test_8_dscp_wire(interface: str, results: List[Tuple[str, bool, str]]) -> bool:
-    """
-    Test 8: Use tcpdump to verify DSCP 46 (TOS 0xb8 = 184) on the wire.
-    Launches background tcpdump, sends marked packet, and verifies captured TOS byte.
-    """
+# test 8: dscp packet capture
+def test_8_dscp_wire(interface, results):
     log_header(f"8. DSCP Wire Verification on Interface {interface}")
 
     pcap_file = "/tmp/dscp_test.pcap"
@@ -510,8 +410,7 @@ def test_8_dscp_wire(interface: str, results: List[Tuple[str, bool, str]]) -> bo
         except OSError:
             pass
 
-    # Start tcpdump listening for TOS 0xb8 (DSCP 46) or UDP on port 9999
-    # ip[1] is the TOS byte in IPv4 header; 0xb8 is 184.
+    # tcpdump looking for tos 0xb8 (dscp 46)
     tcpdump_cmd = [
         "tcpdump", "-i", interface, "-c", "1",
         "-w", pcap_file,
@@ -526,14 +425,13 @@ def test_8_dscp_wire(interface: str, results: List[Tuple[str, bool, str]]) -> bo
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        time.sleep(0.5)  # Allow tcpdump to hook interface
+        time.sleep(0.5)  # wait for tcpdump to start
 
-        # Send a DSCP 46 probe packet from host h1
-        # Ping with -Q 184 (0xb8) sets TOS byte
+        # send a dscp 46 probe packet (tos 184)
         probe_cmd = ["ping", "-c", "1", "-Q", "184", "10.0.0.100"]
         run_in_host("h1", probe_cmd, timeout=3)
 
-        # Wait for tcpdump to catch packet (up to 3 seconds)
+        # wait for capture
         try:
             tcpdump_proc.wait(timeout=3)
         except subprocess.TimeoutExpired:
@@ -541,7 +439,6 @@ def test_8_dscp_wire(interface: str, results: List[Tuple[str, bool, str]]) -> bo
 
         captured = os.path.exists(pcap_file) and os.path.getsize(pcap_file) > 24
         if captured:
-            # Read back captured packet summary using tcpdump -r -v
             rc_r, out_r, _ = run_cmd(["tcpdump", "-r", pcap_file, "-v", "-n"])
             print(f"  Captured packet details:\n{out_r}")
             has_tos = ("tos 0xb8" in out_r.lower()) or ("dscp 46" in out_r.lower()) or ("184" in out_r)
@@ -570,13 +467,11 @@ def test_8_dscp_wire(interface: str, results: List[Tuple[str, bool, str]]) -> bo
     )
 
 
-# ==============================================================================
-# Main Orchestrator
-# ==============================================================================
+# main
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Comprehensive Network Test Suite for SDN Time Synchronization System"
+        description="Network test suite for SDN time sync"
     )
     parser.add_argument(
         "--controller",
@@ -600,7 +495,7 @@ def main():
     )
     args = parser.parse_args()
 
-    # Pre-flight check: root privileges required for network namespaces, tc, tcpdump
+    # needs root for mininet, tc, and tcpdump
     if os.geteuid() != 0:
         print(f"{COLOR_YELLOW}[WARNING] This script requires root permissions to interact with Mininet.{COLOR_RESET}")
         print(f"Please re-run as: sudo python3 {sys.argv[0]}")
@@ -613,10 +508,10 @@ def main():
     print(f"#  Interface  : {args.interface}")
     print(f"{'#' * 75}{COLOR_RESET}\n")
 
-    results: List[Tuple[str, bool, str]] = []
+    results = []
     hosts = ["h1", "h2", "h3", "h4", "server"]
 
-    # Execute all 8 test modules
+    # run tests
     try:
         test_1_connectivity(hosts, results)
     except Exception as exc:
@@ -657,7 +552,7 @@ def main():
     except Exception as exc:
         record_result("DSCP Wire Verification", False, f"Exception: {exc}", results)
 
-    # Print Final Summary Table
+    # print summary
     total = len(results)
     passed_count = sum(1 for _, passed, _ in results if passed)
     failed_count = total - passed_count

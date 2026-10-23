@@ -1,59 +1,7 @@
 #!/usr/bin/env python3
-"""
-================================================================================
-Network Time Synchronization Topology and Experiment Orchestrator
-================================================================================
-
-Target Environment:
-- OS: Ubuntu 22.04 LTS
-- Python: 3.8 - 3.10
-- Mininet: 2.3.0
-- Open vSwitch: 2.17+
-- OpenFlow: 1.3
-- Ryu Controller: 4.34 (running on 127.0.0.1:6653)
-
-Network Architecture:
----------------------
-  [ c1 ] (10.0.0.1)  ---+
-  [ c2 ] (10.0.0.2)  ---|
-       ...              +--- [ s1 ] ========= Primary Link (Bottleneck) ========= [ s2 ] ---+--- [ srv ] (10.0.0.100, Time Server)
-  [ cN ] (10.0.0.N)  ---|    (dpid=1)                                             (dpid=2)  +--- [ ls ]  (10.0.0.201, Load Sink)
-  [ lg ] (10.0.0.200) --+       |                                                    |
-  (Load Generator)              +............ Backup Link (Failover) ................+
-
-Key Design Principles & Networking Theory:
-------------------------------------------
-1. Why the Bottleneck Exists:
-   Time synchronization protocols (e.g., NTP, PTP/IEEE 1588, Cristian's algorithm)
-   calculate clock offset using round-trip delay estimates under the assumption of
-   symmetric network propagation delay:
-       Offset = ((T2 - T1) + (T3 - T4)) / 2
-   On uncongested high-speed links, packets traverse switches near line rate with
-   sub-millisecond propagation and minimal jitter. Under asymmetric congestion
-   (e.g., heavy file transfers or background UDP traffic), packets wait in switch
-   queues. If the forward path (c -> srv) experiences queuing delay while the return
-   path (srv -> c) does not (or vice versa), the delay asymmetry induces severe
-   time skew estimation errors.
-   The bottleneck link between s1 and s2 (default 10 Mbit/s) deliberately creates
-   a contention point where cross-traffic (lg -> ls) causes queue buildup and
-   packet drop, demonstrating the need for SDN QoS queueing and DSCP prioritization.
-
-2. Why Bidirectional Queue Configuration is Necessary:
-   In Linux traffic control (tc) and Open vSwitch, queuing disciplines (qdisc)
-   such as HTB (Hierarchical Token Bucket) only govern packet scheduling at the
-   EGRESS interface. Ingress shaping cannot prioritize packets already in flight.
-   Therefore:
-   - Client-to-Server sync requests queue at s1's egress interface towards s2.
-   - Server-to-Client sync replies queue at s2's egress interface towards s1.
-   Both directions must have QoS configured to prevent delay asymmetry on both legs.
-
-3. Port Naming in Mininet:
-   Mininet names switch interfaces based on the order links are attached:
-   e.g., s1-eth1, s1-eth2, etc. We programmatically extract the exact interface
-   names via `node1.connectionsTo(node2)` so that queue setup scripts and `tc`
-   manipulations target the exact network interface every time.
-================================================================================
-"""
+# Mininet topology for network time synchronization experiments.
+# Sets up s1 and s2 with a bottleneck link, clients c1..cN,
+# a time server, load generator, and load sink.
 
 import argparse
 import os
@@ -71,28 +19,11 @@ from mininet.cli import CLI
 from mininet.log import setLogLevel, info, warn, error
 
 
-# ==============================================================================
-# 1. Topology Definition Class
-# ==============================================================================
-
+# Topology definition
 class TimeSyncTopo(Topo):
-    """
-    Mininet topology for Network Time Synchronization experiments.
-    Connects N sync clients and a load generator to switch s1, and a time server
-    plus load sink to switch s2, separated by primary and optional backup bottleneck links.
-    """
+    # custom topology with clients, server, and cross traffic hosts
 
     def __init__(self, n_clients=3, bw=10, delay='5ms', loss=0, queue_size=100, backup=True, **opts):
-        """
-        Initialize TimeSyncTopo.
-
-        :param n_clients: Number of time synchronization client hosts (default 3)
-        :param bw: Bottleneck link bandwidth in Mbit/s (default 10)
-        :param delay: Bottleneck propagation delay (default '5ms')
-        :param loss: Bottleneck packet loss percentage (default 0)
-        :param queue_size: Max buffer queue size in packets (default 100)
-        :param backup: Boolean flag to create a secondary backup link between s1 and s2
-        """
         self.n_clients = n_clients
         self.bw = bw
         self.delay = delay
@@ -100,27 +31,21 @@ class TimeSyncTopo(Topo):
         self.queue_size = queue_size
         self.backup = backup
 
-        # Initialize parent Topo
         super(TimeSyncTopo, self).__init__(**opts)
 
     def build(self):
-        """Build switches, hosts, and links with static IPs, MACs, and TCLink parameters."""
-
-        # 1. Add OpenFlow 1.3 Open vSwitches with fixed DPIDs
-        # DPID 1 for client-side switch s1, DPID 2 for server-side switch s2
+        # switches s1 and s2 with openflow 1.3
         s1 = self.addSwitch('s1', dpid='0000000000000001', protocols='OpenFlow13')
         s2 = self.addSwitch('s2', dpid='0000000000000002', protocols='OpenFlow13')
 
-        # 2. Primary Bottleneck Link between s1 and s2 (Fixed on Port 1: s1-eth1 <-> s2-eth1)
-        # Added first so OpenFlow port 1 is deterministically the primary inter-switch link
-        # regardless of the number of client hosts.
+        # primary bottleneck link on port 1
         self.addLink(s1, s2, port1=1, port2=1, cls=TCLink,
                      bw=self.bw,
                      delay=self.delay,
                      loss=self.loss,
                      max_queue_size=self.queue_size)
 
-        # 3. Backup Link between s1 and s2 (Fixed on Port 2: s1-eth2 <-> s2-eth2)
+        # optional backup link on port 2
         if self.backup:
             self.addLink(s1, s2, port1=2, port2=2, cls=TCLink,
                          bw=self.bw,
@@ -128,42 +53,26 @@ class TimeSyncTopo(Topo):
                          loss=self.loss,
                          max_queue_size=self.queue_size)
 
-        # 4. Add Time Server (srv) and Load Sink (ls) on switch s2 (Ports 3, 4)
-        # Static IP: 10.0.0.100, Static MAC: 00:00:00:00:00:64
+        # server and load sink on s2
         srv = self.addHost('srv', ip='10.0.0.100/24', mac='00:00:00:00:00:64')
         self.addLink(srv, s2, cls=TCLink, bw=100, delay='1ms', max_queue_size=1000)
 
-        # Static IP: 10.0.0.201, Static MAC: 00:00:00:00:00:c9
         ls = self.addHost('ls', ip='10.0.0.201/24', mac='00:00:00:00:00:c9')
         self.addLink(ls, s2, cls=TCLink, bw=100, delay='1ms', max_queue_size=1000)
 
-        # 5. Add Sync Clients (c1..cN) and Load Generator (lg) on switch s1 (Ports 3..N+3)
+        # client hosts and load generator on s1
         for i in range(1, self.n_clients + 1):
             client_ip = f'10.0.0.{i}/24'
             client_mac = f'00:00:00:00:00:{i:02x}'
             c = self.addHost(f'c{i}', ip=client_ip, mac=client_mac)
             self.addLink(c, s1, cls=TCLink, bw=100, delay='1ms', max_queue_size=1000)
 
-        # Load Generator (lg): Static IP 10.0.0.200, MAC 00:00:00:00:00:c8
         lg = self.addHost('lg', ip='10.0.0.200/24', mac='00:00:00:00:00:c8')
         self.addLink(lg, s1, cls=TCLink, bw=100, delay='1ms', max_queue_size=1000)
 
 
-# ==============================================================================
-# 2. Queue Configuration Utilities
-# ==============================================================================
-
+# set up htb queues on ovs ports connecting s1 and s2
 def setup_ovs_queues(net, bw_mbps=10):
-    """
-    Configures Linux Hierarchical Token Bucket (HTB) queues on Open vSwitch egress ports
-    connecting switches s1 and s2 (both primary and backup inter-switch links).
-
-    Queue Allocation:
-    - Queue 0: Default best-effort traffic
-    - Queue 1: High Priority (Time Sync / DSCP 46 / EF): min-rate=80%, max-rate=100%
-    - Queue 2: Default Background Traffic: min-rate=20%, max-rate=100%
-    - Queue 3: Throttled Cross-traffic: min-rate=500Kbps, max-rate=20%
-    """
     s1 = net.get('s1')
     s2 = net.get('s2')
 
@@ -190,6 +99,7 @@ def setup_ovs_queues(net, bw_mbps=10):
             else:
                 warn(f"[WARN] setup_queues.sh failed (code {res.returncode}): {res.stderr}. Falling back to inline OVS commands.\n")
 
+        # fallback to ovs-vsctl if script fails or is missing
         max_rate = int(bw_mbps * 1000 * 1000)
         q1_min = int(bw_mbps * 800 * 1000)
         q1_max = max_rate
@@ -215,14 +125,8 @@ def setup_ovs_queues(net, bw_mbps=10):
     return True
 
 
-# ==============================================================================
-# 3. Dynamic Helper Functions for Experimentation
-# ==============================================================================
-
+# bring down link interfaces to simulate link down
 def bring_link_down(net, node1_name, node2_name, link_index=0):
-    """
-    Simulates a link failure by bringing down the interface connecting node1 and node2.
-    """
     node1 = net.get(node1_name)
     node2 = net.get(node2_name)
     connections = node1.connectionsTo(node2)
@@ -237,10 +141,8 @@ def bring_link_down(net, node1_name, node2_name, link_index=0):
     return True
 
 
+# bring link interfaces back up
 def bring_link_up(net, node1_name, node2_name, link_index=0):
-    """
-    Restores a failed link by bringing up the interfaces connecting node1 and node2.
-    """
     node1 = net.get(node1_name)
     node2 = net.get(node2_name)
     connections = node1.connectionsTo(node2)
@@ -255,11 +157,8 @@ def bring_link_up(net, node1_name, node2_name, link_index=0):
     return True
 
 
+# change link delay and loss using tc netem
 def change_link_params(net, node1_name, node2_name, bw=None, delay=None, loss=None, link_index=0):
-    """
-    Dynamically adjusts bottleneck link parameters (delay, loss, bandwidth) on the fly
-    using Linux Traffic Control (tc). Useful for jitter and delay-asymmetry tests.
-    """
     node1 = net.get(node1_name)
     node2 = net.get(node2_name)
     connections = node1.connectionsTo(node2)
@@ -285,12 +184,8 @@ def change_link_params(net, node1_name, node2_name, bw=None, delay=None, loss=No
     return True
 
 
+# start background udp traffic from lg to ls
 def start_iperf_load(net, rate_mbps=9.0, duration=86400, use_loadgen=True):
-    """
-    Generates background UDP cross-traffic from Load Generator (lg: 10.0.0.200)
-    to Load Sink (ls: 10.0.0.201) on UDP port 5201 to saturate the bottleneck link.
-    Integrates Role 3's src/loadgen.py directly (with iperf3 fallback).
-    """
     lg = net.get('lg')
     ls = net.get('ls')
     proj_root = Path(__file__).resolve().parent.parent
@@ -312,8 +207,8 @@ def start_iperf_load(net, rate_mbps=9.0, duration=86400, use_loadgen=True):
     info(f"*** Background load active at {rate_mbps} Mbit/s.\n")
 
 
+# kill any running loadgen or iperf3 processes
 def stop_iperf_load(net):
-    """Stops any running loadgen.py or iperf3 load generator and sink instances."""
     lg = net.get('lg')
     ls = net.get('ls')
     info("*** Stopping background cross-traffic...\n")
@@ -321,12 +216,8 @@ def stop_iperf_load(net):
     ls.cmd('pkill -f loadgen.py 2>/dev/null; killall -9 iperf3 2>/dev/null')
 
 
+# start time server and client sync processes
 def start_sync(net, n_clients=3, skews=None, dscp=46, rounds=50, interval=0.2, results_dir='results'):
-    """
-    Spawns the patched Role 1 time synchronization server on srv (10.0.0.100:9999)
-    and client sync processes on c1..cN, reporting telemetry to the Ryu controller.
-    Logs time skew, RTT, jitter, and sync error to CSV files in results_dir.
-    """
     srv = net.get('srv')
     proj_root = Path(__file__).resolve().parent.parent
     core_script = proj_root / 'src' / 'timesync_core.py'
@@ -337,7 +228,7 @@ def start_sync(net, n_clients=3, skews=None, dscp=46, rounds=50, interval=0.2, r
         warn(f"[WARN] Timesync core script not found at {core_script}. Please ensure src/timesync_core.py exists.\n")
         return
 
-    # Warm up L2 MAC learning across switches before starting sync
+    # warm up mac tables before starting sync
     for i in range(1, n_clients + 1):
         c = net.get(f'c{i}')
         c.cmd('ping -c 1 -W 1 10.0.0.100 >/dev/null 2>&1')
@@ -350,7 +241,7 @@ def start_sync(net, n_clients=3, skews=None, dscp=46, rounds=50, interval=0.2, r
     srv.cmd(server_cmd)
     time.sleep(1.0)
 
-    # Default realistic skews in seconds (matching Role 1 test_multiclient.py)
+    # default skews in seconds
     default_pool = [0.35, -0.35, 0.80, -1.20, 0.50, -0.60, 0.90, -0.45, 0.65, -0.85]
     if not skews:
         skews = [default_pool[(i - 1) % len(default_pool)] for i in range(1, n_clients + 1)]
@@ -375,19 +266,8 @@ def start_sync(net, n_clients=3, skews=None, dscp=46, rounds=50, interval=0.2, r
     return client_procs
 
 
-# ==============================================================================
-# 4. Scripted Experiment Mode
-# ==============================================================================
-
+# runs a full test run without interactive cli
 def run_scripted_experiment(net, args):
-    """
-    Executes an automated, reproducible benchmark experiment (E1..E6):
-    1. Sets up OVS priority queues on primary and backup links
-    2. Optionally starts background UDP traffic (Role 3 loadgen.py / iperf3)
-    3. Runs time synchronization protocol across all clients
-    4. Optionally triggers primary link failure & recovery mid-run (--failover)
-    5. Gathers CSV telemetry and prints evaluation summary
-    """
     info("\n============================================================\n")
     info(" Starting Scripted Automated Experiment\n")
     info("============================================================\n")
@@ -395,17 +275,17 @@ def run_scripted_experiment(net, args):
     results_dir = os.path.abspath(args.results_dir)
     os.makedirs(results_dir, exist_ok=True)
 
-    # 1. Setup Queues
+    # setup queues
     setup_ovs_queues(net, bw_mbps=args.bw)
 
-    # 2. Parse client skews
+    # parse client skews
     if args.skews:
         client_skews = [float(s.strip()) for s in args.skews.split(',') if s.strip()]
     else:
         default_pool = [0.35, -0.35, 0.80, -1.20, 0.50, -0.60, 0.90, -0.45, 0.65, -0.85]
         client_skews = [default_pool[i % len(default_pool)] for i in range(args.clients)]
 
-    # 3. Start background load generator (unless --no-load is set for E1/E2)
+    # start background load unless disabled
     if not args.no_load:
         load_rate = args.load_mbps if args.load_mbps is not None else round(args.bw * 0.9, 1)
         start_iperf_load(net, rate_mbps=load_rate)
@@ -413,7 +293,7 @@ def run_scripted_experiment(net, args):
     else:
         info("*** Running in low/no background traffic mode (--no-load).\n")
 
-    # 4. Start synchronization
+    # start sync
     start_sync(
         net=net,
         n_clients=args.clients,
@@ -424,7 +304,7 @@ def run_scripted_experiment(net, args):
         results_dir=results_dir
     )
 
-    # Wait for completion (with optional mid-experiment link failure for E6)
+    # wait for sync to finish, handle failover if enabled
     total_wait = max(6, int(args.rounds * args.interval) + 4)
     info(f"*** Waiting {total_wait}s for sync clients to complete {args.rounds} rounds...\n")
 
@@ -443,13 +323,13 @@ def run_scripted_experiment(net, args):
             info(f"    Remaining: {sec}s...\n")
             time.sleep(min(step, sec))
 
-    # 5. Stop cross-traffic and sync server
+    # clean up processes
     if not args.no_load:
         stop_iperf_load(net)
     net.get('srv').cmd('pkill -INT -f timesync_core.py 2>/dev/null')
     time.sleep(0.5)
 
-    # 6. Parse and summarize results
+    # check results
     info("\n============================================================\n")
     info(" Experiment Complete. Results Summary:\n")
     info(f" Output Directory: {results_dir}\n")
@@ -468,12 +348,8 @@ def run_scripted_experiment(net, args):
     info("============================================================\n")
 
 
-# ==============================================================================
-# 5. CLI Argument Parsing and Main Entrypoint
-# ==============================================================================
-
+# parse command line args
 def parse_cli_args():
-    """Defines and parses command-line arguments for topology execution."""
     parser = argparse.ArgumentParser(
         description="SDN Network Time Synchronization Mininet Topology",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
@@ -523,7 +399,7 @@ def main():
     info(f" Backup Path: {'Disabled' if args.no_backup else 'Enabled'}\n")
     info("============================================================\n")
 
-    # Instantiate topology
+    # instantiate topology
     topo = TimeSyncTopo(
         n_clients=args.clients,
         bw=args.bw,
@@ -533,10 +409,10 @@ def main():
         backup=(not args.no_backup)
     )
 
-    # Controller configuration: Ryu OpenFlow 1.3 controller on localhost:6653
+    # ryu controller
     controller = RemoteController('c0', ip='127.0.0.1', port=6653)
 
-    # Construct Mininet network with Open vSwitch in OpenFlow 1.3 mode
+    # create mininet net
     net = Mininet(
         topo=topo,
         switch=OVSSwitch,
@@ -550,14 +426,14 @@ def main():
         info("*** Starting network...\n")
         net.start()
 
-        # Always setup egress QoS queues on the switches
+        # configure queues
         setup_ovs_queues(net, bw_mbps=args.bw)
 
         if args.scripted:
-            # Scripted experiment mode: runs benchmark and terminates
+            # run scripted test
             run_scripted_experiment(net, args)
         else:
-            # Interactive CLI mode
+            # interactive mode
             info("\n============================================================\n")
             info(" Mininet Interactive CLI Ready\n")
             info(" Useful Testing Commands in CLI:\n")
@@ -574,7 +450,7 @@ def main():
             info("   mininet> py stop_iperf_load(net)\n")
             info("============================================================\n\n")
 
-            # Inject helper methods into CLI context
+            # add helpers to cli
             CLI.net = net
             CLI.bring_link_down = bring_link_down
             CLI.bring_link_up = bring_link_up

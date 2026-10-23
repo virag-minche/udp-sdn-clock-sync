@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
-"""
-Background UDP Traffic Generator & Sink (Role 3 Integration)
-============================================================
-Generates configurable background UDP cross-traffic (Best Effort, DSCP 0)
-between the Load Generator host (lg: 10.0.0.200) and Load Sink host (ls: 10.0.0.201)
-on UDP port 5201 to create controlled bottleneck congestion in Mininet.
-
-Supports:
-  1. Sender mode (default):
-     - Specify packet rate & size:  python3 src/loadgen.py --host 10.0.0.201 --port 5201 --rate 1000 --size 1024 --duration 30
-     - Specify target Mbps directly: python3 src/loadgen.py --host 10.0.0.201 --port 5201 --mbps 9.0 --duration 30
-  2. Receiver/Sink mode (--sink):
-     - Listens on UDP port 5201 so the OS does not emit ICMP Port Unreachable
-       messages and logs incoming background throughput:
-       python3 src/loadgen.py --sink --port 5201
-"""
+# Simple UDP traffic generator and sink.
+# Used to generate background cross-traffic in Mininet to create link congestion.
 
 import argparse
 import socket
@@ -22,7 +8,7 @@ import time
 
 
 def configure_dscp(sock, dscp=0):
-    """Set IP_TOS byte from 6-bit DSCP value (default 0 = Best Effort)."""
+    # Set IP_TOS based on 6-bit DSCP value
     tos = (dscp & 0x3F) << 2
     try:
         sock.setsockopt(socket.IPPROTO_IP, socket.IP_TOS, tos)
@@ -31,10 +17,7 @@ def configure_dscp(sock, dscp=0):
 
 
 def run_udp_sink(port=5201, duration=0):
-    """
-    Run a lightweight UDP sink server on the Load Sink host (ls: 10.0.0.201)
-    to absorb background UDP traffic cleanly.
-    """
+    # Listens on UDP port to absorb background traffic cleanly
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(("0.0.0.0", port))
@@ -66,10 +49,7 @@ def run_udp_sink(port=5201, duration=0):
 
 
 def generate_udp_traffic(host, port, rate, duration, packet_size, dscp=0):
-    """
-    Generate background UDP traffic for network experiments.
-    Preserves Role 3's original function signature while supporting high-rate pacing.
-    """
+    # Sends UDP packets at a target rate and packet size
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     configure_dscp(sock, dscp=dscp)
 
@@ -103,7 +83,7 @@ def generate_udp_traffic(host, port, rate, duration, packet_size, dscp=0):
             if sleep_dur > 0.0005:
                 time.sleep(sleep_dur)
             elif sleep_dur < -0.1:
-                # Resynchronize pacing schedule if behind
+                # Catch up if lagging behind
                 next_send = time.monotonic()
 
     except KeyboardInterrupt:
@@ -119,23 +99,23 @@ def generate_udp_traffic(host, port, rate, duration, packet_size, dscp=0):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Background UDP traffic generator & sink (Role 3)"
+        description="Background UDP traffic generator and sink"
     )
 
     parser.add_argument("--host", default="10.0.0.201",
-                        help="Destination host IP address (default: 10.0.0.201, Mininet Load Sink 'ls')")
+                        help="Destination host IP address (default: 10.0.0.201)")
     parser.add_argument("--port", type=int, default=5201,
-                        help="Destination UDP port (default: 5201, matched by Ryu controller)")
+                        help="Destination UDP port (default: 5201)")
     parser.add_argument("--rate", type=int, default=100,
-                        help="Packets per second (default: 100; overridden if --mbps is specified)")
+                        help="Packets per second (default: 100)")
     parser.add_argument("--duration", type=int, default=10,
                         help="Duration in seconds (default: 10)")
     parser.add_argument("--size", type=int, default=1024,
                         help="Packet size in bytes (default: 1024)")
     parser.add_argument("--mbps", type=float, default=None,
-                        help="Target bandwidth in Mbit/s (e.g., 9.0 to saturate a 10 Mbps bottleneck link)")
+                        help="Target bandwidth in Mbit/s (e.g. 9.0)")
     parser.add_argument("--dscp", type=int, default=0,
-                        help="DSCP value for background traffic (default: 0 = Best Effort)")
+                        help="DSCP value for packets (default: 0 = Best Effort)")
     parser.add_argument("--sink", action="store_true",
                         help="Run as UDP receiver/sink on --port instead of sender")
 
@@ -154,7 +134,7 @@ if __name__ == "__main__":
         if args.mbps is not None:
             if args.mbps <= 0:
                 parser.error("--mbps must be positive")
-            # Calculate packets/sec required to achieve target Mbps with args.size bytes
+            # Calculate packets/sec needed for target Mbps with args.size bytes
             rate = max(1, int((args.mbps * 1_000_000.0) / (args.size * 8.0)))
 
         if rate <= 0 or args.duration <= 0:

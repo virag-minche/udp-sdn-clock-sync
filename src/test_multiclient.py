@@ -1,17 +1,6 @@
 #!/usr/bin/env python3
-"""
-Multi-Client Convergence and DSCP QoS Test Suite
-================================================
-# CHANGED: Replaced basic docstring with comprehensive test suite documentation.
-Runs an automated test harness for timesync_core.py:
-1. Multi-Client Synchronization Test:
-   Spawns a UDP time sync server and multiple concurrent clients with varying
-   positive and negative skews, verifying convergence below threshold (1.0 ms).
-2. DSCP Socket QoS Verification Test:
-   Verifies that DSCP 0 (best effort) and DSCP 46 (Expedited Forwarding) are correctly
-   configured, read back via getsockopt, and handled across platforms.
-3. Generates high-quality publication-ready convergence plot (convergence.png).
-"""
+# Multi-client convergence and DSCP QoS test for timesync_core.py.
+# Tests concurrent clients with skews and verifies socket DSCP marking.
 
 import csv
 import os
@@ -20,7 +9,7 @@ import subprocess
 import sys
 import time
 
-# CHANGED: Dynamically resolve timesync_core.py in the same directory as this test script
+# Path to timesync_core.py in the same folder
 DEFAULT_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SCRIPT = os.path.join(DEFAULT_SCRIPT_DIR, "timesync_core.py")
 
@@ -29,22 +18,18 @@ ROUNDS = 50
 INTERVAL = 0.1
 PASS_MS = 1.0
 
-# Initial client configurations: (client_id, initial_skew_in_seconds)
+# Initial client settings: (client_id, initial_skew_seconds)
 CLIENTS = [(101, 0.35), (102, -0.35), (103, 0.80), (104, -1.20)]
 
 
 def read_log(path):
-    """
-    # CHANGED: Enhanced column detection to support new metrics (true_error_after_ms, etc.)
-    # while maintaining backward compatibility with legacy 2-element tuple returns.
-    Returns (list of true-error ms, list of rtt ms).
-    """
+    # Reads CSV log and returns (errors_ms, rtts_ms)
     with open(path, newline="") as f:
         rows = list(csv.DictReader(f))
     if not rows:
         return [], []
 
-    # CHANGED: Prefer true_error_after_ms for post-correction evaluation, falling back gracefully
+    # Find error column (prefer post-correction error)
     err_key = None
     for candidate in ["true_error_after_ms", "true_error_ms", "true_error_before_ms"]:
         if candidate in rows[0]:
@@ -58,10 +43,7 @@ def read_log(path):
 
 
 def read_log_full(path):
-    """
-    # CHANGED: Added detailed log parser to inspect before vs after correction errors.
-    Returns dict mapping column name to float list.
-    """
+    # Parse entire CSV into dictionary of lists
     with open(path, newline="") as f:
         rows = list(csv.DictReader(f))
     if not rows:
@@ -78,11 +60,7 @@ def read_log_full(path):
 
 
 def test_dscp_configuration():
-    """
-    # CHANGED: Added automated test case verifying DSCP 0 and DSCP 46 socket configuration and readback.
-    Tests setting IP_TOS = (dscp << 2) and getsockopt readback on local sockets,
-    documenting platform behaviors on Windows vs Linux/POSIX.
-    """
+    # Test setting and reading IP_TOS for DSCP 0 and 46
     print("\n" + "=" * 60)
     print("TEST 2: DSCP Socket QoS Configuration & Verification")
     print("=" * 60)
@@ -97,20 +75,19 @@ def test_dscp_configuration():
         expected_tos = (dscp & 0x3F) << 2
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
-            # Set IP_TOS
+            # Set IP_TOS socket option
             sock.setsockopt(socket.IPPROTO_IP, socket.IP_TOS, expected_tos)
-            # Read back IP_TOS
+            # Read back IP_TOS socket option
             actual_tos = sock.getsockopt(socket.IPPROTO_IP, socket.IP_TOS)
             actual_dscp = (actual_tos >> 2) & 0x3F
 
-            # Note: On POSIX/Linux, actual_tos matches expected_tos.
-            # On Windows without GPO QoS policies, Windows may accept setsockopt but return 0 or raise.
+            # On Linux readback matches; Windows may behave differently without QoS policy
             match = (actual_tos == expected_tos)
             status = "MATCH" if match else f"VALUE=0x{actual_tos:02X}"
             print(f"  [DSCP {dscp:>2} - {desc:<35}] Expected TOS: 0x{expected_tos:02X} | "
                   f"Readback TOS: 0x{actual_tos:02X} (DSCP: {actual_dscp:>2}) -> {status}")
         except OSError as e:
-            # Documented Windows limitation where IP_TOS requires QoS policies or Admin
+            # Windows might require admin or QoS policies for IP_TOS
             print(f"  [DSCP {dscp:>2} - {desc:<35}] Expected TOS: 0x{expected_tos:02X} | "
                   f"OS Warning/Limitation: {e}")
             if sys.platform != "win32":
@@ -123,10 +100,7 @@ def test_dscp_configuration():
 
 
 def test_multiclient_convergence():
-    """
-    # CHANGED: Multi-client synchronization test with full statistics validation.
-    Runs time sync server and 4 parallel clients, validating convergence within PASS_MS.
-    """
+    # Run server and 4 clients with initial skews to check convergence
     print("=" * 60)
     print("TEST 1: Multi-Client Clock Synchronization Convergence")
     print("=" * 60)
@@ -142,7 +116,7 @@ def test_multiclient_convergence():
         stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE
     )
-    time.sleep(1.0)  # Allow server socket to bind
+    time.sleep(1.0)  # Wait for server socket to bind
 
     procs = []
     for cid, skew in CLIENTS:
@@ -202,9 +176,7 @@ def test_multiclient_convergence():
 
 
 def generate_plot():
-    """
-    # CHANGED: Upgraded convergence plot with clear titles, labels, threshold line, and annotations.
-    """
+    # Plot convergence curves for each client
     try:
         import matplotlib.pyplot as plt
         plt.figure(figsize=(9, 5))
@@ -222,7 +194,7 @@ def generate_plot():
                     label=f"Client {cid} (Initial Skew: {skew:+.2f}s)"
                 )
 
-        # CHANGED: Add pass threshold line at 1.0 ms
+        # 1.0 ms pass threshold line
         plt.axhline(
             y=PASS_MS,
             color="red",
@@ -246,13 +218,8 @@ def generate_plot():
 
 
 def main():
-    # Run Test 1: Multi-Client Convergence
     conv_ok = test_multiclient_convergence()
-
-    # Run Test 2: DSCP Socket Verification
     dscp_ok = test_dscp_configuration()
-
-    # Generate graph
     generate_plot()
 
     if conv_ok and dscp_ok:
