@@ -1,6 +1,6 @@
 # SDN-Assisted Network Time Synchronization System
 
-**Computer Networks Jackfruit Mini Project | SDN + Socket Programming | Topic 23 | Protocol: UDP + OpenFlow 1.3**
+**Computer Networks | SDN + Socket Programming | Protocol: UDP + OpenFlow 1.3**
 
 ## Overview
 
