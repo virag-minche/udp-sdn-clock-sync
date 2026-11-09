@@ -70,9 +70,9 @@ fi
 VENV_DIR="${PROJECT_DIR}/venv"
 
 echo "[4/6] Creating Python virtual environment at ${VENV_DIR} using ${PYTHON_CMD}..."
-# Recreate venv cleanly
+# Recreate venv cleanly with access to system packages (where Mininet is installed)
 rm -rf "$VENV_DIR"
-$PYTHON_CMD -m venv "$VENV_DIR"
+$PYTHON_CMD -m venv --system-site-packages "$VENV_DIR"
 chown -R "${ACTUAL_USER}:${ACTUAL_USER}" "$VENV_DIR"
 
 echo "[5/6] Installing Ryu and pinned networking libraries into virtualenv..."
@@ -93,7 +93,13 @@ for n in ('MutableMapping','MutableSet','MutableSequence','Mapping','Sequence','
 ''')
 "
 
-# upgrade packaging tools
+# Link system-installed Mininet into virtualenv
+python -c "
+import site, pathlib
+sp = pathlib.Path(site.getsitepackages()[0])
+(sp / 'mininet_sys.pth').write_text('/usr/lib/python3/dist-packages\n')
+"
+ln -sf /usr/lib/python3/dist-packages/mininet* "${VENV_DIR}/lib/"python*/site-packages/ 2>/dev/null || true
 pip install --upgrade pip setuptools wheel
 pip install pbr
 
