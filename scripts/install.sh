@@ -88,7 +88,7 @@ pip install pbr
 
 # install required dependencies with pre-built binary wheels
 pip install "MarkupSafe==2.0.1"
-pip install "eventlet==0.30.2" || pip install "eventlet==0.33.3"
+pip install "eventlet==0.33.3"
 pip install "greenlet>=1.1.2"
 pip install "tinyrpc>=1.0.4"
 pip install "webob>=1.2"
