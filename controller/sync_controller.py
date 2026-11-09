@@ -90,10 +90,13 @@ SYNC_CONTROLLER_INSTANCE_NAME = "sync_controller_api_app"
 
 # CLI options for Ryu
 CONF = cfg.CONF
-CONF.register_cli_opts([
-    cfg.BoolOpt("priority", default=False, help="Enable strict QoS priority for sync traffic at startup"),
-    cfg.BoolOpt("dynamic", default=False, help="Enable dynamic congestion mitigation at startup"),
-])
+try:
+    CONF.register_cli_opts([
+        cfg.BoolOpt("priority", default=True, help="Enable strict QoS priority for sync traffic at startup"),
+        cfg.BoolOpt("dynamic", default=False, help="Enable dynamic congestion mitigation at startup"),
+    ])
+except Exception:
+    pass
 
 
 class SyncRestController(ControllerBase):
@@ -152,8 +155,17 @@ class SyncController(app_manager.RyuApp):
     def __init__(self, *args, **kwargs):
         super(SyncController, self).__init__(*args, **kwargs)
 
-        self.priority_mode = CONF.priority
-        self.dynamic_mode = CONF.dynamic
+        # Check environment variable or CONF, defaulting priority to True
+        env_prio = os.environ.get("PRIORITY", "1").lower() in ("1", "true", "on", "yes")
+        env_dyn = os.environ.get("DYNAMIC", "0").lower() in ("1", "true", "on", "yes")
+        try:
+            self.priority_mode = getattr(CONF, "priority", env_prio)
+        except Exception:
+            self.priority_mode = env_prio
+        try:
+            self.dynamic_mode = getattr(CONF, "dynamic", env_dyn)
+        except Exception:
+            self.dynamic_mode = env_dyn
         self.congested_state = False
         self.app_escalated_state = False
 
