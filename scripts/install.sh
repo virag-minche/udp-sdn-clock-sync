@@ -69,21 +69,30 @@ set -euo pipefail
 VENV_DIR="$1"
 source "${VENV_DIR}/bin/activate"
 
-# upgrade pip
-pip install --upgrade pip setuptools wheel
+# pin pip and setuptools to versions compatible with Ryu legacy setup scripts
+pip install --upgrade "pip<24"
+pip install "setuptools<66.0.0" wheel
 
-# eventlet 0.30.2 is needed for ryu 4.34 compatibility
-pip install "eventlet==0.30.2"
-pip install "greenlet==1.1.2"
-pip install "tinyrpc==1.1.4"
+# install required dependencies with compatible versions
+pip install "MarkupSafe==2.0.1"
+pip install "eventlet==0.30.2" || pip install "eventlet==0.33.3"
+pip install "greenlet>=1.1.2"
+pip install "tinyrpc>=1.0.4"
 pip install "webob>=1.2"
 pip install "routes>=1.12.3"
 pip install "oslo.config>=6.0.0"
 pip install "msgpack>=0.5.3"
 pip install "netaddr>=0.7.18"
 
-# install ryu
-pip install "ryu==4.34"
+# install ryu with --no-build-isolation to use the compatible setuptools
+pip install --no-build-isolation "ryu==4.34" || {
+    echo "[*] Direct ryu install failed; attempting fallback install from faucet repo..."
+    rm -rf /tmp/ryu_install
+    git clone --depth 1 https://github.com/faucetsdn/ryu.git /tmp/ryu_install
+    cd /tmp/ryu_install
+    pip install --no-build-isolation .
+    cd -
+}
 
 # plotting libraries for experiments
 pip install numpy matplotlib
