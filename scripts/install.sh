@@ -82,6 +82,17 @@ set -euo pipefail
 VENV_DIR="$1"
 source "${VENV_DIR}/bin/activate"
 
+# Add compatibility shim for legacy packages expecting collections.MutableMapping
+python -c "
+import site, pathlib
+p = pathlib.Path(site.getsitepackages()[0]) / 'sitecustomize.py'
+p.write_text('''import collections, collections.abc
+for n in ('MutableMapping','MutableSet','MutableSequence','Mapping','Sequence','Set','Iterable','Callable','Iterator','Container','Hashable','Sized'):
+    if hasattr(collections.abc, n) and not hasattr(collections, n):
+        setattr(collections, n, getattr(collections.abc, n))
+''')
+"
+
 # upgrade packaging tools
 pip install --upgrade pip setuptools wheel
 pip install pbr
