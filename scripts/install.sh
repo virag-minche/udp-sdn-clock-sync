@@ -55,18 +55,18 @@ apt-get install -y \
 VENV_DIR="${PROJECT_DIR}/venv"
 
 echo "[4/6] Creating Python virtual environment at ${VENV_DIR}..."
-# create virtualenv if it doesn't exist
-if [[ ! -d "$VENV_DIR" ]]; then
+# create virtualenv if activate script doesn't exist
+if [[ ! -f "$VENV_DIR/bin/activate" ]]; then
+    rm -rf "$VENV_DIR"
     python3 -m venv "$VENV_DIR"
     chown -R "${ACTUAL_USER}:${ACTUAL_USER}" "$VENV_DIR"
 fi
 
 echo "[5/6] Installing Ryu and pinned networking libraries into virtualenv..."
 # run pip install in venv as user
-sudo -u "$ACTUAL_USER" bash << 'EOF'
+sudo -u "$ACTUAL_USER" bash -s "$VENV_DIR" << 'EOF'
 set -euo pipefail
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VENV_DIR="${PROJECT_DIR}/venv"
+VENV_DIR="$1"
 source "${VENV_DIR}/bin/activate"
 
 # upgrade pip
