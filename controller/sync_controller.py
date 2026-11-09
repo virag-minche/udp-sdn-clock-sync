@@ -4,6 +4,13 @@
 # Ryu SDN controller for time synchronization project
 # Computer Networks Mini Project
 
+# Python 3.10+ compatibility shim for legacy networking libraries
+import collections
+import collections.abc
+for _name in ('MutableMapping', 'MutableSet', 'MutableSequence', 'Mapping', 'Sequence', 'Set', 'Iterable', 'Callable'):
+    if hasattr(collections.abc, _name) and not hasattr(collections, _name):
+        setattr(collections, _name, getattr(collections.abc, _name))
+
 import os
 import sys
 import time

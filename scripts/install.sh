@@ -107,6 +107,7 @@ pip install "routes>=1.12.3"
 pip install "oslo.config>=6.0.0"
 pip install "msgpack>=0.5.3"
 pip install "netaddr>=0.7.18"
+pip install "dnspython>=2.0.0"
 
 # plotting libraries for experiments
 pip install numpy matplotlib
@@ -129,6 +130,9 @@ cd /tmp/ryu_install
 python setup.py install
 cd -
 rm -rf /tmp/ryu_install
+
+# Patch ryu-manager binary to inject collections shim on startup
+sed -i '2i import collections, collections.abc\nfor _n in ("MutableMapping","MutableSet","MutableSequence","Mapping","Sequence","Set","Iterable","Callable"):\n    if hasattr(collections.abc, _n) and not hasattr(collections, _n):\n        setattr(collections, _n, getattr(collections.abc, _n))\n' "${VENV_DIR}/bin/ryu-manager" 2>/dev/null || true
 EOF
 
 echo "[6/6] Verifying installations..."
