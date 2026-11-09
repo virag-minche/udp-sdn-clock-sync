@@ -69,11 +69,11 @@ set -euo pipefail
 VENV_DIR="$1"
 source "${VENV_DIR}/bin/activate"
 
-# pin pip and setuptools to versions compatible with Ryu legacy setup scripts
-pip install --upgrade "pip<24"
-pip install "setuptools<58.0.0" wheel
+# upgrade pip and install build helpers
+pip install --upgrade "pip<24" wheel
+pip install "setuptools<=67.6.1" pbr
 
-# install required dependencies with compatible versions
+# install required dependencies with pre-built binary wheels
 pip install "MarkupSafe==2.0.1"
 pip install "eventlet==0.30.2" || pip install "eventlet==0.33.3"
 pip install "greenlet>=1.1.2"
@@ -84,28 +84,21 @@ pip install "oslo.config>=6.0.0"
 pip install "msgpack>=0.5.3"
 pip install "netaddr>=0.7.18"
 
-# install ryu with --no-build-isolation to use the compatible setuptools
-pip install --no-build-isolation "ryu==4.34" || {
-    echo "[*] Direct ryu install failed; attempting fallback install from faucet repo with hook patch..."
-    rm -rf /tmp/ryu_install
-    git clone --depth 1 https://github.com/faucetsdn/ryu.git /tmp/ryu_install
-    python3 -c "
-path = '/tmp/ryu_install/ryu/hooks.py'
-try:
-    with open(path) as f: text = f.read()
-    text = text.replace('easy_install.get_script_args', 'getattr(easy_install, \"get_script_args\", None)')
-    with open(path, 'w') as f: f.write(text)
-    print('Patched ryu/hooks.py successfully')
-except Exception as e:
-    print('Patch note:', e)
-"
-    cd /tmp/ryu_install
-    pip install --no-build-isolation .
-    cd -
-}
-
 # plotting libraries for experiments
 pip install numpy matplotlib
+
+# install Ryu directly from repo with compatibility patch for Python 3.10
+echo "[*] Installing Ryu SDN Controller..."
+rm -rf /tmp/ryu_install
+git clone --depth 1 https://github.com/faucetsdn/ryu.git /tmp/ryu_install
+
+# Disable obsolete setuptools save_orig hook which fails on modern environments
+sed -i 's/^import ryu\.hooks/# import ryu.hooks/' /tmp/ryu_install/setup.py
+sed -i 's/^ryu\.hooks\.save_orig()/# ryu.hooks.save_orig()/' /tmp/ryu_install/setup.py
+sed -i 's/.*_orig_get_script_args.*/    pass/' /tmp/ryu_install/ryu/hooks.py 2>/dev/null || true
+
+pip install --no-deps /tmp/ryu_install
+rm -rf /tmp/ryu_install
 EOF
 
 echo "[6/6] Verifying installations..."
