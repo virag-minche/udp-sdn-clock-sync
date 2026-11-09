@@ -99,7 +99,9 @@ sed -i '/setup-hooks/d' /tmp/ryu_install/setup.cfg
 sed -i 's/^import ryu\.hooks/# import ryu.hooks/' /tmp/ryu_install/setup.py
 sed -i 's/^ryu\.hooks\.save_orig()/# ryu.hooks.save_orig()/' /tmp/ryu_install/setup.py
 
-pip install --no-deps /tmp/ryu_install
+cd /tmp/ryu_install
+python setup.py install
+cd -
 rm -rf /tmp/ryu_install
 EOF
 
