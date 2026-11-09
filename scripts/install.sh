@@ -92,12 +92,14 @@ echo "[*] Installing Ryu SDN Controller..."
 rm -rf /tmp/ryu_install
 git clone --depth 1 https://github.com/faucetsdn/ryu.git /tmp/ryu_install
 
-# Neuter the obsolete setuptools hooks that crash on Python 3.10
-echo "def setup_hook(config): pass" > /tmp/ryu_install/ryu/hooks.py
-echo "def save_orig(): pass" >> /tmp/ryu_install/ryu/hooks.py
-sed -i '/setup-hooks/d' /tmp/ryu_install/setup.cfg
-sed -i 's/^import ryu\.hooks/# import ryu.hooks/' /tmp/ryu_install/setup.py
-sed -i 's/^ryu\.hooks\.save_orig()/# ryu.hooks.save_orig()/' /tmp/ryu_install/setup.py
+# Safely dummy out the obsolete hooks without breaking setup.cfg syntax
+cat << 'HOOKS_EOF' > /tmp/ryu_install/ryu/hooks.py
+def setup_hook(config):
+    pass
+
+def save_orig():
+    pass
+HOOKS_EOF
 
 cd /tmp/ryu_install
 python setup.py install
