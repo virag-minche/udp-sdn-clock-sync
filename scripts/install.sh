@@ -69,9 +69,9 @@ set -euo pipefail
 VENV_DIR="$1"
 source "${VENV_DIR}/bin/activate"
 
-# upgrade pip and install build helpers
-pip install --upgrade "pip<24" wheel
-pip install "setuptools<=67.6.1" pbr
+# upgrade packaging tools
+pip install --upgrade pip setuptools wheel
+pip install pbr
 
 # install required dependencies with pre-built binary wheels
 pip install "MarkupSafe==2.0.1"
@@ -92,10 +92,12 @@ echo "[*] Installing Ryu SDN Controller..."
 rm -rf /tmp/ryu_install
 git clone --depth 1 https://github.com/faucetsdn/ryu.git /tmp/ryu_install
 
-# Disable obsolete setuptools save_orig hook which fails on modern environments
+# Neuter the obsolete setuptools hooks that crash on Python 3.10
+echo "def setup_hook(config): pass" > /tmp/ryu_install/ryu/hooks.py
+echo "def save_orig(): pass" >> /tmp/ryu_install/ryu/hooks.py
+sed -i '/setup-hooks/d' /tmp/ryu_install/setup.cfg
 sed -i 's/^import ryu\.hooks/# import ryu.hooks/' /tmp/ryu_install/setup.py
 sed -i 's/^ryu\.hooks\.save_orig()/# ryu.hooks.save_orig()/' /tmp/ryu_install/setup.py
-sed -i 's/.*_orig_get_script_args.*/    pass/' /tmp/ryu_install/ryu/hooks.py 2>/dev/null || true
 
 pip install --no-deps /tmp/ryu_install
 rm -rf /tmp/ryu_install
