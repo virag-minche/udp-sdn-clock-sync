@@ -45,22 +45,35 @@ apt-get install -y \
 systemctl enable openvswitch-switch
 systemctl restart openvswitch-switch
 
-echo "[3/6] Setting up Python 3.9 / 3.10 environment..."
+echo "[3/6] Setting up Python environment..."
 apt-get install -y \
     python3-pip \
     python3-dev \
     python3-venv \
     python3-setuptools
 
+# Check Python version: Python 3.12+ (Ubuntu 24.04) completely removed the 'imp' module
+# which Ryu requires. If host is >= 3.12, install Python 3.10 via deadsnakes PPA.
+PY_MAJOR=$(python3 -c 'import sys; print(sys.version_info.major)')
+PY_MINOR=$(python3 -c 'import sys; print(sys.version_info.minor)')
+
+PYTHON_CMD="python3"
+if [ "$PY_MAJOR" -eq 3 ] && [ "$PY_MINOR" -ge 12 ]; then
+    echo "[!] Detected Python 3.${PY_MINOR}. Python 3.12+ removed 'imp' which Ryu requires."
+    echo "[*] Adding deadsnakes PPA to install Python 3.10 for Ryu virtual environment..."
+    add-apt-repository -y ppa:deadsnakes/ppa
+    apt-get update -y
+    apt-get install -y python3.10 python3.10-venv python3.10-dev
+    PYTHON_CMD="python3.10"
+fi
+
 VENV_DIR="${PROJECT_DIR}/venv"
 
-echo "[4/6] Creating Python virtual environment at ${VENV_DIR}..."
-# create virtualenv if activate script doesn't exist
-if [[ ! -f "$VENV_DIR/bin/activate" ]]; then
-    rm -rf "$VENV_DIR"
-    python3 -m venv "$VENV_DIR"
-    chown -R "${ACTUAL_USER}:${ACTUAL_USER}" "$VENV_DIR"
-fi
+echo "[4/6] Creating Python virtual environment at ${VENV_DIR} using ${PYTHON_CMD}..."
+# Recreate venv cleanly
+rm -rf "$VENV_DIR"
+$PYTHON_CMD -m venv "$VENV_DIR"
+chown -R "${ACTUAL_USER}:${ACTUAL_USER}" "$VENV_DIR"
 
 echo "[5/6] Installing Ryu and pinned networking libraries into virtualenv..."
 # run pip install in venv as user
