@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # quick_setup.sh
-# One-shot setup script for the SDN Clock Sync project on Ubuntu 22.04
+# One-shot setup for SDN Clock Sync project on Ubuntu 22.04
 # Usage: sudo bash scripts/quick_setup.sh
 
 set -e
@@ -33,7 +33,7 @@ echo "[2/5] Checking Python version..."
 PY_MINOR=$(python3 -c 'import sys; print(sys.version_info.minor)')
 PYTHON_CMD="python3"
 if [ "$PY_MINOR" -ge 12 ]; then
-    echo "    Python 3.${PY_MINOR} detected. Installing Python 3.10 for Ryu compatibility..."
+    echo "    Python 3.${PY_MINOR} detected. Installing Python 3.10..."
     add-apt-repository -y ppa:deadsnakes/ppa
     apt-get update -y -q
     apt-get install -y -q python3.10 python3.10-venv python3.10-dev
@@ -55,20 +55,55 @@ echo "    [OK] venv created at ${VENV_DIR}"
 echo ""
 echo "[4/5] Installing Python packages..."
 
+# Run everything inside venv as the actual user
 sudo -u "$ACTUAL_USER" bash -s "$VENV_DIR" "$PROJECT_DIR" << 'PYEOF'
 set -e
 VENV_DIR="$1"
 PROJECT_DIR="$2"
 source "${VENV_DIR}/bin/activate"
 
-echo "    Upgrading pip..."
-# Do NOT pin setuptools — just upgrade pip normally
-pip install -q --upgrade pip
-pip install -q --upgrade wheel
+echo "    Upgrading pip and packaging..."
+pip install -q --upgrade pip packaging wheel
 
-echo "    Installing eventlet (0.33.3 is compatible with Python 3.10 + faucetsdn/ryu)..."
-pip install -q --upgrade "packaging"
+echo "    Installing eventlet..."
+# eventlet 0.33.3 is the correct version for Python 3.10 + faucetsdn/ryu
 pip install -q "eventlet==0.33.3"
+
+echo "    Patching eventlet timeout.py for Python 3.10 immutable types..."
+# Fix: socket.timeout is now an alias for the built-in TimeoutError in Python 3.10+
+# which is immutable so setting is_timeout property on it raises TypeError
+python3 - << 'PYFIX'
+import glob, os
+
+pattern = os.path.join(os.environ.get('VIRTUAL_ENV', ''), 'lib', 'python*',
+                       'site-packages', 'eventlet', 'timeout.py')
+files = glob.glob(pattern)
+if not files:
+    # try a broader search
+    import site
+    for sp in site.getsitepackages():
+        candidate = os.path.join(sp, 'eventlet', 'timeout.py')
+        if os.path.exists(candidate):
+            files.append(candidate)
+
+for fpath in files:
+    with open(fpath, 'r') as f:
+        content = f.read()
+
+    old = 'base.is_timeout = property(lambda _: True)'
+    new = ('try:\n'
+           '            base.is_timeout = property(lambda _: True)\n'
+           '        except TypeError:\n'
+           '            pass  # Python 3.10+: socket.timeout is immutable built-in')
+
+    if old in content:
+        content = content.replace(old, new)
+        with open(fpath, 'w') as f:
+            f.write(content)
+        print(f'    Patched: {fpath}')
+    else:
+        print(f'    Already patched or not found in: {fpath}')
+PYFIX
 
 echo "    Installing Ryu dependencies..."
 pip install -q "pbr"
@@ -86,7 +121,7 @@ echo "    Installing Ryu SDN controller from source..."
 rm -rf /tmp/ryu_build
 git clone --quiet --depth 1 https://github.com/faucetsdn/ryu.git /tmp/ryu_build
 
-# Patch ryu/hooks.py which causes import errors on newer Python
+# Patch ryu/hooks.py to remove broken import
 cat > /tmp/ryu_build/ryu/hooks.py << 'HOOKS'
 def setup_hook(config):
     pass
@@ -95,15 +130,14 @@ def save_orig():
 HOOKS
 
 cd /tmp/ryu_build
-# Use --no-build-isolation to avoid setuptools version conflicts
 pip install -q --no-build-isolation .
 cd -
 rm -rf /tmp/ryu_build
 echo "    [OK] Ryu installed from source"
 
 echo "    Applying collections compatibility shim..."
-# Fix: Python 3.10 removed collections.MutableMapping etc.
-SITE_DIR=$(python -c "import site; print(site.getsitepackages()[0])")
+# Fix collections.MutableMapping removed in Python 3.10+
+SITE_DIR=$(python3 -c "import site; print(site.getsitepackages()[0])")
 cat > "${SITE_DIR}/sitecustomize.py" << 'SHIM'
 import collections
 import collections.abc
@@ -117,8 +151,8 @@ for _n in _names:
         setattr(collections, _n, getattr(collections.abc, _n))
 SHIM
 
-# Link system mininet into venv site-packages
-python -c "
+# Link system mininet into venv
+python3 -c "
 import site, pathlib
 sp = pathlib.Path(site.getsitepackages()[0])
 pth = sp / 'mininet_sys.pth'
@@ -140,7 +174,7 @@ echo -n "    Mininet:      "
 mn --version 2>&1 | head -1 || echo "NOT FOUND"
 
 echo -n "    Ryu:          "
-"${VENV_DIR}/bin/ryu-manager" --version 2>&1 || echo "NOT FOUND"
+"${VENV_DIR}/bin/ryu-manager" --version 2>&1 || echo "FAILED - check errors above"
 
 echo -n "    iperf3:       "
 iperf3 --version 2>/dev/null | head -1 || echo "NOT FOUND"
@@ -152,14 +186,12 @@ echo ""
 echo "================================================"
 echo "  SETUP COMPLETE!"
 echo ""
-echo "  TERMINAL 1 (Ryu Controller):"
+echo "  TERMINAL 1 (start this first):"
 echo "    cd ${PROJECT_DIR}"
 echo "    source venv/bin/activate"
 echo "    ryu-manager controller/sync_controller.py --ofp-tcp-listen-port 6653"
 echo ""
-echo "  TERMINAL 2 (Mininet + Demo):"
+echo "  TERMINAL 2 (open new terminal):"
 echo "    cd ${PROJECT_DIR}"
 echo "    sudo venv/bin/python3 topology/topo.py"
-echo "  OR run full automated demo:"
-echo "    bash scripts/demo.sh"
 echo "================================================"
