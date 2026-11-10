@@ -134,40 +134,6 @@ else:
             print(f'    Already patched or line not found: {fpath}')
 PATCH
 
-# Also patch ryu/lib/hub.py to add a safety shim before eventlet import
-echo "    Patching ryu/lib/hub.py as backup fix..."
-python3 << 'HUBPATCH'
-import os, glob
-
-venv = os.environ.get('VIRTUAL_ENV', '')
-candidates = glob.glob(os.path.join(venv, 'lib', 'python*', 'site-packages', 'ryu', 'lib', 'hub.py'))
-
-SHIM = '''# Python 3.10 compatibility shim - patch eventlet before importing
-try:
-    import eventlet.timeout as _et
-    _orig = _et.wrap_is_timeout
-    def _safe_wrap(base):
-        try:
-            return _orig(base)
-        except TypeError:
-            return base
-    _et.wrap_is_timeout = _safe_wrap
-except Exception:
-    pass
-
-'''
-
-for fpath in candidates:
-    with open(fpath, 'r') as f:
-        content = f.read()
-    if 'Python 3.10 compatibility shim' not in content:
-        with open(fpath, 'w') as f:
-            f.write(SHIM + content)
-        print(f'    Patched hub.py: {fpath}')
-    else:
-        print(f'    hub.py already patched: {fpath}')
-HUBPATCH
-
 # Apply collections shim
 echo "    Applying collections compatibility shim..."
 SITE_DIR=$(python3 -c "import site; print(site.getsitepackages()[0])")
