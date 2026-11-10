@@ -38,10 +38,8 @@ if [ "$PY_MINOR" -ge 12 ]; then
     apt-get update -y -q
     apt-get install -y -q python3.10 python3.10-venv python3.10-dev
     PYTHON_CMD="python3.10"
-    echo "    [OK] Will use python3.10 for venv"
-else
-    echo "    [OK] Python 3.${PY_MINOR} is compatible"
 fi
+echo "    [OK] Using ${PYTHON_CMD}"
 
 # --- Step 3: Create venv ---
 echo ""
@@ -51,77 +49,30 @@ $PYTHON_CMD -m venv --system-site-packages "$VENV_DIR"
 chown -R "${ACTUAL_USER}:${ACTUAL_USER}" "$VENV_DIR"
 echo "    [OK] venv created at ${VENV_DIR}"
 
-# --- Step 4: Install Python packages ---
+# --- Step 4: Install all Python packages ---
 echo ""
 echo "[4/5] Installing Python packages..."
 
-# Run everything inside venv as the actual user
 sudo -u "$ACTUAL_USER" bash -s "$VENV_DIR" "$PROJECT_DIR" << 'PYEOF'
 set -e
 VENV_DIR="$1"
 PROJECT_DIR="$2"
 source "${VENV_DIR}/bin/activate"
 
-echo "    Upgrading pip and packaging..."
-pip install -q --upgrade pip packaging wheel
+echo "    Upgrading pip..."
+pip install -q --upgrade pip wheel packaging
 
-echo "    Installing eventlet..."
-# eventlet 0.33.3 is the correct version for Python 3.10 + faucetsdn/ryu
+echo "    Installing eventlet and dependencies..."
 pip install -q "eventlet==0.33.3"
+pip install -q "pbr" "MarkupSafe==2.0.1" "webob" "routes"
+pip install -q "oslo.config" "msgpack==1.0.5" "netaddr" "tinyrpc"
+pip install -q "requests" "matplotlib" "pandas" "numpy"
 
-echo "    Patching eventlet timeout.py for Python 3.10 immutable types..."
-# Fix: socket.timeout is now an alias for the built-in TimeoutError in Python 3.10+
-# which is immutable so setting is_timeout property on it raises TypeError
-python3 - << 'PYFIX'
-import glob, os
-
-pattern = os.path.join(os.environ.get('VIRTUAL_ENV', ''), 'lib', 'python*',
-                       'site-packages', 'eventlet', 'timeout.py')
-files = glob.glob(pattern)
-if not files:
-    # try a broader search
-    import site
-    for sp in site.getsitepackages():
-        candidate = os.path.join(sp, 'eventlet', 'timeout.py')
-        if os.path.exists(candidate):
-            files.append(candidate)
-
-for fpath in files:
-    with open(fpath, 'r') as f:
-        content = f.read()
-
-    old = 'base.is_timeout = property(lambda _: True)'
-    new = ('try:\n'
-           '            base.is_timeout = property(lambda _: True)\n'
-           '        except TypeError:\n'
-           '            pass  # Python 3.10+: socket.timeout is immutable built-in')
-
-    if old in content:
-        content = content.replace(old, new)
-        with open(fpath, 'w') as f:
-            f.write(content)
-        print(f'    Patched: {fpath}')
-    else:
-        print(f'    Already patched or not found in: {fpath}')
-PYFIX
-
-echo "    Installing Ryu dependencies..."
-pip install -q "pbr"
-pip install -q "MarkupSafe==2.0.1"
-pip install -q "webob"
-pip install -q "routes"
-pip install -q "oslo.config"
-pip install -q "msgpack==1.0.5"
-pip install -q "netaddr"
-pip install -q "tinyrpc"
-pip install -q "requests"
-pip install -q "matplotlib" "pandas" "numpy"
-
-echo "    Installing Ryu SDN controller from source..."
+echo "    Installing Ryu from source..."
 rm -rf /tmp/ryu_build
 git clone --quiet --depth 1 https://github.com/faucetsdn/ryu.git /tmp/ryu_build
 
-# Patch ryu/hooks.py to remove broken import
+# Patch ryu/hooks.py (import error)
 cat > /tmp/ryu_build/ryu/hooks.py << 'HOOKS'
 def setup_hook(config):
     pass
@@ -130,23 +81,100 @@ def save_orig():
 HOOKS
 
 cd /tmp/ryu_build
-pip install -q --no-build-isolation .
+pip install -q --no-build-isolation . 2>&1 | grep -v "BuildBackendWarning" | grep -v "^\s*!!" | grep -v "^\s*\*\*\*" | grep -v "^$" | grep -v "setuptools" | grep -v "packaging" || true
 cd -
 rm -rf /tmp/ryu_build
-echo "    [OK] Ryu installed from source"
+echo "    [OK] Ryu installed"
 
+# =====================================================
+# IMPORTANT: Patch eventlet AFTER all installs
+# (Ryu install can reinstall eventlet, wiping patches)
+# =====================================================
+echo "    Patching eventlet for Python 3.10 compatibility..."
+
+python3 << 'PATCH'
+import os, glob
+
+# Find eventlet timeout.py in the venv
+venv = os.environ.get('VIRTUAL_ENV', '')
+candidates = glob.glob(os.path.join(venv, 'lib', 'python*', 'site-packages', 'eventlet', 'timeout.py'))
+
+if not candidates:
+    print("    WARNING: Could not find eventlet/timeout.py to patch")
+else:
+    for fpath in candidates:
+        with open(fpath, 'r') as f:
+            lines = f.readlines()
+
+        new_lines = []
+        i = 0
+        patched = False
+        while i < len(lines):
+            line = lines[i]
+            # Find the problematic line (with any indentation)
+            stripped = line.rstrip()
+            if 'base.is_timeout = property(lambda _: True)' in stripped and 'try:' not in (lines[i-1] if i > 0 else ''):
+                indent = len(line) - len(line.lstrip())
+                ind = ' ' * indent
+                new_lines.append(f'{ind}try:\n')
+                new_lines.append(f'{ind}    base.is_timeout = property(lambda _: True)\n')
+                new_lines.append(f'{ind}except TypeError:\n')
+                new_lines.append(f'{ind}    pass  # Python 3.10+: socket.timeout is immutable\n')
+                patched = True
+            else:
+                new_lines.append(line)
+            i += 1
+
+        with open(fpath, 'w') as f:
+            f.writelines(new_lines)
+
+        if patched:
+            print(f'    Patched eventlet: {fpath}')
+        else:
+            print(f'    Already patched or line not found: {fpath}')
+PATCH
+
+# Also patch ryu/lib/hub.py to add a safety shim before eventlet import
+echo "    Patching ryu/lib/hub.py as backup fix..."
+python3 << 'HUBPATCH'
+import os, glob
+
+venv = os.environ.get('VIRTUAL_ENV', '')
+candidates = glob.glob(os.path.join(venv, 'lib', 'python*', 'site-packages', 'ryu', 'lib', 'hub.py'))
+
+SHIM = '''# Python 3.10 compatibility shim - patch eventlet before importing
+try:
+    import eventlet.timeout as _et
+    _orig = _et.wrap_is_timeout
+    def _safe_wrap(base):
+        try:
+            return _orig(base)
+        except TypeError:
+            return base
+    _et.wrap_is_timeout = _safe_wrap
+except Exception:
+    pass
+
+'''
+
+for fpath in candidates:
+    with open(fpath, 'r') as f:
+        content = f.read()
+    if 'Python 3.10 compatibility shim' not in content:
+        with open(fpath, 'w') as f:
+            f.write(SHIM + content)
+        print(f'    Patched hub.py: {fpath}')
+    else:
+        print(f'    hub.py already patched: {fpath}')
+HUBPATCH
+
+# Apply collections shim
 echo "    Applying collections compatibility shim..."
-# Fix collections.MutableMapping removed in Python 3.10+
 SITE_DIR=$(python3 -c "import site; print(site.getsitepackages()[0])")
 cat > "${SITE_DIR}/sitecustomize.py" << 'SHIM'
-import collections
-import collections.abc
-_names = [
-    'MutableMapping', 'MutableSet', 'MutableSequence',
-    'Mapping', 'Sequence', 'Set', 'Iterable',
-    'Callable', 'Iterator', 'Container', 'Hashable', 'Sized'
-]
-for _n in _names:
+import collections, collections.abc
+for _n in ['MutableMapping','MutableSet','MutableSequence','Mapping',
+           'Sequence','Set','Iterable','Callable','Iterator','Container','Hashable','Sized']:
     if hasattr(collections.abc, _n) and not hasattr(collections, _n):
         setattr(collections, _n, getattr(collections.abc, _n))
 SHIM
@@ -155,12 +183,11 @@ SHIM
 python3 -c "
 import site, pathlib
 sp = pathlib.Path(site.getsitepackages()[0])
-pth = sp / 'mininet_sys.pth'
-pth.write_text('/usr/lib/python3/dist-packages\n')
-print('    Mininet path linked into venv')
+(sp / 'mininet_sys.pth').write_text('/usr/lib/python3/dist-packages\n')
+print('    Mininet linked into venv')
 "
 
-echo "    [OK] All Python packages installed"
+echo "    [OK] All packages installed and patched"
 PYEOF
 
 # --- Step 5: Verify ---
@@ -174,7 +201,7 @@ echo -n "    Mininet:      "
 mn --version 2>&1 | head -1 || echo "NOT FOUND"
 
 echo -n "    Ryu:          "
-"${VENV_DIR}/bin/ryu-manager" --version 2>&1 || echo "FAILED - check errors above"
+"${VENV_DIR}/bin/ryu-manager" --version 2>&1 || echo "FAILED"
 
 echo -n "    iperf3:       "
 iperf3 --version 2>/dev/null | head -1 || echo "NOT FOUND"
@@ -186,12 +213,12 @@ echo ""
 echo "================================================"
 echo "  SETUP COMPLETE!"
 echo ""
-echo "  TERMINAL 1 (start this first):"
+echo "  TERMINAL 1:"
 echo "    cd ${PROJECT_DIR}"
 echo "    source venv/bin/activate"
 echo "    ryu-manager controller/sync_controller.py --ofp-tcp-listen-port 6653"
 echo ""
-echo "  TERMINAL 2 (open new terminal):"
+echo "  TERMINAL 2 (new window):"
 echo "    cd ${PROJECT_DIR}"
 echo "    sudo venv/bin/python3 topology/topo.py"
 echo "================================================"
