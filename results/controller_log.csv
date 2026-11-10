@@ -1,0 +1,7 @@
+timestamp,event_type,details
+2026-11-11 00:42:47.927,CONTROLLER_INIT,"Controller started (priority_mode=True, dynamic_mode=False)"
+2026-11-11 00:43:12.328,CONTROLLER_INIT,"Controller started (priority_mode=True, dynamic_mode=False)"
+2026-11-11 00:45:24.390,SWITCH_INITIALIZED,Installed table-miss rule on DPID 1
+2026-11-11 00:45:24.391,QOS_FLOWS_INSTALLED,Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+2026-11-11 00:45:24.393,SWITCH_INITIALIZED,Installed table-miss rule on DPID 2
+2026-11-11 00:45:24.394,QOS_FLOWS_INSTALLED,Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
