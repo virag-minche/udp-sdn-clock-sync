@@ -66,8 +66,9 @@ echo "    Upgrading pip..."
 pip install -q --upgrade pip
 pip install -q --upgrade wheel
 
-echo "    Installing eventlet (pinned for Ryu compatibility)..."
-pip install -q "eventlet==0.30.2"
+echo "    Installing eventlet (0.33.3 is compatible with Python 3.10 + faucetsdn/ryu)..."
+pip install -q --upgrade "packaging"
+pip install -q "eventlet==0.33.3"
 
 echo "    Installing Ryu dependencies..."
 pip install -q "pbr"
