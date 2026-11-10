@@ -57,8 +57,10 @@ PROJECT_DIR="$2"
 source "${VENV_DIR}/bin/activate"
 
 echo "    Python version: $(python --version)"
-echo "    Upgrading pip..."
-pip install -q --upgrade pip setuptools wheel
+echo "    Upgrading pip but pinning setuptools for Ryu compatibility..."
+pip install -q --upgrade pip wheel
+# setuptools >= 58 removed easy_install which ryu==4.34 setup.py requires
+pip install -q "setuptools<58"
 
 echo "    Installing eventlet 0.30.2 (works correctly with Python 3.8)..."
 pip install -q "eventlet==0.30.2"
