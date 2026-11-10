@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # quick_setup.sh
-# Sets up Ryu + Mininet for SDN Clock Sync project
-# Uses Python 3.8 (required) + ryu from GitHub source (PyPI version is broken)
+# Sets up Ryu + Mininet using Python 3.9
+# - Python 3.9: works with faucetsdn/ryu (3.9+ syntax) AND eventlet 0.30.2
+# - Ryu from faucetsdn/ryu GitHub (PyPI version broken with modern setuptools)
 # Usage: sudo bash scripts/quick_setup.sh
 
 set -e
@@ -29,23 +30,24 @@ systemctl enable openvswitch-switch 2>/dev/null || true
 systemctl restart openvswitch-switch 2>/dev/null || true
 echo "    [OK] System packages installed."
 
-# --- Step 2: Install Python 3.8 ---
+# --- Step 2: Install Python 3.9 ---
 echo ""
-echo "[2/5] Installing Python 3.8..."
-# Ryu + eventlet only work correctly on Python 3.8
-# Python 3.9+ has breaking changes in socket/collections that break eventlet
+echo "[2/5] Installing Python 3.9..."
+# Python 3.9 is the sweet spot:
+#   - faucetsdn/ryu uses 3.9+ syntax (ABCMeta subscriptable)
+#   - eventlet 0.30.2 works (socket.timeout not yet immutable like in 3.10+)
 add-apt-repository -y ppa:deadsnakes/ppa 2>/dev/null
 apt-get update -y -q
-apt-get install -y -q python3.8 python3.8-venv python3.8-dev python3.8-distutils
-echo "    [OK] Python 3.8 ready."
+apt-get install -y -q python3.9 python3.9-venv python3.9-dev python3.9-distutils
+echo "    [OK] Python 3.9 installed: $(python3.9 --version)"
 
-# --- Step 3: Create venv with Python 3.8 ---
+# --- Step 3: Create venv with Python 3.9 ---
 echo ""
-echo "[3/5] Creating Python 3.8 virtual environment..."
+echo "[3/5] Creating Python 3.9 virtual environment..."
 rm -rf "$VENV_DIR"
-python3.8 -m venv --system-site-packages "$VENV_DIR"
+python3.9 -m venv --system-site-packages "$VENV_DIR"
 chown -R "${ACTUAL_USER}:${ACTUAL_USER}" "$VENV_DIR"
-echo "    [OK] venv at ${VENV_DIR} (Python 3.8)"
+echo "    [OK] venv at ${VENV_DIR} ($(${VENV_DIR}/bin/python --version))"
 
 # --- Step 4: Install all Python packages ---
 echo ""
@@ -56,32 +58,29 @@ set -e
 VENV_DIR="$1"
 PROJECT_DIR="$2"
 source "${VENV_DIR}/bin/activate"
+echo "    Active Python: $(python --version)"
 
-echo "    Python: $(python --version)"
-
-# Upgrade pip but DO NOT upgrade setuptools yet
-# (we need to control setuptools version for Ryu)
-pip install -q --upgrade pip
+# Upgrade pip only (not setuptools - ryu needs older version)
+pip install -q --upgrade pip 2>/dev/null || true
 pip install -q wheel
 
-# Install Ryu dependencies first
-echo "    Installing core dependencies..."
+echo "    Installing eventlet and dependencies..."
 pip install -q "eventlet==0.30.2"
 pip install -q "webob" "routes" "oslo.config"
-pip install -q "msgpack>=0.6.0" "netaddr" "tinyrpc"
+pip install -q "msgpack>=0.6.0" "netaddr"
 pip install -q "requests" "six"
+pip install -q "pkgutil_resolve_name"   # fixes jsonschema warning on Python < 3.9
+pip install -q "tinyrpc==0.9.4"         # pin older version that doesn't use 3.9+ syntax in wheels
 pip install -q "matplotlib" "pandas" "numpy"
 
-# Clone and install Ryu from GitHub source
-# PyPI ryu==4.34 is broken with modern pip - use faucetsdn fork
-echo "    Cloning Ryu from GitHub (faucetsdn/ryu)..."
+echo "    Cloning faucetsdn/ryu from GitHub..."
 rm -rf /tmp/ryu_build
 git clone --quiet --depth 1 https://github.com/faucetsdn/ryu.git /tmp/ryu_build
+cd /tmp/ryu_build
 
-# CRITICAL: Patch hooks.py which calls easy_install.get_script_args
-# This was removed from setuptools and causes install to fail
-cat > /tmp/ryu_build/ryu/hooks.py << 'HOOKS'
-# Patched: removed easy_install dependency (removed in modern setuptools)
+# Patch hooks.py: removes easy_install.get_script_args (removed in modern setuptools)
+cat > ryu/hooks.py << 'HOOKS'
+# Patched: removed easy_install dependency (not in modern setuptools)
 def setup_hook(config):
     pass
 
@@ -89,20 +88,26 @@ def save_orig():
     pass
 HOOKS
 
-echo "    Installing Ryu from source..."
-cd /tmp/ryu_build
-# --no-build-isolation: use our pinned setuptools, not build system's
-pip install -q --no-build-isolation . 2>&1 | \
-    grep -v "BuildBackendWarning" | \
-    grep -v "^\s*!!" | \
-    grep -v "^\s*\*\*\*\*" | \
-    grep -v "setuptools.dist" | \
-    grep -E "(error|Error|ERROR|warning: |OK|Installing|Ryu)" || true
+echo "    Installing Ryu (this takes ~2 mins)..."
+# --no-build-isolation: use our installed packages, not PEP517 build env
+if ! pip install --no-build-isolation . 2>/tmp/ryu_install.log; then
+    echo ""
+    echo "    ERROR: Ryu install failed. Last 20 lines of log:"
+    tail -20 /tmp/ryu_install.log
+    exit 1
+fi
+
 cd -
 rm -rf /tmp/ryu_build
-echo "    [OK] Ryu installed from GitHub source"
 
-# Apply collections compatibility shim (Python 3.8 safety net)
+# Confirm ryu-manager binary exists
+if [ ! -f "${VENV_DIR}/bin/ryu-manager" ]; then
+    echo "    ERROR: ryu-manager not found after install - Ryu install failed silently"
+    exit 1
+fi
+echo "    [OK] Ryu installed: $(${VENV_DIR}/bin/ryu-manager --version 2>&1)"
+
+# Apply collections compatibility shim (safety net)
 echo "    Applying compatibility shim..."
 SITE_DIR=$(python -c "import site; print(site.getsitepackages()[0])")
 cat > "${SITE_DIR}/sitecustomize.py" << 'SHIM'
@@ -114,14 +119,15 @@ for _n in ['MutableMapping', 'MutableSet', 'MutableSequence', 'Mapping',
         setattr(collections, _n, getattr(collections.abc, _n))
 SHIM
 
-# Link system mininet into venv
+# Link system mininet into venv site-packages
 python -c "
 import site, pathlib
 sp = pathlib.Path(site.getsitepackages()[0])
 (sp / 'mininet_sys.pth').write_text('/usr/lib/python3/dist-packages\n')
-print('    [OK] Mininet linked')
+print('    [OK] Mininet linked into venv')
 "
-echo "    [OK] All packages ready"
+
+echo "    [OK] All packages installed successfully"
 PYEOF
 
 # --- Step 5: Verify ---
