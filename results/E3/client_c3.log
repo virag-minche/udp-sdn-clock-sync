@@ -1,0 +1,35 @@
+[Client 3] DSCP set to 0 (TOS: 0x00) | Readback TOS: 0x00 (DSCP: 0)
+[Client 3] seq 00: timeout
+[Client 3] seq 01: timeout
+[Client 3] seq 02: timeout
+[Client 3] seq 03: timeout
+[Client 3] seq 04: timeout
+[Client 3] seq 05: timeout
+[Client 3] seq 06: timeout
+[Client 3] seq 07: timeout
+[Client 3] seq 08: timeout
+[Client 3] seq 09: timeout
+[Client 3] seq 10: timeout
+[Client 3] seq 11: timeout
+[Client 3] seq 12: timeout
+[Client 3] seq 13: timeout
+[Client 3] seq 14: timeout
+[Client 3] seq 15: timeout
+[Client 3] seq 16: timeout
+Traceback (most recent call last):
+  File "/home/silver-stone/Desktop/udp-sdn-clock-sync/src/timesync_core.py", line 414, in <module>
+    run_client(
+    ~~~~~~~~~~^
+        host=a.host,
+        ^^^^^^^^^^^^
+    ...<11 lines>...
+        report_every=a.report_every
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/silver-stone/Desktop/udp-sdn-clock-sync/src/timesync_core.py", line 259, in run_client
+    result = exchange(sock, addr, clock, cid, seq, priority=priority)
+  File "/home/silver-stone/Desktop/udp-sdn-clock-sync/src/timesync_core.py", line 201, in exchange
+    sock.sendto(struct.pack(FMT, REQ, cid, seq, priority, t1, 0.0, 0.0), target_addr)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 101] Network is unreachable
