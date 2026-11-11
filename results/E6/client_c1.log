@@ -1,0 +1,19 @@
+[Client 1] DSCP set to 46 (TOS: 0xB8) | Readback TOS: 0xB8 (DSCP: 46)
+[Client 1] seq 00: timeout
+[Client 1] seq 01: timeout
+[Client 1] seq 02: timeout
+[Client 1] seq 03: timeout
+[Client 1] seq 04: timeout
+[Client 1] seq 05: timeout
+[Client 1] seq 06: timeout
+[Client 1] seq 07: timeout
+[Client 1] seq 08: timeout
+[Client 1] seq 09: timeout
+[Client 1] seq 10: timeout
+[Client 1] seq 11: timeout
+[Client 1] seq 12: timeout
+[Client 1] seq 13: timeout
+[Client 1] seq 14: timeout
+[Client 1] seq 15: timeout
+[Client 1] seq 16: timeout
+[Client 1] seq 17: timeout
