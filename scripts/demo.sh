@@ -31,7 +31,7 @@ for i in $(seq 1 10); do
         echo "[ERROR] Ryu controller not found on port 6653!"
         echo "        Please start it in Terminal 1 first:"
         echo "        source venv/bin/activate"
-        echo "        ryu-manager controller/sync_controller.py --ofp-tcp-listen-port 6653"
+        echo "        ryu-manager controller/sync_controller.py --ofp-tcp-listen-port 6653 --wsapi-host 0.0.0.0 --wsapi-port 8080"
         exit 1
     fi
     sleep 1

@@ -151,9 +151,12 @@ def run_server(port, dscp=46, use_prio_queue=False, delay_ms=0.0, jitter_ms=0.0)
                 t3 = time.time()
                 reply = struct.pack(FMT, RESP, cid, seq, prio, t1, t2, t3)
                 apply_artificial_delay()
-                sock.sendto(reply, addr)
-                with stats_lock:
-                    client_stats[cid] = client_stats.get(cid, 0) + 1
+                try:
+                    sock.sendto(reply, addr)
+                    with stats_lock:
+                        client_stats[cid] = client_stats.get(cid, 0) + 1
+                except OSError:
+                    pass
 
     except KeyboardInterrupt:
         print("\n[Server] Shutting down...")
@@ -198,7 +201,10 @@ def exchange(sock, addr, clock, cid, seq, timeout=1.0, priority=1):
     target_addr = (target_ip, addr[1])
 
     t1 = clock.now()
-    sock.sendto(struct.pack(FMT, REQ, cid, seq, priority, t1, 0.0, 0.0), target_addr)
+    try:
+        sock.sendto(struct.pack(FMT, REQ, cid, seq, priority, t1, 0.0, 0.0), target_addr)
+    except OSError:
+        return None
 
     deadline = time.time() + timeout
     while True:
@@ -291,6 +297,8 @@ def run_client(host, port, cid, skew, rounds, interval, log,
                             jitter_ms,
                             abs(err_after * 1000)
                         ])
+                        if f:
+                            f.flush()
 
                     # send metrics to SDN controller if enabled
                     if reporter and (seq % report_every == 0):

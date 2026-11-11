@@ -400,8 +400,14 @@ class SyncController(app_manager.RyuApp):
                 if (dscp_val == DSCP_EF) and (udp_pkt.dst_port == SYNC_UDP_PORT or udp_pkt.src_port == SYNC_UDP_PORT):
                     is_sync = True
 
+            # Only assign QoS queue if outputting to an inter-switch bottleneck port
+            is_bottleneck = (
+                (dpid == DPID_S1 and out_port in (PORT_S1_PRIMARY, PORT_S1_BACKUP)) or
+                (dpid == DPID_S2 and out_port in (PORT_S2_PRIMARY, PORT_S2_BACKUP))
+            )
+
             # assign queue based on priority mode
-            if self.priority_mode:
+            if self.priority_mode and is_bottleneck:
                 if is_sync:
                     actions.append(parser.OFPActionSetQueue(queue_id=QUEUE_SYNC_PRIORITY))
                     flow_prio = PRIORITY_SYNC_HIGH

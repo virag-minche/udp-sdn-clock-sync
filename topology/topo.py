@@ -70,6 +70,10 @@ class TimeSyncTopo(Topo):
         lg = self.addHost('lg', ip='10.0.0.200/24', mac='00:00:00:00:00:c8')
         self.addLink(lg, s1, cls=TCLink, bw=100, delay='1ms', max_queue_size=1000)
 
+        # root namespace controller host so Mininet hosts can reach Ryu REST API
+        ctrl = self.addHost('ctrl', ip='10.0.0.254/24', inNamespace=False)
+        self.addLink(ctrl, s1, cls=TCLink, bw=100, delay='1ms')
+
 
 # set up htb queues on ovs ports connecting s1 and s2
 def setup_ovs_queues(net, bw_mbps=10):
@@ -195,9 +199,9 @@ def start_iperf_load(net, rate_mbps=9.0, duration=86400, use_loadgen=True):
 
     if use_loadgen and loadgen_script.exists():
         info(f"*** Starting Role 3 UDP load generator (src/loadgen.py): {lg.name} -> {ls.name} ({rate_mbps} Mbit/s, port 5201)\n")
-        ls.cmd(f"python3 {loadgen_script} --sink --port 5201 > /tmp/loadsink.log 2>&1 &")
+        ls.cmd(f"python3 -u {loadgen_script} --sink --port 5201 > /tmp/loadsink.log 2>&1 &")
         time.sleep(0.3)
-        lg.cmd(f"python3 {loadgen_script} --host 10.0.0.201 --port 5201 --mbps {rate_mbps} --duration {duration} > /tmp/loadgen.log 2>&1 &")
+        lg.cmd(f"python3 -u {loadgen_script} --host 10.0.0.201 --port 5201 --mbps {rate_mbps} --duration {duration} > /tmp/loadgen.log 2>&1 &")
     else:
         info(f"*** Starting background iperf3 UDP cross-traffic: {lg.name} -> {ls.name} ({rate_mbps} Mbit/s)\n")
         ls.cmd('iperf3 -s -p 5201 -D')
@@ -232,12 +236,13 @@ def start_sync(net, n_clients=3, skews=None, dscp=46, rounds=50, interval=0.2, r
     for i in range(1, n_clients + 1):
         c = net.get(f'c{i}')
         c.cmd('ping -c 1 -W 1 10.0.0.100 >/dev/null 2>&1')
+        c.cmd('ping -c 1 -W 1 10.0.0.254 >/dev/null 2>&1')
     lg = net.get('lg')
     lg.cmd('ping -c 1 -W 1 10.0.0.201 >/dev/null 2>&1')
 
     info(f"*** Launching Time Server on {srv.name} (IP: 10.0.0.100, UDP 9999, DSCP={dscp})...\n")
     srv.cmd('pkill -f timesync_core.py 2>/dev/null')
-    server_cmd = f"python3 {core_script} server --port 9999 --dscp {dscp} > {results_dir}/server.log 2>&1 &"
+    server_cmd = f"python3 -u {core_script} server --port 9999 --dscp {dscp} > {results_dir}/server.log 2>&1 &"
     srv.cmd(server_cmd)
     time.sleep(2.0)
 
@@ -263,12 +268,9 @@ def start_sync(net, n_clients=3, skews=None, dscp=46, rounds=50, interval=0.2, r
         log_file = os.path.join(results_dir, f"client_c{i}.csv")
 
         info(f"*** Launching Sync Client {c.name} (id={i}, skew={skew_val:+.2f}s, dscp={dscp}, rounds={rounds})...\n")
-        # Determine controller REST URL reachable from Mininet host namespace.
-        # Mininet hosts share the kernel, so 127.0.0.1 works for REST calls.
-        # If that fails, the ControllerReporter silently drops reports (non-blocking).
-        ctrl_url = "http://127.0.0.1:8080/sync/report"
+        ctrl_url = "http://10.0.0.254:8080/sync/report"
         client_cmd = (
-            f"python3 {core_script} client "
+            f"python3 -u {core_script} client "
             f"--host 10.0.0.100 --port 9999 --id {i} --dscp {dscp} "
             f"--skew {skew_val} --rounds {rounds} --interval {interval} "
             f"--controller {ctrl_url} "
@@ -319,27 +321,36 @@ def run_scripted_experiment(net, args):
     )
 
     # wait for sync to finish, handle failover if enabled
-    total_wait = max(15, int(args.rounds * args.interval * 1.5) + 8)
-    info(f"*** Waiting {total_wait}s for sync clients to complete {args.rounds} rounds...\n")
+    total_wait = max(25, int(args.rounds * args.interval * 2.0) + 10)
+    info(f"*** Waiting up to {total_wait}s for sync clients to complete {args.rounds} rounds...\n")
 
     if args.failover and not args.no_backup:
-        third = max(2, total_wait // 3)
+        third = max(3, total_wait // 3)
         time.sleep(third)
         info("*** [E6 Challenge] Simulating Primary Bottleneck Link FAILURE (s1-eth1 <-> s2-eth1)...\n")
         bring_link_down(net, 's1', 's2', link_index=0)
-        time.sleep(third)
+        time.sleep(5)
         info("*** [E6 Challenge] Restoring Primary Bottleneck Link UP (s1-eth1 <-> s2-eth1)...\n")
         bring_link_up(net, 's1', 's2', link_index=0)
-        time.sleep(max(2, total_wait - 2 * third))
+        time.sleep(third)
     else:
-        step = 5
-        for sec in range(total_wait, 0, -step):
-            info(f"    Remaining: {sec}s...\n")
-            time.sleep(min(step, sec))
+        for sec in range(total_wait):
+            any_running = False
+            for c, _ in client_procs:
+                pids = c.cmd('pgrep -f "timesync_core.py client"').strip()
+                if pids:
+                    any_running = True
+                    break
+            if not any_running:
+                info(f"*** All sync clients completed their rounds in {sec + 1}s.\n")
+                break
+            time.sleep(1.0)
 
     # clean up processes
     if not args.no_load:
         stop_iperf_load(net)
+    for c, _ in client_procs:
+        c.cmd('pkill -f timesync_core.py 2>/dev/null')
     net.get('srv').cmd('pkill -INT -f timesync_core.py 2>/dev/null')
     time.sleep(0.5)
 
