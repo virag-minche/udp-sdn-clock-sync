@@ -1,0 +1,5 @@
+[Client 10] DSCP set to 0 (TOS: 0x00) | Readback TOS: 0x00 (DSCP: 0)
+[Client 10] seq 00 | rtt    4.84 ms | offset   850.09 ms | before  -850.00 ms | after  -509.96 ms
+[Client 10] seq 01 | rtt    5.45 ms | offset   510.24 ms | before  -509.96 ms | after  -305.87 ms
+[Client 10] seq 02: timeout
+[Controller] Warning: Telemetry POST to http://10.0.0.254:8080/sync/report failed: <urlopen error timed out> (further reporting errors will be suppressed)

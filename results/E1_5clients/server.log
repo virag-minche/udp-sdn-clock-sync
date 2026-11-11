@@ -1,0 +1,2 @@
+[Server] DSCP set to 0 (TOS: 0x00) | Readback TOS: 0x00 (DSCP: 0)
+[Server] listening on UDP port 9999 (DSCP=0, PriorityQueue=False, Delay=0.0ms, Jitter=0.0ms)

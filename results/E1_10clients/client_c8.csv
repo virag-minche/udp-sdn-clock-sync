@@ -1,0 +1,2 @@
+timestamp,client_id,seq,rtt_ms,offset_ms,true_error_ms,true_error_before_ms,true_error_after_ms,full_correction_error_ms,jitter_ms,sync_error_ms
+1794428433.0556304,8,0,8.994579315185547,450.0405788421631,-450.0000476837158,-450.0000476837158,-269.98376846313477,0.040531158447265625,0.0,269.98376846313477

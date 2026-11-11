@@ -1,3 +1,1 @@
 [Client 1] DSCP set to 46 (TOS: 0xB8) | Readback TOS: 0xB8 (DSCP: 46)
-[Client 1] seq 00: timeout
-[Client 1] seq 01: timeout

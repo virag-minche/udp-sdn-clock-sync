@@ -1,0 +1,5 @@
+[Client 1] DSCP set to 46 (TOS: 0xB8) | Readback TOS: 0xB8 (DSCP: 46)
+[Client 1] seq 00 | rtt   33.94 ms | offset  -345.31 ms | before   350.00 ms | after   211.88 ms
+[Controller] Warning: Telemetry POST to http://10.0.0.254:8080/sync/report failed: <urlopen error [Errno 101] Network is unreachable> (further reporting errors will be suppressed)
+[Client 1] seq 01: timeout
+[Client 1] seq 02: timeout

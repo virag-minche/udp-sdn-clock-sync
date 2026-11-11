@@ -1,0 +1,2 @@
+[Server] DSCP set to 46 (TOS: 0xB8) | Readback TOS: 0xB8 (DSCP: 46)
+[Server] listening on UDP port 9999 (DSCP=46, PriorityQueue=False, Delay=0.0ms, Jitter=0.0ms)

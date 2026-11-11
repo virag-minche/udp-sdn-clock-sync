@@ -1,0 +1,4 @@
+[Client 7] DSCP set to 46 (TOS: 0xB8) | Readback TOS: 0xB8 (DSCP: 46)
+[Client 7] seq 00 | rtt   15.35 ms | offset  -900.12 ms | before   900.00 ms | after   539.95 ms
+[Client 7] seq 01: timeout
+[Client 7] seq 02: timeout

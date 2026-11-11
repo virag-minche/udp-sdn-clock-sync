@@ -1,0 +1,2297 @@
+loading app controller/sync_controller.py
+loading app ryu.controller.ofp_handler
+creating context wsgi
+instantiating app controller/sync_controller.py of SyncController
+Initializing SyncController: Priority Mode = True, Dynamic Congestion = False
+Registered REST API handler at http://127.0.0.1:8080
+[EVENT CONTROLLER_INIT] Controller started (priority_mode=True, dynamic_mode=False)
+instantiating app ryu.controller.ofp_handler of OFPHandler
+(11875) wsgi starting up on http://0.0.0.0:8080
+(11875) accepted ('127.0.0.1', 36074)
+127.0.0.1 - - [12/Nov/2026 01:48:09] "GET /sdn/status HTTP/1.1" 200 415 0.000416
+(11875) accepted ('127.0.0.1', 36080)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=off
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:48:09] "POST /sdn/mode HTTP/1.1" 200 242 0.000470
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.3', 52518)
+(11875) accepted ('10.0.0.2', 33090)
+10.0.0.3 - - [12/Nov/2026 01:48:12] "POST /sync/report HTTP/1.1" 200 247 0.000628
+10.0.0.2 - - [12/Nov/2026 01:48:12] "POST /sync/report HTTP/1.1" 200 247 0.000143
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 36094)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:48:13] "POST /sdn/mode HTTP/1.1" 200 240 0.000468
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.3', 36630)
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+10.0.0.3 - - [12/Nov/2026 01:48:16] "POST /sync/report HTTP/1.1" 200 247 0.001624
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 51266)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=off
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:48:16] "POST /sdn/mode HTTP/1.1" 200 242 0.001935
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 46664)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:48:26] "POST /sdn/mode HTTP/1.1" 200 240 0.001263
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.2', 49878)
+10.0.0.2 - - [12/Nov/2026 01:48:35] "POST /sync/report HTTP/1.1" 200 247 0.000558
+(11875) accepted ('10.0.0.3', 34534)
+10.0.0.3 - - [12/Nov/2026 01:48:35] "POST /sync/report HTTP/1.1" 200 247 0.000204
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 46674)
+[EVENT MODE_CHANGE] Mode updated: dynamic_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:48:36] "POST /sdn/mode HTTP/1.1" 200 238 0.000530
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+(11875) accepted ('10.0.0.1', 58740)
+10.0.0.1 - - [12/Nov/2026 01:48:43] "POST /sync/report HTTP/1.1" 200 247 0.000255
+(11875) accepted ('10.0.0.2', 36750)
+10.0.0.2 - - [12/Nov/2026 01:48:43] "POST /sync/report HTTP/1.1" 200 247 0.000200
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.3', 42854)
+10.0.0.3 - - [12/Nov/2026 01:48:43] "POST /sync/report HTTP/1.1" 200 247 0.000209
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 34960)
+127.0.0.1 - - [12/Nov/2026 01:48:44] "POST /sdn/mode HTTP/1.1" 200 212 0.000857
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.1', 48870)
+(11875) accepted ('10.0.0.3', 35466)
+10.0.0.1 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 247 0.000196
+[EVENT APP_AWARE_ESCALATION] Client 3 sync error > 20.0ms for 5 consecutive reports. Enforcing strict queue isolation.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+10.0.0.3 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.003144
+(11875) accepted ('10.0.0.2', 34608)
+10.0.0.2 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000250
+(11875) accepted ('10.0.0.1', 48886)
+10.0.0.1 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000836
+(11875) accepted ('10.0.0.3', 35480)
+10.0.0.3 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000618
+(11875) accepted ('10.0.0.2', 34612)
+10.0.0.2 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000135
+(11875) accepted ('10.0.0.1', 48890)
+10.0.0.1 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000493
+(11875) accepted ('10.0.0.3', 35484)
+10.0.0.3 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000268
+(11875) accepted ('10.0.0.2', 34614)
+10.0.0.2 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000182
+(11875) accepted ('10.0.0.1', 48904)
+(11875) accepted ('10.0.0.3', 35492)
+10.0.0.1 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000416
+10.0.0.3 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000129
+(11875) accepted ('10.0.0.2', 34626)
+10.0.0.2 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000142
+(11875) accepted ('10.0.0.3', 35508)
+(11875) accepted ('10.0.0.1', 48912)
+10.0.0.3 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000604
+10.0.0.1 - - [12/Nov/2026 01:48:53] "POST /sync/report HTTP/1.1" 200 246 0.000146
+(11875) accepted ('10.0.0.2', 34632)
+10.0.0.2 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000147
+(11875) accepted ('10.0.0.3', 35516)
+(11875) accepted ('10.0.0.1', 48926)
+10.0.0.3 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 247 0.000232
+10.0.0.1 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000119
+(11875) accepted ('10.0.0.2', 34642)
+10.0.0.2 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000151
+(11875) accepted ('10.0.0.3', 35522)
+(11875) accepted ('10.0.0.1', 48928)
+10.0.0.3 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 247 0.000209
+10.0.0.1 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000127
+(11875) accepted ('10.0.0.2', 34656)
+10.0.0.2 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000214
+(11875) accepted ('10.0.0.3', 35524)
+(11875) accepted ('10.0.0.1', 48932)
+10.0.0.3 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000219
+10.0.0.1 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000160
+(11875) accepted ('10.0.0.2', 34660)
+10.0.0.2 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000285
+(11875) accepted ('10.0.0.1', 48934)
+(11875) accepted ('10.0.0.3', 35528)
+(11875) accepted ('10.0.0.2', 34662)
+10.0.0.1 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000278
+10.0.0.3 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000134
+10.0.0.2 - - [12/Nov/2026 01:48:54] "POST /sync/report HTTP/1.1" 200 246 0.000216
+(11875) accepted ('10.0.0.2', 34668)
+(11875) accepted ('10.0.0.3', 35534)
+10.0.0.2 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000184
+10.0.0.3 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000124
+(11875) accepted ('10.0.0.1', 48938)
+10.0.0.1 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000154
+(11875) accepted ('10.0.0.2', 34680)
+(11875) accepted ('10.0.0.1', 48948)
+(11875) accepted ('10.0.0.3', 35550)
+10.0.0.2 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000182
+10.0.0.1 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000194
+10.0.0.3 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000216
+(11875) accepted ('10.0.0.3', 35562)
+(11875) accepted ('10.0.0.1', 48954)
+(11875) accepted ('10.0.0.2', 34688)
+10.0.0.3 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000216
+10.0.0.1 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000154
+10.0.0.2 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000107
+(11875) accepted ('10.0.0.1', 48962)
+(11875) accepted ('10.0.0.2', 34694)
+(11875) accepted ('10.0.0.3', 35564)
+10.0.0.1 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000251
+10.0.0.2 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000388
+10.0.0.3 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000187
+(11875) accepted ('10.0.0.2', 34698)
+10.0.0.2 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000195
+(11875) accepted ('10.0.0.3', 35576)
+(11875) accepted ('10.0.0.1', 48968)
+10.0.0.3 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000396
+10.0.0.1 - - [12/Nov/2026 01:48:55] "POST /sync/report HTTP/1.1" 200 246 0.000118
+(11875) accepted ('10.0.0.2', 34702)
+10.0.0.2 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 246 0.000267
+(11875) accepted ('10.0.0.1', 48982)
+10.0.0.1 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 246 0.000153
+(11875) accepted ('10.0.0.3', 35580)
+[EVENT APP_AWARE_RELAXATION] Sync error normalized < 5.0ms. Relaxing escalation.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+10.0.0.3 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.001643
+(11875) accepted ('10.0.0.2', 34710)
+10.0.0.2 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.000339
+(11875) accepted ('10.0.0.1', 48992)
+(11875) accepted ('10.0.0.3', 35582)
+10.0.0.1 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.000315
+10.0.0.3 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.000128
+(11875) accepted ('10.0.0.2', 34712)
+10.0.0.2 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.000299
+(11875) accepted ('10.0.0.1', 49006)
+10.0.0.1 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.000151
+(11875) accepted ('10.0.0.3', 35594)
+10.0.0.3 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.000137
+(11875) accepted ('10.0.0.2', 49046)
+10.0.0.2 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 248 0.000480
+(11875) accepted ('10.0.0.1', 33784)
+10.0.0.1 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 248 0.000309
+(11875) accepted ('10.0.0.3', 53860)
+10.0.0.3 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.000247
+(11875) accepted ('10.0.0.2', 49048)
+10.0.0.2 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 248 0.000181
+(11875) accepted ('10.0.0.1', 33794)
+10.0.0.1 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 248 0.000140
+(11875) accepted ('10.0.0.3', 53864)
+10.0.0.3 - - [12/Nov/2026 01:48:56] "POST /sync/report HTTP/1.1" 200 247 0.000225
+(11875) accepted ('10.0.0.2', 49058)
+10.0.0.2 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000212
+(11875) accepted ('10.0.0.3', 53878)
+10.0.0.3 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000134
+(11875) accepted ('10.0.0.1', 33808)
+10.0.0.1 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000231
+(11875) accepted ('10.0.0.2', 49074)
+10.0.0.2 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000282
+(11875) accepted ('10.0.0.1', 33818)
+(11875) accepted ('10.0.0.3', 53894)
+10.0.0.1 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000157
+10.0.0.3 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000126
+(11875) accepted ('10.0.0.2', 49086)
+10.0.0.2 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000318
+(11875) accepted ('10.0.0.1', 33832)
+10.0.0.1 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000172
+(11875) accepted ('10.0.0.3', 53910)
+10.0.0.3 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000285
+(11875) accepted ('10.0.0.2', 49102)
+10.0.0.2 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000238
+(11875) accepted ('10.0.0.1', 33840)
+(11875) accepted ('10.0.0.3', 53916)
+10.0.0.1 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000142
+10.0.0.3 - - [12/Nov/2026 01:48:57] "POST /sync/report HTTP/1.1" 200 248 0.000191
+(11875) accepted ('10.0.0.2', 49114)
+10.0.0.2 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 248 0.000744
+(11875) accepted ('10.0.0.1', 33844)
+10.0.0.1 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000148
+(11875) accepted ('10.0.0.3', 53928)
+10.0.0.3 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000220
+(11875) accepted ('10.0.0.2', 49116)
+10.0.0.2 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 248 0.000211
+(11875) accepted ('10.0.0.3', 53932)
+(11875) accepted ('10.0.0.1', 33854)
+10.0.0.3 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000167
+10.0.0.1 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000425
+(11875) accepted ('10.0.0.2', 49130)
+10.0.0.2 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 248 0.000174
+(11875) accepted ('10.0.0.1', 33866)
+(11875) accepted ('10.0.0.3', 53946)
+10.0.0.1 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000150
+10.0.0.3 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000221
+(11875) accepted ('10.0.0.2', 49136)
+10.0.0.2 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 248 0.000174
+(11875) accepted ('10.0.0.1', 33868)
+(11875) accepted ('10.0.0.3', 53950)
+10.0.0.1 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000180
+10.0.0.3 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000331
+(11875) accepted ('10.0.0.2', 49152)
+10.0.0.2 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 248 0.000184
+(11875) accepted ('10.0.0.3', 53958)
+(11875) accepted ('10.0.0.1', 33872)
+10.0.0.3 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000180
+10.0.0.1 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 247 0.000153
+(11875) accepted ('10.0.0.2', 49164)
+10.0.0.2 - - [12/Nov/2026 01:48:58] "POST /sync/report HTTP/1.1" 200 248 0.000168
+(11875) accepted ('10.0.0.1', 33886)
+(11875) accepted ('10.0.0.3', 53962)
+10.0.0.1 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000177
+10.0.0.3 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000151
+[EVENT CONGESTION_DETECTED] Bottleneck utilization exceeded 80.0% for 3 samples. Throttling background traffic to Queue 3.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.2', 49166)
+10.0.0.2 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 248 0.000233
+(11875) accepted ('10.0.0.1', 33898)
+10.0.0.1 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000179
+(11875) accepted ('10.0.0.3', 53974)
+10.0.0.3 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000145
+(11875) accepted ('10.0.0.2', 49170)
+10.0.0.2 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 248 0.000170
+(11875) accepted ('10.0.0.1', 33904)
+10.0.0.1 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000156
+(11875) accepted ('10.0.0.3', 53988)
+10.0.0.3 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000126
+(11875) accepted ('10.0.0.2', 49184)
+10.0.0.2 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 248 0.000208
+(11875) accepted ('10.0.0.3', 53998)
+(11875) accepted ('10.0.0.1', 33912)
+10.0.0.3 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000251
+10.0.0.1 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000200
+(11875) accepted ('10.0.0.2', 49194)
+10.0.0.2 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 248 0.000176
+(11875) accepted ('10.0.0.3', 54006)
+10.0.0.3 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000159
+(11875) accepted ('10.0.0.1', 33922)
+10.0.0.1 - - [12/Nov/2026 01:48:59] "POST /sync/report HTTP/1.1" 200 247 0.000141
+(11875) accepted ('10.0.0.2', 49200)
+10.0.0.2 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 248 0.000197
+(11875) accepted ('10.0.0.3', 54010)
+(11875) accepted ('10.0.0.1', 33926)
+10.0.0.3 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 247 0.000182
+10.0.0.1 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 247 0.000101
+(11875) accepted ('10.0.0.2', 49214)
+10.0.0.2 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 248 0.000194
+(11875) accepted ('10.0.0.3', 54018)
+10.0.0.3 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 248 0.000248
+(11875) accepted ('10.0.0.1', 33936)
+10.0.0.1 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 248 0.000162
+(11875) accepted ('10.0.0.2', 49220)
+10.0.0.2 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 247 0.000189
+(11875) accepted ('10.0.0.3', 54024)
+10.0.0.3 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 248 0.000571
+(11875) accepted ('10.0.0.1', 33938)
+10.0.0.1 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 248 0.000171
+(11875) accepted ('10.0.0.3', 54036)
+10.0.0.3 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 248 0.013810
+(11875) accepted ('10.0.0.2', 49232)
+(11875) accepted ('10.0.0.1', 33946)
+10.0.0.2 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 247 0.000137
+10.0.0.1 - - [12/Nov/2026 01:49:00] "POST /sync/report HTTP/1.1" 200 248 0.000137
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=True
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 2
+[EVENT LINK_FAILOVER] Primary link s1-eth1 DOWN. Failover to Backup link (s1:2<->s2:2) completed in 0.78 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=False
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+[EVENT LINK_FAILBACK] Primary link restored UP. Failback from backup to primary completed in 0.37 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=True
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 2
+[EVENT LINK_FAILOVER] Primary link s1-eth1 DOWN. Failover to Backup link (s1:2<->s2:2) completed in 0.34 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=True
+(11875) accepted ('10.0.0.1', 33958)
+10.0.0.1 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 248 0.000257
+(11875) accepted ('10.0.0.3', 54040)
+(11875) accepted ('10.0.0.2', 49234)
+10.0.0.3 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 248 0.000296
+10.0.0.2 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 247 0.000119
+(11875) accepted ('10.0.0.1', 33974)
+10.0.0.1 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 248 0.000310
+(11875) accepted ('10.0.0.2', 49244)
+(11875) accepted ('10.0.0.3', 54044)
+10.0.0.2 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 247 0.000150
+10.0.0.3 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 248 0.000265
+(11875) accepted ('10.0.0.2', 49260)
+(11875) accepted ('10.0.0.1', 33978)
+(11875) accepted ('10.0.0.3', 54054)
+10.0.0.2 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 247 0.000189
+10.0.0.1 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 248 0.000161
+10.0.0.3 - - [12/Nov/2026 01:49:01] "POST /sync/report HTTP/1.1" 200 248 0.000121
+[EVENT CONGESTION_RECOVERED] Bottleneck utilization dropped below 50.0% for 3 samples. Restoring background traffic to Queue 2.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 2
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=True
+[EVENT CONGESTION_DETECTED] Bottleneck utilization exceeded 80.0% for 3 samples. Throttling background traffic to Queue 3.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 2
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=False
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+[EVENT LINK_FAILBACK] Primary link restored UP. Failback from backup to primary completed in 2.27 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=False
+[EVENT CONGESTION_RECOVERED] Bottleneck utilization dropped below 50.0% for 3 samples. Restoring background traffic to Queue 2.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+[EVENT CONGESTION_DETECTED] Bottleneck utilization exceeded 80.0% for 3 samples. Throttling background traffic to Queue 3.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 34660)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=off, dynamic_mode=off
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:49:14] "POST /sdn/mode HTTP/1.1" 200 266 0.000452
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+(11875) accepted ('10.0.0.3', 39550)
+10.0.0.3 - - [12/Nov/2026 01:49:18] "POST /sync/report HTTP/1.1" 200 247 0.000210
+(11875) accepted ('10.0.0.4', 54970)
+10.0.0.4 - - [12/Nov/2026 01:49:18] "POST /sync/report HTTP/1.1" 200 247 0.000182
+(11875) accepted ('10.0.0.1', 36446)
+10.0.0.1 - - [12/Nov/2026 01:49:18] "POST /sync/report HTTP/1.1" 200 247 0.000153
+(11875) accepted ('10.0.0.2', 47584)
+10.0.0.2 - - [12/Nov/2026 01:49:18] "POST /sync/report HTTP/1.1" 200 247 0.000155
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.5', 35980)
+10.0.0.5 - - [12/Nov/2026 01:49:18] "POST /sync/report HTTP/1.1" 200 247 0.000559
+Port Status Event: DPID=1, Port=4, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 42568)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:49:18] "POST /sdn/mode HTTP/1.1" 200 240 0.000382
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.2', 47598)
+10.0.0.2 - - [12/Nov/2026 01:49:22] "POST /sync/report HTTP/1.1" 200 247 0.000241
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.4', 54984)
+10.0.0.4 - - [12/Nov/2026 01:49:22] "POST /sync/report HTTP/1.1" 200 247 0.000629
+(11875) accepted ('10.0.0.3', 39564)
+10.0.0.3 - - [12/Nov/2026 01:49:22] "POST /sync/report HTTP/1.1" 200 247 0.000177
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.5', 35982)
+10.0.0.5 - - [12/Nov/2026 01:49:22] "POST /sync/report HTTP/1.1" 200 247 0.000193
+Port Status Event: DPID=1, Port=5, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 42578)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=off
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:49:22] "POST /sdn/mode HTTP/1.1" 200 242 0.000815
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Port Status Event: DPID=1, Port=3, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 60250)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:49:35] "POST /sdn/mode HTTP/1.1" 200 240 0.000581
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.1', 46870)
+10.0.0.1 - - [12/Nov/2026 01:49:47] "POST /sync/report HTTP/1.1" 200 247 0.000227
+(11875) accepted ('10.0.0.3', 32814)
+10.0.0.3 - - [12/Nov/2026 01:49:47] "POST /sync/report HTTP/1.1" 200 247 0.000661
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.5', 50414)
+10.0.0.5 - - [12/Nov/2026 01:49:47] "POST /sync/report HTTP/1.1" 200 247 0.000256
+(11875) accepted ('10.0.0.2', 48522)
+10.0.0.2 - - [12/Nov/2026 01:49:47] "POST /sync/report HTTP/1.1" 200 247 0.000222
+(11875) accepted ('10.0.0.4', 52932)
+10.0.0.4 - - [12/Nov/2026 01:49:47] "POST /sync/report HTTP/1.1" 200 247 0.000903
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 32898)
+[EVENT MODE_CHANGE] Mode updated: dynamic_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:49:47] "POST /sdn/mode HTTP/1.1" 200 238 0.000737
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+[EVENT CONGESTION_RECOVERED] Bottleneck utilization dropped below 50.0% for 3 samples. Restoring background traffic to Queue 2.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.2', 48524)
+10.0.0.2 - - [12/Nov/2026 01:49:55] "POST /sync/report HTTP/1.1" 200 247 0.004944
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.3', 32816)
+10.0.0.3 - - [12/Nov/2026 01:49:55] "POST /sync/report HTTP/1.1" 200 247 0.000217
+(11875) accepted ('10.0.0.4', 52948)
+10.0.0.4 - - [12/Nov/2026 01:49:55] "POST /sync/report HTTP/1.1" 200 247 0.000379
+(11875) accepted ('10.0.0.5', 50420)
+10.0.0.5 - - [12/Nov/2026 01:49:55] "POST /sync/report HTTP/1.1" 200 247 0.000485
+Port Status Event: DPID=1, Port=5, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 32902)
+127.0.0.1 - - [12/Nov/2026 01:49:55] "POST /sdn/mode HTTP/1.1" 200 212 0.000748
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+(11875) accepted ('10.0.0.3', 55944)
+[EVENT APP_AWARE_ESCALATION] Client 3 sync error > 20.0ms for 5 consecutive reports. Enforcing strict queue isolation.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+10.0.0.3 - - [12/Nov/2026 01:50:06] "POST /sync/report HTTP/1.1" 200 246 0.001801
+(11875) accepted ('10.0.0.1', 48564)
+10.0.0.1 - - [12/Nov/2026 01:50:06] "POST /sync/report HTTP/1.1" 200 246 0.000209
+(11875) accepted ('10.0.0.4', 57924)
+10.0.0.4 - - [12/Nov/2026 01:50:06] "POST /sync/report HTTP/1.1" 200 246 0.000151
+(11875) accepted ('10.0.0.5', 35782)
+10.0.0.5 - - [12/Nov/2026 01:50:06] "POST /sync/report HTTP/1.1" 200 246 0.000125
+(11875) accepted ('10.0.0.2', 43414)
+10.0.0.2 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000130
+(11875) accepted ('10.0.0.1', 48580)
+(11875) accepted ('10.0.0.3', 55952)
+10.0.0.1 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000319
+10.0.0.3 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000166
+(11875) accepted ('10.0.0.4', 57934)
+10.0.0.4 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000232
+(11875) accepted ('10.0.0.5', 35798)
+10.0.0.5 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000149
+(11875) accepted ('10.0.0.2', 43422)
+10.0.0.2 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000134
+(11875) accepted ('10.0.0.3', 55958)
+(11875) accepted ('10.0.0.1', 48584)
+10.0.0.3 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000201
+10.0.0.1 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000106
+(11875) accepted ('10.0.0.4', 57938)
+10.0.0.4 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000225
+(11875) accepted ('10.0.0.2', 43428)
+(11875) accepted ('10.0.0.5', 35812)
+10.0.0.2 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000134
+10.0.0.5 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000150
+(11875) accepted ('10.0.0.1', 48596)
+10.0.0.1 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000185
+(11875) accepted ('10.0.0.3', 55960)
+10.0.0.3 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000721
+(11875) accepted ('10.0.0.4', 57942)
+10.0.0.4 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000160
+(11875) accepted ('10.0.0.2', 43438)
+(11875) accepted ('10.0.0.5', 35824)
+10.0.0.2 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000153
+10.0.0.5 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000116
+(11875) accepted ('10.0.0.1', 48598)
+10.0.0.1 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000182
+(11875) accepted ('10.0.0.3', 55968)
+10.0.0.3 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000301
+(11875) accepted ('10.0.0.4', 57950)
+10.0.0.4 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000142
+(11875) accepted ('10.0.0.2', 43454)
+(11875) accepted ('10.0.0.5', 35840)
+10.0.0.2 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000139
+10.0.0.5 - - [12/Nov/2026 01:50:07] "POST /sync/report HTTP/1.1" 200 246 0.000343
+(11875) accepted ('10.0.0.1', 48608)
+(11875) accepted ('10.0.0.3', 55976)
+10.0.0.1 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000169
+10.0.0.3 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 247 0.000104
+(11875) accepted ('10.0.0.4', 57952)
+(11875) accepted ('10.0.0.2', 43466)
+10.0.0.4 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 247 0.000150
+10.0.0.2 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000109
+(11875) accepted ('10.0.0.5', 35850)
+10.0.0.5 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 247 0.000148
+(11875) accepted ('10.0.0.3', 55986)
+10.0.0.3 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 247 0.000188
+(11875) accepted ('10.0.0.1', 48624)
+10.0.0.1 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000368
+(11875) accepted ('10.0.0.4', 57968)
+(11875) accepted ('10.0.0.2', 43476)
+10.0.0.4 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 247 0.000141
+10.0.0.2 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000292
+(11875) accepted ('10.0.0.5', 35864)
+10.0.0.5 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000135
+(11875) accepted ('10.0.0.3', 55996)
+10.0.0.3 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000186
+(11875) accepted ('10.0.0.1', 48638)
+10.0.0.1 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000151
+(11875) accepted ('10.0.0.4', 57976)
+10.0.0.4 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000140
+(11875) accepted ('10.0.0.2', 43484)
+10.0.0.2 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000157
+(11875) accepted ('10.0.0.5', 35868)
+10.0.0.5 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000123
+(11875) accepted ('10.0.0.3', 55998)
+10.0.0.3 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000445
+(11875) accepted ('10.0.0.1', 48646)
+10.0.0.1 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000150
+(11875) accepted ('10.0.0.4', 57984)
+10.0.0.4 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000363
+(11875) accepted ('10.0.0.2', 43496)
+10.0.0.2 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000334
+(11875) accepted ('10.0.0.5', 35870)
+10.0.0.5 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000124
+(11875) accepted ('10.0.0.3', 56014)
+10.0.0.3 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000267
+(11875) accepted ('10.0.0.1', 48656)
+10.0.0.1 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000655
+(11875) accepted ('10.0.0.4', 58000)
+10.0.0.4 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000135
+(11875) accepted ('10.0.0.2', 43504)
+10.0.0.2 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000143
+(11875) accepted ('10.0.0.5', 35886)
+10.0.0.5 - - [12/Nov/2026 01:50:08] "POST /sync/report HTTP/1.1" 200 246 0.000125
+(11875) accepted ('10.0.0.3', 56026)
+10.0.0.3 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000352
+(11875) accepted ('10.0.0.1', 48668)
+10.0.0.1 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000162
+(11875) accepted ('10.0.0.4', 58016)
+10.0.0.4 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000365
+(11875) accepted ('10.0.0.2', 43508)
+10.0.0.2 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000314
+(11875) accepted ('10.0.0.5', 35890)
+10.0.0.5 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000122
+(11875) accepted ('10.0.0.3', 56034)
+10.0.0.3 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000240
+(11875) accepted ('10.0.0.1', 48680)
+10.0.0.1 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000501
+(11875) accepted ('10.0.0.4', 58030)
+10.0.0.4 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000132
+(11875) accepted ('10.0.0.2', 43518)
+10.0.0.2 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000128
+(11875) accepted ('10.0.0.5', 35898)
+10.0.0.5 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000374
+(11875) accepted ('10.0.0.3', 56042)
+10.0.0.3 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000361
+(11875) accepted ('10.0.0.1', 48686)
+10.0.0.1 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000143
+(11875) accepted ('10.0.0.4', 58040)
+10.0.0.4 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000128
+(11875) accepted ('10.0.0.2', 43530)
+10.0.0.2 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000261
+(11875) accepted ('10.0.0.5', 35904)
+10.0.0.5 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000288
+(11875) accepted ('10.0.0.3', 56044)
+10.0.0.3 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000386
+(11875) accepted ('10.0.0.1', 48694)
+10.0.0.1 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000540
+(11875) accepted ('10.0.0.4', 58052)
+(11875) accepted ('10.0.0.2', 43544)
+10.0.0.4 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000124
+10.0.0.2 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000122
+(11875) accepted ('10.0.0.5', 35912)
+10.0.0.5 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000119
+(11875) accepted ('10.0.0.3', 56046)
+10.0.0.3 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000189
+(11875) accepted ('10.0.0.1', 48706)
+10.0.0.1 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000160
+(11875) accepted ('10.0.0.2', 43558)
+10.0.0.2 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 246 0.000229
+(11875) accepted ('10.0.0.4', 58054)
+[EVENT APP_AWARE_RELAXATION] Sync error normalized < 5.0ms. Relaxing escalation.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+10.0.0.4 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 247 0.001038
+(11875) accepted ('10.0.0.5', 35916)
+10.0.0.5 - - [12/Nov/2026 01:50:09] "POST /sync/report HTTP/1.1" 200 247 0.000130
+(11875) accepted ('10.0.0.3', 56060)
+10.0.0.3 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000167
+(11875) accepted ('10.0.0.1', 48708)
+(11875) accepted ('10.0.0.2', 43570)
+10.0.0.1 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000146
+10.0.0.2 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000122
+(11875) accepted ('10.0.0.4', 58060)
+10.0.0.4 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.001427
+(11875) accepted ('10.0.0.5', 35926)
+10.0.0.5 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000123
+(11875) accepted ('10.0.0.3', 56074)
+10.0.0.3 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000174
+(11875) accepted ('10.0.0.1', 48716)
+10.0.0.1 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000149
+(11875) accepted ('10.0.0.2', 43582)
+(11875) accepted ('10.0.0.4', 58074)
+10.0.0.2 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000143
+10.0.0.4 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000124
+(11875) accepted ('10.0.0.5', 35942)
+10.0.0.5 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000142
+(11875) accepted ('10.0.0.3', 56076)
+10.0.0.3 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000176
+(11875) accepted ('10.0.0.1', 48730)
+10.0.0.1 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000164
+(11875) accepted ('10.0.0.2', 43592)
+(11875) accepted ('10.0.0.4', 58084)
+10.0.0.2 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000128
+10.0.0.4 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000123
+(11875) accepted ('10.0.0.5', 35948)
+10.0.0.5 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000125
+(11875) accepted ('10.0.0.3', 56082)
+10.0.0.3 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000192
+(11875) accepted ('10.0.0.1', 48746)
+10.0.0.1 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000142
+(11875) accepted ('10.0.0.2', 43596)
+(11875) accepted ('10.0.0.4', 58092)
+10.0.0.2 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000150
+10.0.0.4 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 247 0.000372
+(11875) accepted ('10.0.0.5', 35962)
+10.0.0.5 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000454
+(11875) accepted ('10.0.0.1', 48756)
+(11875) accepted ('10.0.0.3', 56086)
+10.0.0.1 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000169
+10.0.0.3 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000171
+(11875) accepted ('10.0.0.2', 43606)
+10.0.0.2 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000302
+(11875) accepted ('10.0.0.4', 58098)
+10.0.0.4 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000168
+(11875) accepted ('10.0.0.5', 35964)
+10.0.0.5 - - [12/Nov/2026 01:50:10] "POST /sync/report HTTP/1.1" 200 248 0.000240
+(11875) accepted ('10.0.0.1', 48766)
+(11875) accepted ('10.0.0.3', 56094)
+10.0.0.1 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000161
+10.0.0.3 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000142
+(11875) accepted ('10.0.0.2', 43620)
+(11875) accepted ('10.0.0.4', 58104)
+10.0.0.2 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000136
+10.0.0.4 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000129
+(11875) accepted ('10.0.0.5', 35972)
+10.0.0.5 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000295
+(11875) accepted ('10.0.0.3', 56098)
+(11875) accepted ('10.0.0.1', 48768)
+10.0.0.3 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000265
+10.0.0.1 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000131
+(11875) accepted ('10.0.0.2', 43630)
+(11875) accepted ('10.0.0.4', 58116)
+10.0.0.2 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000135
+10.0.0.4 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000129
+(11875) accepted ('10.0.0.5', 35978)
+10.0.0.5 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000376
+(11875) accepted ('10.0.0.1', 48776)
+(11875) accepted ('10.0.0.3', 56106)
+10.0.0.1 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000180
+10.0.0.3 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000160
+(11875) accepted ('10.0.0.4', 58126)
+(11875) accepted ('10.0.0.5', 35980)
+(11875) accepted ('10.0.0.2', 43638)
+10.0.0.4 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000140
+10.0.0.5 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000333
+10.0.0.2 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000206
+(11875) accepted ('10.0.0.1', 48786)
+(11875) accepted ('10.0.0.3', 56122)
+10.0.0.1 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000191
+10.0.0.3 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000124
+(11875) accepted ('10.0.0.4', 58142)
+(11875) accepted ('10.0.0.5', 35986)
+(11875) accepted ('10.0.0.2', 43654)
+10.0.0.4 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000133
+10.0.0.5 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000288
+10.0.0.2 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000126
+(11875) accepted ('10.0.0.3', 56136)
+(11875) accepted ('10.0.0.1', 48792)
+10.0.0.3 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000519
+10.0.0.1 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000249
+(11875) accepted ('10.0.0.5', 35996)
+(11875) accepted ('10.0.0.4', 58146)
+(11875) accepted ('10.0.0.2', 43660)
+10.0.0.5 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000154
+10.0.0.4 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000268
+10.0.0.2 - - [12/Nov/2026 01:50:11] "POST /sync/report HTTP/1.1" 200 248 0.000397
+(11875) accepted ('10.0.0.3', 56144)
+(11875) accepted ('10.0.0.1', 48798)
+10.0.0.3 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000198
+10.0.0.1 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000233
+(11875) accepted ('10.0.0.5', 36010)
+10.0.0.5 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000349
+(11875) accepted ('10.0.0.2', 43662)
+(11875) accepted ('10.0.0.4', 58158)
+10.0.0.2 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000161
+10.0.0.4 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000092
+(11875) accepted ('10.0.0.3', 56158)
+10.0.0.3 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000196
+(11875) accepted ('10.0.0.1', 48814)
+10.0.0.1 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000538
+(11875) accepted ('10.0.0.2', 43676)
+(11875) accepted ('10.0.0.5', 36020)
+(11875) accepted ('10.0.0.4', 58172)
+10.0.0.2 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000120
+10.0.0.5 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000115
+10.0.0.4 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000105
+(11875) accepted ('10.0.0.1', 48826)
+(11875) accepted ('10.0.0.5', 36028)
+10.0.0.1 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000201
+10.0.0.5 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000274
+(11875) accepted ('10.0.0.3', 56174)
+(11875) accepted ('10.0.0.2', 43678)
+(11875) accepted ('10.0.0.4', 58174)
+10.0.0.3 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000133
+10.0.0.2 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000114
+10.0.0.4 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000106
+(11875) accepted ('10.0.0.1', 48836)
+(11875) accepted ('10.0.0.5', 36032)
+(11875) accepted ('10.0.0.4', 58188)
+(11875) accepted ('10.0.0.2', 43694)
+(11875) accepted ('10.0.0.3', 56182)
+10.0.0.1 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000250
+10.0.0.5 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000130
+10.0.0.4 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000113
+10.0.0.2 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000099
+10.0.0.3 - - [12/Nov/2026 01:50:12] "POST /sync/report HTTP/1.1" 200 248 0.000100
+(11875) accepted ('10.0.0.4', 58200)
+(11875) accepted ('10.0.0.5', 36046)
+(11875) accepted ('10.0.0.1', 48852)
+(11875) accepted ('10.0.0.2', 43696)
+10.0.0.4 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000188
+10.0.0.5 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000140
+10.0.0.1 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000205
+10.0.0.2 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000254
+(11875) accepted ('10.0.0.3', 56190)
+10.0.0.3 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000123
+(11875) accepted ('10.0.0.4', 58214)
+(11875) accepted ('10.0.0.2', 43702)
+(11875) accepted ('10.0.0.1', 48864)
+(11875) accepted ('10.0.0.5', 36052)
+10.0.0.4 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000213
+10.0.0.2 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000324
+10.0.0.1 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000108
+10.0.0.5 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000113
+(11875) accepted ('10.0.0.3', 56196)
+10.0.0.3 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000123
+(11875) accepted ('10.0.0.1', 48866)
+(11875) accepted ('10.0.0.5', 36064)
+(11875) accepted ('10.0.0.4', 58228)
+(11875) accepted ('10.0.0.2', 43718)
+10.0.0.1 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000205
+10.0.0.5 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000131
+10.0.0.4 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000154
+10.0.0.2 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000113
+(11875) accepted ('10.0.0.3', 56206)
+10.0.0.3 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000540
+(11875) accepted ('10.0.0.1', 48868)
+(11875) accepted ('10.0.0.4', 58242)
+(11875) accepted ('10.0.0.5', 36074)
+10.0.0.1 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000203
+10.0.0.4 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000562
+10.0.0.5 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000155
+(11875) accepted ('10.0.0.2', 43726)
+(11875) accepted ('10.0.0.3', 56220)
+10.0.0.2 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000114
+10.0.0.3 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000099
+(11875) accepted ('10.0.0.2', 43738)
+10.0.0.2 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000226
+(11875) accepted ('10.0.0.5', 36078)
+(11875) accepted ('10.0.0.4', 58256)
+(11875) accepted ('10.0.0.1', 48876)
+(11875) accepted ('10.0.0.3', 56224)
+10.0.0.5 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000152
+10.0.0.4 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000125
+10.0.0.1 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000153
+10.0.0.3 - - [12/Nov/2026 01:50:13] "POST /sync/report HTTP/1.1" 200 248 0.000123
+(11875) accepted ('10.0.0.1', 48882)
+(11875) accepted ('10.0.0.5', 36082)
+(11875) accepted ('10.0.0.3', 56226)
+(11875) accepted ('10.0.0.2', 43742)
+10.0.0.1 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000378
+10.0.0.5 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000114
+10.0.0.3 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000106
+10.0.0.2 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000099
+(11875) accepted ('10.0.0.4', 58270)
+10.0.0.4 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000131
+(11875) accepted ('10.0.0.3', 56242)
+10.0.0.3 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000199
+(11875) accepted ('10.0.0.5', 36088)
+10.0.0.5 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000889
+(11875) accepted ('10.0.0.4', 58272)
+(11875) accepted ('10.0.0.1', 48894)
+(11875) accepted ('10.0.0.2', 43758)
+10.0.0.4 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000157
+10.0.0.1 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000126
+10.0.0.2 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000098
+(11875) accepted ('10.0.0.3', 56250)
+10.0.0.3 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.001040
+(11875) accepted ('10.0.0.5', 36090)
+10.0.0.5 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000156
+(11875) accepted ('10.0.0.1', 48904)
+(11875) accepted ('10.0.0.2', 43762)
+(11875) accepted ('10.0.0.4', 58278)
+10.0.0.1 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000134
+10.0.0.2 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000457
+10.0.0.4 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000106
+(11875) accepted ('10.0.0.5', 36106)
+(11875) accepted ('10.0.0.3', 56266)
+10.0.0.5 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000219
+10.0.0.3 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000127
+(11875) accepted ('10.0.0.4', 58294)
+10.0.0.4 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000227
+(11875) accepted ('10.0.0.2', 43766)
+(11875) accepted ('10.0.0.1', 48908)
+10.0.0.2 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000128
+10.0.0.1 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000577
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=True
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 2
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 2
+[EVENT LINK_FAILOVER] Primary link s1-eth1 DOWN. Failover to Backup link (s1:2<->s2:2) completed in 5.68 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=False
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+[EVENT LINK_FAILBACK] Primary link restored UP. Failback from backup to primary completed in 0.91 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=True
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 2
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 2
+[EVENT LINK_FAILOVER] Primary link s1-eth1 DOWN. Failover to Backup link (s1:2<->s2:2) completed in 1.32 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=True
+(11875) accepted ('10.0.0.3', 56272)
+(11875) accepted ('10.0.0.5', 36118)
+10.0.0.3 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000278
+10.0.0.5 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000131
+(11875) accepted ('10.0.0.2', 43770)
+(11875) accepted ('10.0.0.4', 58298)
+(11875) accepted ('10.0.0.1', 48912)
+10.0.0.2 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000201
+10.0.0.4 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000118
+10.0.0.1 - - [12/Nov/2026 01:50:14] "POST /sync/report HTTP/1.1" 200 248 0.000116
+(11875) accepted ('10.0.0.3', 56282)
+(11875) accepted ('10.0.0.5', 36130)
+10.0.0.3 - - [12/Nov/2026 01:50:15] "POST /sync/report HTTP/1.1" 200 248 0.000351
+10.0.0.5 - - [12/Nov/2026 01:50:15] "POST /sync/report HTTP/1.1" 200 248 0.000238
+(11875) accepted ('10.0.0.1', 48914)
+(11875) accepted ('10.0.0.4', 58314)
+10.0.0.1 - - [12/Nov/2026 01:50:15] "POST /sync/report HTTP/1.1" 200 248 0.000148
+10.0.0.4 - - [12/Nov/2026 01:50:15] "POST /sync/report HTTP/1.1" 200 248 0.000121
+(11875) accepted ('10.0.0.2', 43774)
+10.0.0.2 - - [12/Nov/2026 01:50:15] "POST /sync/report HTTP/1.1" 200 248 0.000261
+[EVENT CONGESTION_DETECTED] Bottleneck utilization exceeded 80.0% for 3 samples. Throttling background traffic to Queue 3.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 2
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 2
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=True
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=False
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+[EVENT LINK_FAILBACK] Primary link restored UP. Failback from backup to primary completed in 5.00 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=False
+[EVENT CONGESTION_RECOVERED] Bottleneck utilization dropped below 50.0% for 3 samples. Restoring background traffic to Queue 2.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+[EVENT CONGESTION_DETECTED] Bottleneck utilization exceeded 80.0% for 3 samples. Throttling background traffic to Queue 3.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 37740)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=off, dynamic_mode=off
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:50:28] "POST /sdn/mode HTTP/1.1" 200 266 0.000672
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+(11875) accepted ('10.0.0.1', 59536)
+10.0.0.1 - - [12/Nov/2026 01:50:32] "POST /sync/report HTTP/1.1" 200 247 0.000239
+(11875) accepted ('10.0.0.2', 52938)
+10.0.0.2 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 247 0.001436
+(11875) accepted ('10.0.0.4', 49724)
+(11875) accepted ('10.0.0.3', 54894)
+10.0.0.4 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 247 0.000148
+10.0.0.3 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 247 0.000253
+(11875) accepted ('10.0.0.6', 45904)
+(11875) accepted ('10.0.0.5', 36390)
+10.0.0.6 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 247 0.000162
+10.0.0.5 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 247 0.000111
+(11875) accepted ('10.0.0.10', 44296)
+(11875) accepted ('10.0.0.8', 43192)
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+10.0.0.10 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 248 0.000191
+10.0.0.8 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 247 0.000115
+(11875) accepted ('10.0.0.7', 54546)
+10.0.0.7 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 247 0.000149
+Port Status Event: DPID=1, Port=4, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.9', 43834)
+10.0.0.9 - - [12/Nov/2026 01:50:33] "POST /sync/report HTTP/1.1" 200 247 0.000215
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=10, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=11, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=14, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=12, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=13, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 37744)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:50:33] "POST /sdn/mode HTTP/1.1" 200 240 0.000956
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.1', 57864)
+(11875) accepted ('10.0.0.2', 56082)
+(11875) accepted ('10.0.0.3', 41606)
+10.0.0.1 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.000244
+10.0.0.2 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.000123
+(11875) accepted ('10.0.0.4', 39158)
+10.0.0.3 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.000214
+10.0.0.4 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.000135
+(11875) accepted ('10.0.0.5', 47030)
+(11875) accepted ('10.0.0.7', 48798)
+10.0.0.5 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.000213
+10.0.0.7 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.000152
+(11875) accepted ('10.0.0.9', 56286)
+10.0.0.9 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.000514
+(11875) accepted ('10.0.0.6', 58698)
+10.0.0.6 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.006481
+(11875) accepted ('10.0.0.8', 47888)
+10.0.0.8 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 247 0.000318
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.10', 60376)
+10.0.0.10 - - [12/Nov/2026 01:50:38] "POST /sync/report HTTP/1.1" 200 248 0.000205
+Port Status Event: DPID=1, Port=4, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=10, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=11, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=14, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=12, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=13, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 55388)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=off
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:50:38] "POST /sdn/mode HTTP/1.1" 200 242 0.001155
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=10, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=11, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=14, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=12, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=13, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 38342)
+[EVENT MODE_CHANGE] Mode updated: priority_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:50:57] "POST /sdn/mode HTTP/1.1" 200 240 0.000594
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.3', 44382)
+10.0.0.3 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 247 0.000929
+(11875) accepted ('10.0.0.7', 58198)
+10.0.0.7 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 247 0.000614
+(11875) accepted ('10.0.0.2', 39248)
+10.0.0.2 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 247 0.000276
+(11875) accepted ('10.0.0.6', 44050)
+(11875) accepted ('10.0.0.8', 45296)
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+10.0.0.8 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 247 0.000159
+10.0.0.6 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 247 0.000208
+Port Status Event: DPID=1, Port=4, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.5', 56726)
+10.0.0.5 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 247 0.000248
+(11875) accepted ('10.0.0.9', 49460)
+10.0.0.9 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 247 0.000203
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.7', 58212)
+10.0.0.7 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 247 0.000485
+(11875) accepted ('10.0.0.10', 47356)
+10.0.0.10 - - [12/Nov/2026 01:51:15] "POST /sync/report HTTP/1.1" 200 248 0.000184
+Port Status Event: DPID=1, Port=10, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=12, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=11, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=14, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=13, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 60694)
+[EVENT MODE_CHANGE] Mode updated: dynamic_mode=on
+Reinstalling flows across all datapaths...
+127.0.0.1 - - [12/Nov/2026 01:51:15] "POST /sdn/mode HTTP/1.1" 200 238 0.003601
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+[EVENT CONGESTION_RECOVERED] Bottleneck utilization dropped below 50.0% for 3 samples. Restoring background traffic to Queue 2.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.1', 36690)
+10.0.0.1 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 247 0.001193
+(11875) accepted ('10.0.0.2', 51072)
+10.0.0.2 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 247 0.000201
+(11875) accepted ('10.0.0.10', 34594)
+10.0.0.10 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 248 0.000619
+(11875) accepted ('10.0.0.3', 37428)
+10.0.0.3 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 247 0.000183
+(11875) accepted ('10.0.0.5', 41166)
+(11875) accepted ('10.0.0.4', 44060)
+10.0.0.5 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 247 0.000194
+10.0.0.4 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 247 0.000664
+(11875) accepted ('10.0.0.7', 52182)
+[EVENT APP_AWARE_ESCALATION] Client 7 sync error > 20.0ms for 5 consecutive reports. Enforcing strict queue isolation.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+10.0.0.7 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 246 0.000772
+Port Status Event: DPID=1, Port=3, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.9', 33816)
+10.0.0.9 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 246 0.000170
+(11875) accepted ('10.0.0.6', 54868)
+10.0.0.6 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 246 0.000190
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+(11875) accepted ('10.0.0.8', 42326)
+10.0.0.8 - - [12/Nov/2026 01:51:23] "POST /sync/report HTTP/1.1" 200 246 0.000197
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=10, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=14, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=12, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=11, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=13, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2
+(11875) accepted ('127.0.0.1', 41030)
+127.0.0.1 - - [12/Nov/2026 01:51:23] "POST /sdn/mode HTTP/1.1" 200 212 0.000289
+Configuring Switch Features for DPID=1
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 1
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Configuring Switch Features for DPID=2
+[EVENT SWITCH_INITIALIZED] Installed table-miss rule on DPID 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.3', 47422)
+(11875) accepted ('10.0.0.2', 39186)
+(11875) accepted ('10.0.0.5', 40530)
+(11875) accepted ('10.0.0.7', 36342)
+10.0.0.3 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000225
+10.0.0.2 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000180
+10.0.0.5 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000203
+10.0.0.7 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.001360
+(11875) accepted ('10.0.0.1', 51628)
+(11875) accepted ('10.0.0.4', 35930)
+10.0.0.1 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000303
+10.0.0.4 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000149
+(11875) accepted ('10.0.0.10', 34308)
+10.0.0.10 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 247 0.000227
+(11875) accepted ('10.0.0.6', 59250)
+10.0.0.6 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.002332
+(11875) accepted ('10.0.0.8', 50820)
+10.0.0.8 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.001588
+(11875) accepted ('10.0.0.9', 59968)
+10.0.0.9 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000870
+(11875) accepted ('10.0.0.3', 47428)
+10.0.0.3 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000871
+(11875) accepted ('10.0.0.2', 39196)
+10.0.0.2 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000229
+(11875) accepted ('10.0.0.5', 40546)
+10.0.0.5 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000435
+(11875) accepted ('10.0.0.7', 36354)
+10.0.0.7 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000197
+(11875) accepted ('10.0.0.4', 35940)
+10.0.0.4 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000326
+(11875) accepted ('10.0.0.1', 51640)
+10.0.0.1 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000744
+(11875) accepted ('10.0.0.10', 34324)
+10.0.0.10 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 247 0.000249
+(11875) accepted ('10.0.0.8', 50826)
+10.0.0.8 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000214
+(11875) accepted ('10.0.0.6', 59252)
+10.0.0.6 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000190
+(11875) accepted ('10.0.0.9', 59976)
+10.0.0.9 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000251
+(11875) accepted ('10.0.0.3', 47434)
+10.0.0.3 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000219
+(11875) accepted ('10.0.0.2', 39200)
+(11875) accepted ('10.0.0.5', 40562)
+10.0.0.2 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000146
+10.0.0.5 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000121
+(11875) accepted ('10.0.0.7', 36368)
+10.0.0.7 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000257
+(11875) accepted ('10.0.0.4', 35956)
+10.0.0.4 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000379
+(11875) accepted ('10.0.0.1', 51654)
+10.0.0.1 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000234
+(11875) accepted ('10.0.0.10', 34336)
+10.0.0.10 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 247 0.000368
+(11875) accepted ('10.0.0.8', 50832)
+10.0.0.8 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.001267
+(11875) accepted ('10.0.0.6', 59268)
+10.0.0.6 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000181
+(11875) accepted ('10.0.0.9', 59986)
+10.0.0.9 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000344
+(11875) accepted ('10.0.0.3', 47438)
+10.0.0.3 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000311
+(11875) accepted ('10.0.0.5', 40570)
+(11875) accepted ('10.0.0.2', 39210)
+(11875) accepted ('10.0.0.7', 36380)
+10.0.0.5 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000438
+10.0.0.2 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.001151
+10.0.0.7 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000476
+(11875) accepted ('10.0.0.4', 35962)
+10.0.0.4 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.001126
+(11875) accepted ('10.0.0.1', 51670)
+10.0.0.1 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000180
+(11875) accepted ('10.0.0.10', 34348)
+10.0.0.10 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 247 0.000231
+(11875) accepted ('10.0.0.8', 50834)
+10.0.0.8 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000325
+(11875) accepted ('10.0.0.6', 59272)
+10.0.0.6 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000203
+(11875) accepted ('10.0.0.9', 59992)
+10.0.0.9 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000659
+(11875) accepted ('10.0.0.3', 47454)
+(11875) accepted ('10.0.0.2', 39222)
+(11875) accepted ('10.0.0.7', 36388)
+(11875) accepted ('10.0.0.5', 40578)
+10.0.0.3 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000320
+10.0.0.2 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000284
+10.0.0.7 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 247 0.001019
+10.0.0.5 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000320
+(11875) accepted ('10.0.0.4', 35974)
+10.0.0.4 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000359
+(11875) accepted ('10.0.0.1', 51684)
+10.0.0.1 - - [12/Nov/2026 01:51:42] "POST /sync/report HTTP/1.1" 200 246 0.000211
+(11875) accepted ('10.0.0.10', 34354)
+10.0.0.10 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000450
+(11875) accepted ('10.0.0.8', 50840)
+(11875) accepted ('10.0.0.6', 59284)
+10.0.0.6 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000314
+10.0.0.8 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000622
+(11875) accepted ('10.0.0.9', 60006)
+10.0.0.9 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000397
+(11875) accepted ('10.0.0.3', 47468)
+(11875) accepted ('10.0.0.5', 40582)
+(11875) accepted ('10.0.0.2', 39234)
+(11875) accepted ('10.0.0.7', 36400)
+10.0.0.3 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000193
+10.0.0.5 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000136
+10.0.0.2 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000700
+10.0.0.7 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000265
+(11875) accepted ('10.0.0.4', 35984)
+10.0.0.4 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000475
+(11875) accepted ('10.0.0.1', 51692)
+10.0.0.1 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000384
+(11875) accepted ('10.0.0.10', 34370)
+10.0.0.10 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 248 0.000333
+(11875) accepted ('10.0.0.6', 59298)
+10.0.0.6 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000525
+(11875) accepted ('10.0.0.8', 50848)
+10.0.0.8 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000169
+(11875) accepted ('10.0.0.9', 60010)
+10.0.0.9 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000197
+(11875) accepted ('10.0.0.5', 40588)
+(11875) accepted ('10.0.0.2', 39240)
+10.0.0.5 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000237
+10.0.0.2 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000288
+(11875) accepted ('10.0.0.7', 36416)
+(11875) accepted ('10.0.0.3', 47484)
+10.0.0.7 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000549
+10.0.0.3 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000247
+(11875) accepted ('10.0.0.4', 35990)
+10.0.0.4 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000346
+(11875) accepted ('10.0.0.1', 51694)
+10.0.0.1 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000594
+(11875) accepted ('10.0.0.10', 34380)
+10.0.0.10 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 248 0.000639
+(11875) accepted ('10.0.0.8', 50858)
+(11875) accepted ('10.0.0.6', 59314)
+10.0.0.8 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000232
+10.0.0.6 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000720
+(11875) accepted ('10.0.0.9', 60024)
+10.0.0.9 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000201
+(11875) accepted ('10.0.0.3', 47496)
+(11875) accepted ('10.0.0.2', 39252)
+10.0.0.3 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000201
+10.0.0.2 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000450
+(11875) accepted ('10.0.0.7', 36422)
+(11875) accepted ('10.0.0.5', 40600)
+10.0.0.7 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000308
+10.0.0.5 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000275
+(11875) accepted ('10.0.0.4', 36006)
+10.0.0.4 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000207
+(11875) accepted ('10.0.0.1', 51710)
+10.0.0.1 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000538
+(11875) accepted ('10.0.0.10', 34396)
+(11875) accepted ('10.0.0.8', 50866)
+10.0.0.10 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000391
+10.0.0.8 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000290
+(11875) accepted ('10.0.0.6', 59330)
+10.0.0.6 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000148
+(11875) accepted ('10.0.0.9', 60028)
+10.0.0.9 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.003006
+(11875) accepted ('10.0.0.7', 36436)
+10.0.0.7 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000616
+(11875) accepted ('10.0.0.2', 39256)
+(11875) accepted ('10.0.0.3', 47504)
+(11875) accepted ('10.0.0.5', 40606)
+10.0.0.2 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000215
+10.0.0.3 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000183
+10.0.0.5 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000272
+(11875) accepted ('10.0.0.4', 36012)
+10.0.0.4 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000380
+(11875) accepted ('10.0.0.1', 51712)
+10.0.0.1 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000164
+(11875) accepted ('10.0.0.8', 50872)
+(11875) accepted ('10.0.0.10', 34402)
+10.0.0.8 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000240
+10.0.0.10 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 247 0.000407
+(11875) accepted ('10.0.0.6', 59346)
+10.0.0.6 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000133
+(11875) accepted ('10.0.0.9', 60036)
+10.0.0.9 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.001125
+(11875) accepted ('10.0.0.2', 39268)
+(11875) accepted ('10.0.0.7', 36450)
+10.0.0.2 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000775
+10.0.0.7 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000411
+(11875) accepted ('10.0.0.3', 47516)
+(11875) accepted ('10.0.0.5', 40622)
+10.0.0.3 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.001104
+10.0.0.5 - - [12/Nov/2026 01:51:43] "POST /sync/report HTTP/1.1" 200 246 0.000209
+(11875) accepted ('10.0.0.4', 36014)
+10.0.0.4 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000564
+(11875) accepted ('10.0.0.1', 51718)
+10.0.0.1 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000802
+(11875) accepted ('10.0.0.8', 50884)
+(11875) accepted ('10.0.0.10', 34414)
+(11875) accepted ('10.0.0.6', 59356)
+10.0.0.8 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000200
+10.0.0.10 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 247 0.000144
+10.0.0.6 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000106
+(11875) accepted ('10.0.0.9', 60040)
+10.0.0.9 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000339
+(11875) accepted ('10.0.0.7', 36464)
+10.0.0.7 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000589
+(11875) accepted ('10.0.0.5', 40632)
+(11875) accepted ('10.0.0.2', 39276)
+(11875) accepted ('10.0.0.3', 47524)
+10.0.0.5 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.001265
+10.0.0.2 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.001160
+10.0.0.3 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000664
+(11875) accepted ('10.0.0.4', 36016)
+10.0.0.4 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000428
+(11875) accepted ('10.0.0.1', 51730)
+10.0.0.1 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000602
+(11875) accepted ('10.0.0.6', 59372)
+(11875) accepted ('10.0.0.10', 34424)
+(11875) accepted ('10.0.0.8', 50888)
+10.0.0.6 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.001096
+10.0.0.10 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 247 0.000169
+10.0.0.8 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000211
+(11875) accepted ('10.0.0.9', 60056)
+10.0.0.9 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.002129
+(11875) accepted ('10.0.0.1', 51746)
+10.0.0.1 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000330
+(11875) accepted ('10.0.0.2', 39284)
+(11875) accepted ('10.0.0.7', 36480)
+10.0.0.2 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000932
+10.0.0.7 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000842
+(11875) accepted ('10.0.0.5', 40636)
+(11875) accepted ('10.0.0.3', 47534)
+10.0.0.5 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000505
+10.0.0.3 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000145
+(11875) accepted ('10.0.0.4', 36018)
+10.0.0.4 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000576
+(11875) accepted ('10.0.0.6', 59380)
+(11875) accepted ('10.0.0.8', 50894)
+10.0.0.6 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000353
+10.0.0.8 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000237
+(11875) accepted ('10.0.0.10', 34436)
+10.0.0.10 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 247 0.000259
+(11875) accepted ('10.0.0.9', 60072)
+10.0.0.9 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000330
+(11875) accepted ('10.0.0.2', 39298)
+10.0.0.2 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000253
+(11875) accepted ('10.0.0.7', 36490)
+10.0.0.7 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.001148
+(11875) accepted ('10.0.0.3', 47540)
+(11875) accepted ('10.0.0.5', 40640)
+10.0.0.3 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000213
+10.0.0.5 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000205
+(11875) accepted ('10.0.0.1', 51762)
+10.0.0.1 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000305
+(11875) accepted ('10.0.0.4', 36020)
+10.0.0.4 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000196
+(11875) accepted ('10.0.0.6', 59396)
+10.0.0.6 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000213
+(11875) accepted ('10.0.0.8', 50900)
+10.0.0.8 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000241
+(11875) accepted ('10.0.0.10', 34440)
+10.0.0.10 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 247 0.000184
+(11875) accepted ('10.0.0.9', 60084)
+10.0.0.9 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000262
+(11875) accepted ('10.0.0.5', 40656)
+(11875) accepted ('10.0.0.7', 36498)
+(11875) accepted ('10.0.0.1', 51776)
+(11875) accepted ('10.0.0.2', 39304)
+10.0.0.5 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000216
+10.0.0.7 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000442
+10.0.0.1 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000348
+10.0.0.2 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000632
+(11875) accepted ('10.0.0.4', 36028)
+(11875) accepted ('10.0.0.3', 47548)
+10.0.0.4 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000572
+10.0.0.3 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000567
+(11875) accepted ('10.0.0.8', 50914)
+10.0.0.8 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000917
+(11875) accepted ('10.0.0.10', 34454)
+(11875) accepted ('10.0.0.6', 59398)
+10.0.0.10 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 247 0.000625
+10.0.0.6 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000270
+(11875) accepted ('10.0.0.9', 60098)
+10.0.0.9 - - [12/Nov/2026 01:51:44] "POST /sync/report HTTP/1.1" 200 246 0.000127
+(11875) accepted ('10.0.0.7', 36502)
+(11875) accepted ('10.0.0.4', 36044)
+10.0.0.7 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000834
+10.0.0.4 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.001000
+(11875) accepted ('10.0.0.8', 50928)
+(11875) accepted ('10.0.0.2', 39306)
+(11875) accepted ('10.0.0.5', 40664)
+10.0.0.8 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000231
+10.0.0.2 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.002768
+10.0.0.5 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000337
+(11875) accepted ('10.0.0.9', 60112)
+(11875) accepted ('10.0.0.6', 59406)
+10.0.0.9 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000351
+10.0.0.6 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000574
+(11875) accepted ('10.0.0.1', 51792)
+(11875) accepted ('10.0.0.10', 34458)
+10.0.0.1 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000202
+10.0.0.10 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 247 0.000196
+(11875) accepted ('10.0.0.3', 47560)
+10.0.0.3 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000140
+(11875) accepted ('10.0.0.7', 36504)
+(11875) accepted ('10.0.0.4', 36054)
+10.0.0.7 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000460
+10.0.0.4 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000137
+(11875) accepted ('10.0.0.10', 34472)
+10.0.0.10 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 247 0.000199
+(11875) accepted ('10.0.0.1', 51804)
+10.0.0.1 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000176
+(11875) accepted ('10.0.0.6', 59410)
+10.0.0.6 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000161
+(11875) accepted ('10.0.0.8', 50930)
+10.0.0.8 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000446
+(11875) accepted ('10.0.0.2', 39310)
+10.0.0.2 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000169
+(11875) accepted ('10.0.0.5', 40680)
+10.0.0.5 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000219
+(11875) accepted ('10.0.0.9', 60124)
+10.0.0.9 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000177
+(11875) accepted ('10.0.0.3', 47562)
+10.0.0.3 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000370
+(11875) accepted ('10.0.0.7', 36518)
+(11875) accepted ('10.0.0.4', 36056)
+10.0.0.7 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000240
+10.0.0.4 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000175
+(11875) accepted ('10.0.0.10', 34488)
+10.0.0.10 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 247 0.000527
+(11875) accepted ('10.0.0.1', 51820)
+10.0.0.1 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000171
+(11875) accepted ('10.0.0.6', 59426)
+10.0.0.6 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000275
+(11875) accepted ('10.0.0.8', 50938)
+10.0.0.8 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000178
+(11875) accepted ('10.0.0.2', 39326)
+10.0.0.2 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000252
+(11875) accepted ('10.0.0.5', 40694)
+10.0.0.5 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000284
+(11875) accepted ('10.0.0.9', 60130)
+10.0.0.9 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000327
+(11875) accepted ('10.0.0.3', 47572)
+10.0.0.3 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000403
+(11875) accepted ('10.0.0.7', 36530)
+(11875) accepted ('10.0.0.4', 36072)
+10.0.0.7 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000507
+10.0.0.4 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000526
+(11875) accepted ('10.0.0.10', 34500)
+10.0.0.10 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 247 0.000255
+(11875) accepted ('10.0.0.1', 51822)
+10.0.0.1 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000805
+(11875) accepted ('10.0.0.8', 50946)
+(11875) accepted ('10.0.0.6', 59436)
+(11875) accepted ('10.0.0.2', 39334)
+10.0.0.6 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000339
+10.0.0.2 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 247 0.000875
+10.0.0.8 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 247 0.000655
+(11875) accepted ('10.0.0.5', 40704)
+10.0.0.5 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000385
+(11875) accepted ('10.0.0.9', 60138)
+10.0.0.9 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000524
+(11875) accepted ('10.0.0.3', 47586)
+10.0.0.3 - - [12/Nov/2026 01:51:45] "POST /sync/report HTTP/1.1" 200 246 0.000810
+(11875) accepted ('10.0.0.7', 36542)
+10.0.0.7 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.002667
+(11875) accepted ('10.0.0.10', 34516)
+(11875) accepted ('10.0.0.4', 36074)
+10.0.0.10 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000184
+10.0.0.4 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000150
+(11875) accepted ('10.0.0.1', 51830)
+10.0.0.1 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000434
+(11875) accepted ('10.0.0.6', 59450)
+(11875) accepted ('10.0.0.8', 50950)
+10.0.0.6 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000364
+10.0.0.8 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000178
+(11875) accepted ('10.0.0.2', 39346)
+10.0.0.2 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000164
+(11875) accepted ('10.0.0.5', 40714)
+10.0.0.5 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000154
+(11875) accepted ('10.0.0.9', 60140)
+10.0.0.9 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000172
+(11875) accepted ('10.0.0.3', 47596)
+10.0.0.3 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000626
+(11875) accepted ('10.0.0.7', 36548)
+(11875) accepted ('10.0.0.10', 34528)
+(11875) accepted ('10.0.0.4', 36080)
+10.0.0.7 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000288
+10.0.0.10 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000350
+10.0.0.4 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000154
+(11875) accepted ('10.0.0.1', 51836)
+10.0.0.1 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000191
+(11875) accepted ('10.0.0.6', 59456)
+10.0.0.6 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.001034
+(11875) accepted ('10.0.0.8', 50964)
+(11875) accepted ('10.0.0.2', 39350)
+10.0.0.8 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000178
+10.0.0.2 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000546
+(11875) accepted ('10.0.0.5', 40722)
+10.0.0.5 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000228
+(11875) accepted ('10.0.0.9', 60150)
+10.0.0.9 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000516
+(11875) accepted ('10.0.0.3', 47602)
+10.0.0.3 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000193
+(11875) accepted ('10.0.0.4', 36084)
+(11875) accepted ('10.0.0.7', 36550)
+(11875) accepted ('10.0.0.10', 34542)
+10.0.0.4 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000701
+10.0.0.7 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000168
+10.0.0.10 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000120
+(11875) accepted ('10.0.0.1', 51840)
+10.0.0.1 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000171
+(11875) accepted ('10.0.0.6', 59470)
+10.0.0.6 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000190
+(11875) accepted ('10.0.0.8', 50972)
+10.0.0.8 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000407
+(11875) accepted ('10.0.0.2', 39352)
+10.0.0.2 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000144
+(11875) accepted ('10.0.0.5', 40730)
+10.0.0.5 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000175
+(11875) accepted ('10.0.0.9', 60164)
+10.0.0.9 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000166
+(11875) accepted ('10.0.0.3', 47618)
+10.0.0.3 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000151
+(11875) accepted ('10.0.0.4', 46908)
+(11875) accepted ('10.0.0.7', 38412)
+10.0.0.4 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000356
+10.0.0.7 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000176
+(11875) accepted ('10.0.0.10', 36986)
+10.0.0.10 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 248 0.000364
+(11875) accepted ('10.0.0.1', 56634)
+10.0.0.1 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000568
+(11875) accepted ('10.0.0.6', 41908)
+(11875) accepted ('10.0.0.8', 44384)
+10.0.0.6 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000187
+10.0.0.8 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000236
+(11875) accepted ('10.0.0.2', 46736)
+10.0.0.2 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000401
+(11875) accepted ('10.0.0.5', 39652)
+10.0.0.5 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000492
+(11875) accepted ('10.0.0.9', 54670)
+10.0.0.9 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.001371
+(11875) accepted ('10.0.0.3', 40514)
+10.0.0.3 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 246 0.000685
+(11875) accepted ('10.0.0.7', 38420)
+(11875) accepted ('10.0.0.4', 46910)
+10.0.0.7 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000870
+10.0.0.4 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000512
+(11875) accepted ('10.0.0.10', 36992)
+10.0.0.10 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 248 0.000729
+(11875) accepted ('10.0.0.1', 56650)
+[EVENT APP_AWARE_RELAXATION] Sync error normalized < 5.0ms. Relaxing escalation.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+10.0.0.1 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.002736
+(11875) accepted ('10.0.0.6', 41914)
+10.0.0.6 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 248 0.000244
+(11875) accepted ('10.0.0.8', 44388)
+10.0.0.8 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 248 0.000275
+(11875) accepted ('10.0.0.2', 46752)
+10.0.0.2 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 248 0.000188
+(11875) accepted ('10.0.0.5', 39660)
+10.0.0.5 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 248 0.000302
+(11875) accepted ('10.0.0.9', 54678)
+10.0.0.9 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 248 0.000366
+(11875) accepted ('10.0.0.3', 40530)
+10.0.0.3 - - [12/Nov/2026 01:51:46] "POST /sync/report HTTP/1.1" 200 247 0.000580
+(11875) accepted ('10.0.0.4', 46924)
+10.0.0.4 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000361
+(11875) accepted ('10.0.0.1', 56666)
+10.0.0.1 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000183
+(11875) accepted ('10.0.0.6', 41918)
+(11875) accepted ('10.0.0.2', 46762)
+(11875) accepted ('10.0.0.8', 44390)
+10.0.0.2 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000140
+10.0.0.8 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000164
+10.0.0.6 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000167
+(11875) accepted ('10.0.0.10', 36994)
+(11875) accepted ('10.0.0.7', 38434)
+10.0.0.10 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 249 0.000128
+10.0.0.7 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.001005
+(11875) accepted ('10.0.0.5', 39668)
+10.0.0.5 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000816
+(11875) accepted ('10.0.0.9', 54694)
+10.0.0.9 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000248
+(11875) accepted ('10.0.0.3', 40534)
+10.0.0.3 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000565
+(11875) accepted ('10.0.0.4', 46926)
+10.0.0.4 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000189
+(11875) accepted ('10.0.0.1', 56682)
+10.0.0.1 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000338
+(11875) accepted ('10.0.0.8', 44406)
+(11875) accepted ('10.0.0.2', 46764)
+(11875) accepted ('10.0.0.10', 37004)
+(11875) accepted ('10.0.0.6', 41920)
+(11875) accepted ('10.0.0.7', 38448)
+10.0.0.8 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000189
+10.0.0.2 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000494
+10.0.0.10 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 249 0.000284
+10.0.0.6 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000146
+10.0.0.7 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000144
+(11875) accepted ('10.0.0.5', 39672)
+10.0.0.5 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000295
+(11875) accepted ('10.0.0.9', 54700)
+10.0.0.9 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000218
+(11875) accepted ('10.0.0.3', 40538)
+10.0.0.3 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000420
+(11875) accepted ('10.0.0.4', 46938)
+10.0.0.4 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000185
+(11875) accepted ('10.0.0.1', 56696)
+(11875) accepted ('10.0.0.2', 46776)
+(11875) accepted ('10.0.0.8', 44416)
+(11875) accepted ('10.0.0.10', 37020)
+(11875) accepted ('10.0.0.7', 38452)
+(11875) accepted ('10.0.0.6', 41936)
+10.0.0.1 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000927
+10.0.0.2 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000335
+10.0.0.8 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000321
+10.0.0.10 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 249 0.000285
+10.0.0.7 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000210
+10.0.0.6 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000192
+(11875) accepted ('10.0.0.5', 39680)
+10.0.0.5 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000624
+(11875) accepted ('10.0.0.9', 54710)
+10.0.0.9 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000589
+(11875) accepted ('10.0.0.3', 40546)
+10.0.0.3 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000263
+(11875) accepted ('10.0.0.4', 46950)
+(11875) accepted ('10.0.0.2', 46790)
+(11875) accepted ('10.0.0.1', 56702)
+10.0.0.4 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000260
+10.0.0.2 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000198
+10.0.0.1 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000187
+(11875) accepted ('10.0.0.6', 41950)
+10.0.0.6 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000379
+(11875) accepted ('10.0.0.7', 38466)
+(11875) accepted ('10.0.0.10', 37030)
+(11875) accepted ('10.0.0.8', 44420)
+10.0.0.7 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000216
+10.0.0.10 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000564
+10.0.0.8 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000187
+(11875) accepted ('10.0.0.5', 39690)
+(11875) accepted ('10.0.0.9', 54716)
+(11875) accepted ('10.0.0.3', 40550)
+10.0.0.5 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000230
+10.0.0.9 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 247 0.000143
+10.0.0.3 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000186
+(11875) accepted ('10.0.0.4', 46952)
+10.0.0.4 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000381
+(11875) accepted ('10.0.0.2', 46802)
+10.0.0.2 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000538
+(11875) accepted ('10.0.0.1', 56712)
+10.0.0.1 - - [12/Nov/2026 01:51:47] "POST /sync/report HTTP/1.1" 200 248 0.000448
+(11875) accepted ('10.0.0.6', 41956)
+(11875) accepted ('10.0.0.7', 38472)
+10.0.0.6 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000483
+10.0.0.7 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000226
+(11875) accepted ('10.0.0.8', 44432)
+(11875) accepted ('10.0.0.10', 37038)
+10.0.0.8 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000339
+10.0.0.10 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000232
+(11875) accepted ('10.0.0.9', 54724)
+(11875) accepted ('10.0.0.3', 40560)
+(11875) accepted ('10.0.0.5', 39704)
+10.0.0.9 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000550
+10.0.0.3 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000403
+10.0.0.5 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000445
+(11875) accepted ('10.0.0.4', 46968)
+10.0.0.4 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000222
+(11875) accepted ('10.0.0.1', 56720)
+(11875) accepted ('10.0.0.2', 46816)
+10.0.0.1 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000326
+10.0.0.2 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000152
+(11875) accepted ('10.0.0.6', 41958)
+10.0.0.6 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000221
+(11875) accepted ('10.0.0.8', 44434)
+(11875) accepted ('10.0.0.10', 37044)
+(11875) accepted ('10.0.0.7', 38486)
+10.0.0.8 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000620
+10.0.0.10 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000171
+10.0.0.7 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.001120
+(11875) accepted ('10.0.0.9', 54740)
+10.0.0.9 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000222
+(11875) accepted ('10.0.0.3', 40564)
+(11875) accepted ('10.0.0.5', 39708)
+10.0.0.3 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000199
+10.0.0.5 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000222
+(11875) accepted ('10.0.0.4', 46974)
+10.0.0.4 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000306
+(11875) accepted ('10.0.0.1', 56736)
+(11875) accepted ('10.0.0.2', 46818)
+10.0.0.1 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000431
+10.0.0.2 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000211
+(11875) accepted ('10.0.0.6', 41962)
+(11875) accepted ('10.0.0.7', 38494)
+10.0.0.6 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000201
+10.0.0.7 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000221
+(11875) accepted ('10.0.0.8', 44450)
+(11875) accepted ('10.0.0.10', 37054)
+10.0.0.8 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000148
+10.0.0.10 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000382
+(11875) accepted ('10.0.0.5', 39714)
+(11875) accepted ('10.0.0.3', 40566)
+(11875) accepted ('10.0.0.9', 54752)
+10.0.0.5 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000245
+10.0.0.3 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000688
+10.0.0.9 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000171
+(11875) accepted ('10.0.0.4', 46990)
+10.0.0.4 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000201
+(11875) accepted ('10.0.0.1', 56738)
+10.0.0.1 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000183
+(11875) accepted ('10.0.0.2', 46822)
+10.0.0.2 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000246
+(11875) accepted ('10.0.0.6', 41970)
+(11875) accepted ('10.0.0.8', 44454)
+10.0.0.6 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000180
+10.0.0.8 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000167
+(11875) accepted ('10.0.0.10', 37070)
+10.0.0.10 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000191
+(11875) accepted ('10.0.0.7', 38508)
+10.0.0.7 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000227
+(11875) accepted ('10.0.0.3', 40574)
+(11875) accepted ('10.0.0.9', 54766)
+10.0.0.3 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000319
+10.0.0.9 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.001381
+(11875) accepted ('10.0.0.5', 39730)
+10.0.0.5 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000504
+(11875) accepted ('10.0.0.4', 47002)
+10.0.0.4 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000372
+(11875) accepted ('10.0.0.1', 56744)
+10.0.0.1 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000226
+(11875) accepted ('10.0.0.2', 46834)
+10.0.0.2 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000216
+(11875) accepted ('10.0.0.6', 41974)
+10.0.0.6 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000194
+(11875) accepted ('10.0.0.8', 44456)
+10.0.0.8 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000417
+(11875) accepted ('10.0.0.10', 37076)
+10.0.0.10 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000359
+(11875) accepted ('10.0.0.7', 38524)
+10.0.0.7 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000232
+(11875) accepted ('10.0.0.3', 40582)
+(11875) accepted ('10.0.0.9', 54774)
+(11875) accepted ('10.0.0.5', 39740)
+10.0.0.3 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 248 0.000824
+10.0.0.9 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.000526
+10.0.0.5 - - [12/Nov/2026 01:51:48] "POST /sync/report HTTP/1.1" 200 247 0.001881
+(11875) accepted ('10.0.0.4', 47004)
+10.0.0.4 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000502
+(11875) accepted ('10.0.0.1', 56756)
+(11875) accepted ('10.0.0.2', 46844)
+10.0.0.1 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000367
+10.0.0.2 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000177
+(11875) accepted ('10.0.0.8', 44472)
+(11875) accepted ('10.0.0.10', 37078)
+10.0.0.8 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000180
+10.0.0.10 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000287
+(11875) accepted ('10.0.0.6', 41976)
+(11875) accepted ('10.0.0.7', 38526)
+10.0.0.6 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000149
+10.0.0.7 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000168
+(11875) accepted ('10.0.0.9', 54778)
+(11875) accepted ('10.0.0.5', 39744)
+(11875) accepted ('10.0.0.3', 40596)
+10.0.0.9 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000299
+10.0.0.5 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.001416
+10.0.0.3 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000258
+(11875) accepted ('10.0.0.4', 47010)
+10.0.0.4 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000403
+(11875) accepted ('10.0.0.1', 56762)
+10.0.0.1 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000973
+(11875) accepted ('10.0.0.2', 46846)
+10.0.0.2 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000265
+(11875) accepted ('10.0.0.10', 37086)
+(11875) accepted ('10.0.0.8', 44488)
+(11875) accepted ('10.0.0.7', 38532)
+10.0.0.10 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000615
+10.0.0.8 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000148
+10.0.0.7 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000164
+(11875) accepted ('10.0.0.6', 41978)
+10.0.0.6 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000469
+(11875) accepted ('10.0.0.5', 39750)
+(11875) accepted ('10.0.0.9', 54780)
+10.0.0.5 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000193
+10.0.0.9 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000146
+(11875) accepted ('10.0.0.3', 40606)
+10.0.0.3 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000118
+(11875) accepted ('10.0.0.4', 47016)
+10.0.0.4 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000303
+(11875) accepted ('10.0.0.2', 46848)
+(11875) accepted ('10.0.0.1', 56774)
+10.0.0.2 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000850
+10.0.0.1 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.001531
+(11875) accepted ('10.0.0.7', 38540)
+(11875) accepted ('10.0.0.10', 37088)
+10.0.0.7 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000232
+10.0.0.10 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000371
+(11875) accepted ('10.0.0.6', 41992)
+(11875) accepted ('10.0.0.8', 44494)
+10.0.0.6 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000177
+10.0.0.8 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000159
+(11875) accepted ('10.0.0.5', 39758)
+10.0.0.5 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000314
+(11875) accepted ('10.0.0.9', 54794)
+(11875) accepted ('10.0.0.3', 40610)
+10.0.0.9 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000554
+10.0.0.3 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000228
+(11875) accepted ('10.0.0.4', 47032)
+10.0.0.4 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000299
+(11875) accepted ('10.0.0.1', 56782)
+(11875) accepted ('10.0.0.2', 46854)
+10.0.0.1 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000560
+10.0.0.2 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000203
+(11875) accepted ('10.0.0.7', 38552)
+(11875) accepted ('10.0.0.8', 44506)
+10.0.0.7 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000354
+10.0.0.8 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000209
+(11875) accepted ('10.0.0.10', 37092)
+10.0.0.10 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000436
+(11875) accepted ('10.0.0.6', 41996)
+10.0.0.6 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000172
+(11875) accepted ('10.0.0.5', 39764)
+10.0.0.5 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000233
+(11875) accepted ('10.0.0.9', 54798)
+10.0.0.9 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000208
+(11875) accepted ('10.0.0.3', 40622)
+10.0.0.3 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000187
+[EVENT CONGESTION_DETECTED] Bottleneck utilization exceeded 80.0% for 3 samples. Throttling background traffic to Queue 3.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+(11875) accepted ('10.0.0.4', 47040)
+10.0.0.4 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000205
+(11875) accepted ('10.0.0.2', 46858)
+(11875) accepted ('10.0.0.1', 56794)
+10.0.0.2 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000207
+10.0.0.1 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000173
+(11875) accepted ('10.0.0.8', 44510)
+(11875) accepted ('10.0.0.7', 38562)
+10.0.0.8 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000201
+10.0.0.7 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000170
+(11875) accepted ('10.0.0.10', 37094)
+10.0.0.10 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.003453
+(11875) accepted ('10.0.0.6', 42010)
+10.0.0.6 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000239
+(11875) accepted ('10.0.0.9', 54802)
+(11875) accepted ('10.0.0.5', 39776)
+10.0.0.9 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000435
+10.0.0.5 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 247 0.000218
+(11875) accepted ('10.0.0.3', 40630)
+10.0.0.3 - - [12/Nov/2026 01:51:49] "POST /sync/report HTTP/1.1" 200 248 0.000406
+(11875) accepted ('10.0.0.4', 47056)
+10.0.0.4 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.002309
+(11875) accepted ('10.0.0.2', 46866)
+10.0.0.2 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000174
+(11875) accepted ('10.0.0.1', 56804)
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=True
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 2
+[EVENT LINK_FAILOVER] Primary link s1-eth1 DOWN. Failover to Backup link (s1:2<->s2:2) completed in 0.94 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=False
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+[EVENT LINK_FAILBACK] Primary link restored UP. Failback from backup to primary completed in 1.11 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=True
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 2
+[EVENT LINK_FAILOVER] Primary link s1-eth1 DOWN. Failover to Backup link (s1:2<->s2:2) completed in 0.93 ms
+10.0.0.1 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.005798
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=True
+(11875) accepted ('10.0.0.8', 44520)
+(11875) accepted ('10.0.0.7', 38578)
+(11875) accepted ('10.0.0.10', 37100)
+10.0.0.8 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.001097
+10.0.0.7 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000321
+10.0.0.10 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 249 0.000205
+(11875) accepted ('10.0.0.6', 42014)
+10.0.0.6 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000306
+(11875) accepted ('10.0.0.9', 54816)
+(11875) accepted ('10.0.0.3', 40632)
+(11875) accepted ('10.0.0.5', 39790)
+10.0.0.9 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000784
+10.0.0.3 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000192
+10.0.0.5 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000484
+(11875) accepted ('10.0.0.1', 56808)
+10.0.0.1 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000527
+(11875) accepted ('10.0.0.2', 46876)
+(11875) accepted ('10.0.0.4', 47066)
+10.0.0.2 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000167
+10.0.0.4 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000242
+(11875) accepted ('10.0.0.8', 44526)
+10.0.0.8 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000181
+(11875) accepted ('10.0.0.7', 38584)
+10.0.0.7 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000224
+(11875) accepted ('10.0.0.6', 42018)
+10.0.0.6 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000301
+(11875) accepted ('10.0.0.10', 37112)
+10.0.0.10 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 249 0.000238
+(11875) accepted ('10.0.0.9', 54830)
+(11875) accepted ('10.0.0.5', 39806)
+(11875) accepted ('10.0.0.3', 40646)
+10.0.0.9 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.001691
+10.0.0.5 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000636
+10.0.0.3 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000204
+(11875) accepted ('10.0.0.1', 56818)
+10.0.0.1 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000344
+(11875) accepted ('10.0.0.2', 46882)
+(11875) accepted ('10.0.0.4', 47068)
+10.0.0.2 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000578
+10.0.0.4 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.001255
+(11875) accepted ('10.0.0.7', 38592)
+(11875) accepted ('10.0.0.8', 44536)
+10.0.0.7 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000437
+10.0.0.8 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000222
+(11875) accepted ('10.0.0.6', 42026)
+10.0.0.6 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000451
+(11875) accepted ('10.0.0.10', 37120)
+10.0.0.10 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 249 0.000280
+(11875) accepted ('10.0.0.3', 40662)
+(11875) accepted ('10.0.0.5', 39820)
+(11875) accepted ('10.0.0.9', 54836)
+10.0.0.3 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000268
+10.0.0.5 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000117
+10.0.0.9 - - [12/Nov/2026 01:51:50] "POST /sync/report HTTP/1.1" 200 248 0.000224
+[EVENT CONGESTION_RECOVERED] Bottleneck utilization dropped below 50.0% for 3 samples. Restoring background traffic to Queue 2.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 2
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=2)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 2
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=True
+Port Status Event: DPID=1, Port=1, Reason=MODIFY, LinkDown=False
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+[EVENT LINK_FAILBACK] Primary link restored UP. Failback from backup to primary completed in 0.69 ms
+Port Status Event: DPID=2, Port=1, Reason=MODIFY, LinkDown=False
+[EVENT CONGESTION_DETECTED] Bottleneck utilization exceeded 80.0% for 3 samples. Throttling background traffic to Queue 3.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+[EVENT CONGESTION_RECOVERED] Bottleneck utilization dropped below 50.0% for 3 samples. Restoring background traffic to Queue 2.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 2) flows on DPID 2 -> port 1
+[EVENT CONGESTION_DETECTED] Bottleneck utilization exceeded 80.0% for 3 samples. Throttling background traffic to Queue 3.
+Reinstalling flows across all datapaths...
+Installing QoS Priority Flows on DPID 1 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 1 -> port 1
+Installing QoS Priority Flows on DPID 2 (inter-switch out_port=1)
+[EVENT QOS_FLOWS_INSTALLED] Installed directional sync (Queue 1) and bg (Queue 3) flows on DPID 2 -> port 1
+Port Status Event: DPID=1, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=5, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=MODIFY, LinkDown=False
+Port Status Event: DPID=1, Port=6, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=7, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=8, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=9, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=10, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=11, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=14, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=12, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=13, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=1, Port=1, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=4, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=3, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=2, Reason=DELETE, LinkDown=False
+Port Status Event: DPID=2, Port=1, Reason=DELETE, LinkDown=False
+Switch disconnected: DPID=1
+Switch disconnected: DPID=2

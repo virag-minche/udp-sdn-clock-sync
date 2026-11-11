@@ -1,0 +1,4 @@
+[Client 3] DSCP set to 46 (TOS: 0xB8) | Readback TOS: 0xB8 (DSCP: 46)
+[Client 3] seq 00 | rtt    5.25 ms | offset  -799.88 ms | before   800.00 ms | after   480.05 ms
+[Client 3] seq 01: timeout
+[Controller] Warning: Telemetry POST to http://10.0.0.254:8080/sync/report failed: timed out (further reporting errors will be suppressed)
