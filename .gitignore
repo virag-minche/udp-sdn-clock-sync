@@ -12,7 +12,6 @@ ryu-venv/
 .DS_Store
 Thumbs.db
 
-# Test output files
-client_*.csv
+# Test output files (local scratch only)
 convergence.png
-*.log
+# Note: client_*.csv and *.log are NOT ignored so experiment results reach GitHub

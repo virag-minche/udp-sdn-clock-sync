@@ -35,37 +35,38 @@ git checkout -b 2.3.0 2.3.0
 sudo PYTHON=python3 ./util/install.sh -nv
 ```
 
-### Step 2.3: Set Up Dedicated Python 3.10 Virtual Environment for Ryu
+### Step 2.3: Set Up Dedicated Python 3.9 Virtual Environment for Ryu
 > [!IMPORTANT]
-> Ryu SDN Controller requires Python 3.10 and a pinned version of `eventlet`. Python 3.11+ removed internal modules (`asyncore`/`asynchat`) that Ryu depends on.
+> Ryu SDN Controller requires Python 3.9 with `eventlet==0.30.2`. Python 3.10+ breaks eventlet's `socket.timeout` handling, and Python 3.11+ removed `asyncore`/`asynchat` modules that Ryu depends on. We use the `faucetsdn/ryu` fork from GitHub which supports Python 3.9.
 
 ```bash
-# Verify Python version (Ubuntu 22.04 default is Python 3.10)
-python3 --version  # Should output: Python 3.10.x
+# Install Python 3.9 via deadsnakes PPA (Ubuntu 22.04 ships 3.10)
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt install -y python3.9 python3.9-venv python3.9-dev
 
-# Create virtual environment in home directory
-python3 -m venv ~/ryu-env
+# Create virtual environment
+python3.9 -m venv ~/ryu-env
 source ~/ryu-env/bin/activate
 
 # Upgrade pip, wheel, and setuptools
 pip install --upgrade pip setuptools wheel
 ```
 
-### Step 2.4: Install Ryu 4.34 and the Critical `eventlet` Patch
+### Step 2.4: Install Ryu (faucetsdn fork) and Dependencies
 > [!WARNING]
 > **The Known Ryu + Eventlet Incompatibility**:
 > Ryu relies on `eventlet` for green-thread concurrency. Starting in `eventlet` version 0.31.0, internal DNS and timeout submodules were restructured and removed, which causes Ryu to crash with `ImportError: cannot import name 'dns' from 'eventlet.support'`.
-> **Fix**: Pin `eventlet==0.30.2` and install modern Ryu requirements.
+> **Fix**: Pin `eventlet==0.30.2` and install the faucetsdn/ryu fork from GitHub.
 
 ```bash
 # Install the exact working eventlet version first
 pip install eventlet==0.30.2
 
 # Install dependencies needed by Ryu
-pip install msgpack-python oslo.config routes webob requests matplotlib pandas
+pip install msgpack-python oslo.config routes webob requests matplotlib tinyrpc==0.9.4
 
-# Install Ryu SDN Framework
-pip install ryu==4.34
+# Install faucetsdn/ryu fork (works on Python 3.9)
+pip install git+https://github.com/faucetsdn/ryu.git
 ```
 
 ---
@@ -79,7 +80,7 @@ Run each of the following verification commands to ensure your environment is fu
 | **Mininet** | `sudo mn --test pingall` | `0% dropped (2/2 received)` | [ ] Pass |
 | **Open vSwitch** | `ovs-vsctl --version` | `ovs-vsctl (Open vSwitch) 2.17.x` (or newer) | [ ] Pass |
 | **OVS Service** | `sudo systemctl status openvswitch-switch` | `Active: active (running)` | [ ] Pass |
-| **Ryu Controller** | `source ~/ryu-env/bin/activate && ryu-manager --version` | `ryu-manager 4.34` | [ ] Pass |
+| **Ryu Controller** | `source ~/ryu-env/bin/activate && ryu-manager --version` | `ryu-manager 4.34` (faucetsdn fork) | [ ] Pass |
 | **iperf3** | `iperf3 --version` | `iperf 3.9+ (cJSON 1.7.x)` | [ ] Pass |
 
 ---
@@ -95,7 +96,7 @@ Run each of the following verification commands to ensure your environment is fu
 | **5. Ryu crashes with `ImportError: cannot import name 'dns'`** | Python environment pulled `eventlet >= 0.31.0`. | Downgrade eventlet immediately:<br>`pip install eventlet==0.30.2` |
 | **6. `Permission denied` when running Mininet or creating veth** | Network namespace and kernel `tc` calls require root privilege. | Always run Mininet scripts with `sudo`:<br>`sudo python3 mininet/topology.py`<br>*(Note: Run Ryu without sudo)* |
 | **7. `ovs-vsctl: unix:/var/run/openvswitch/db.sock: database connection failed`** | Open vSwitch daemon is not running. | Restart the OVS service:<br>`sudo systemctl start openvswitch-switch` |
-| **8. Ryu crashes on Python 3.11+ with `ModuleNotFoundError: No module named 'asyncore'`** | Host OS has Python 3.11+ which removed deprecated Python modules. | Use Python 3.10 specifically inside a virtual environment (`python3.10 -m venv ~/ryu-env`). |
+| **8. Ryu crashes on Python 3.11+ with `ModuleNotFoundError: No module named 'asyncore'`** | Host OS has Python 3.11+ which removed deprecated Python modules. | Use Python 3.9 with the faucetsdn/ryu fork (`python3.9 -m venv ~/ryu-env`). |
 
 ---
 

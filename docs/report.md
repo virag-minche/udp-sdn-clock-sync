@@ -88,14 +88,18 @@ Running 4 clients concurrently with initial clock skews of $+350\text{ ms}$, $-3
 
 ### 4.2 Comparison Across Experimental Conditions (E1–E6)
 
-| Experiment | Traffic Condition | SDN Mode | Expected / Observed Behavior |
+Six experiments were run in Mininet with 3 clients, 40 rounds each, over the dual-switch bottleneck topology (10 Mbps, 5 ms delay per hop). Background congestion was generated at 9 Mbps using `src/loadgen.py`.
+
+| Experiment | Traffic Condition | SDN Mode | Behavior |
 | :--- | :--- | :--- | :--- |
-| **E1 (Baseline)** | Low (No background load) | Priority OFF | Base RTT $\approx 10.3\text{ ms}$ ($2 \times 5\text{ ms}$ bottleneck), near-zero jitter, steady-state sync error $< 0.2\text{ ms}$. |
-| **E2** | Low (No background load) | Priority ON | Identical to E1 because HTB priority queues only alter scheduling when egress link capacity is contended. |
-| **E3** | High ($9\text{ Mbps}$ UDP flood) | Priority OFF | Severe queueing delay on `s1-eth1`; RTT spikes to $30\text{--}80\text{ ms}$, high jitter, asymmetric delay biases $\theta$ causing $10\text{--}35\text{ ms}$ sync error. |
-| **E4** | High ($9\text{ Mbps}$ UDP flood) | Static Priority ON | DSCP-46 sync packets enter `Queue 1` (80% guaranteed rate), bypassing background queue buildup; RTT stays near $10.5\text{ ms}$ and sync error remains $< 0.5\text{ ms}$. |
-| **E5** | High ($9\text{ Mbps}$ UDP flood) | Dynamic SDN ON | Controller detects $>80\%$ utilization within $3\text{s}$ (or client error $>20\text{ ms}$ via `/sync/report`), shifts background UDP 5201 to throttled `Queue 3` ($2\text{ Mbps}$ max), eliminating packet loss and restoring sub-millisecond sync accuracy. |
-| **E6 (Challenge)** | High + Primary Link Failure | Dynamic + Failover | Bringing `s1-eth1` down triggers `EventOFPPortStatus`; controller switches active port to `s1-eth2 <-> s2-eth2` in $< 50\text{ ms}$ with `Queue 1` protection preserved. |
+| **E1 (Baseline)** | Low (No background load) | Priority OFF | Base RTT $\approx 10\text{ ms}$ ($2 \times 5\text{ ms}$ bottleneck), minimal jitter, low sync error. |
+| **E2** | Low (No background load) | Priority ON | Similar to E1 — HTB priority queues only affect scheduling when egress link capacity is contended. |
+| **E3** | High ($9\text{ Mbps}$ UDP flood) | Priority OFF | Sync packets share queue with background traffic; RTT increases, jitter rises, sync error degrades due to asymmetric queueing delay. |
+| **E4** | High ($9\text{ Mbps}$ UDP flood) | Static Priority ON | DSCP-46 sync packets enter `Queue 1` (80% guaranteed rate), bypassing background queue buildup; RTT stays near baseline and sync error remains low. |
+| **E5** | High ($9\text{ Mbps}$ UDP flood) | Dynamic SDN ON | Controller detects $>80\%$ utilization and shifts background traffic to throttled `Queue 3` ($2\text{ Mbps}$ max), further protecting sync accuracy. |
+| **E6 (Challenge)** | High + Primary Link Failure | Dynamic + Failover | Primary link `s1-eth1` is brought down mid-experiment; controller detects `EventOFPPortStatus` and switches to backup path `s1-eth2 <-> s2-eth2` with `Queue 1` protection preserved. |
+
+Detailed numerical results and generated comparison charts are available in the `results/` directory.
 
 ---
 

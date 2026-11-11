@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# demo.sh - Runs the full automated demo (E1-E4 experiments + analysis).
+# demo.sh - Runs the full automated demo (E1-E6 experiments + analysis).
 # Run this in Terminal 2 AFTER Terminal 1 has the Ryu controller running.
 # Usage: bash scripts/demo.sh
 
@@ -14,7 +14,7 @@ INTERVAL=0.2
 CLIENTS=3
 
 echo "================================================"
-echo "  SDN Clock Sync - Full Demo Runner"
+echo "  SDN Clock Sync - Full Demo Runner (E1-E6)"
 echo "================================================"
 echo ""
 
@@ -47,6 +47,23 @@ set_mode() {
     echo "    -> Controller: priority=$1, dynamic=$2"
 }
 
+# Helper to check experiment produced data
+check_results() {
+    local dir="$1"
+    local total=0
+    for csv in "${dir}"/client_c*.csv; do
+        if [ -f "$csv" ]; then
+            count=$(tail -n +2 "$csv" | wc -l)
+            total=$((total + count))
+        fi
+    done
+    if [ "$total" -eq 0 ]; then
+        echo "    [WARNING] 0 data rows logged in ${dir}! Check server.log and client logs."
+    else
+        echo "    [OK] ${total} total data rows logged in ${dir}."
+    fi
+}
+
 # Clean old Mininet state
 echo ""
 echo "[*] Cleaning old Mininet state..."
@@ -62,6 +79,7 @@ sudo "$VENV_PYTHON" topology/topo.py \
     --scripted --no-load --clients "$CLIENTS" \
     --dscp 0 --rounds "$ROUNDS" --interval "$INTERVAL" \
     --results-dir results/E1
+check_results results/E1
 
 # -----------------------------------------------
 echo ""
@@ -73,6 +91,7 @@ sudo "$VENV_PYTHON" topology/topo.py \
     --scripted --no-load --clients "$CLIENTS" \
     --dscp 46 --rounds "$ROUNDS" --interval "$INTERVAL" \
     --results-dir results/E2
+check_results results/E2
 
 # -----------------------------------------------
 echo ""
@@ -84,6 +103,7 @@ sudo "$VENV_PYTHON" topology/topo.py \
     --scripted --clients "$CLIENTS" \
     --dscp 0 --rounds "$ROUNDS" --interval "$INTERVAL" \
     --results-dir results/E3
+check_results results/E3
 
 # -----------------------------------------------
 echo ""
@@ -95,6 +115,31 @@ sudo "$VENV_PYTHON" topology/topo.py \
     --scripted --clients "$CLIENTS" \
     --dscp 46 --rounds "$ROUNDS" --interval "$INTERVAL" \
     --results-dir results/E4
+check_results results/E4
+
+# -----------------------------------------------
+echo ""
+echo "================================================"
+echo " EXPERIMENT E5: Congestion, Dynamic SDN Control ON"
+echo "================================================"
+set_mode "on" "on"
+sudo "$VENV_PYTHON" topology/topo.py \
+    --scripted --clients "$CLIENTS" \
+    --dscp 46 --rounds "$ROUNDS" --interval "$INTERVAL" \
+    --results-dir results/E5
+check_results results/E5
+
+# -----------------------------------------------
+echo ""
+echo "================================================"
+echo " EXPERIMENT E6: Congestion + Primary Link Failure"
+echo "================================================"
+set_mode "on" "on"
+sudo "$VENV_PYTHON" topology/topo.py \
+    --scripted --failover --clients "$CLIENTS" \
+    --dscp 46 --rounds "$ROUNDS" --interval "$INTERVAL" \
+    --results-dir results/E6
+check_results results/E6
 
 # -----------------------------------------------
 echo ""
@@ -106,7 +151,7 @@ python3 experiments/analyze.py --results-dir results/
 
 echo ""
 echo "================================================"
-echo "  Demo Complete!"
+echo "  Demo Complete! (E1-E6)"
 echo ""
 echo "  Results saved in:  results/"
 echo "  Graphs:"

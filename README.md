@@ -39,8 +39,7 @@ udp-sdn-clock-sync/
 │   ├── test_cases.md                      # Verification test plan & results across Roles 1, 2, 3
 │   ├── network_interface_for_role3.md     # REST API, CLI & CSV interface reference
 │   ├── viva_role2.md                      # 28 viva Q&As, basics guide & 5-minute demo script
-│   ├── report.md                          # Complete final project report
-│   └── guide/                             # University project guide & rubrics documents
+│   └── report.md                          # Complete final project report
 └── results/                               # Generated CSV telemetry & publication-ready graphs
 ```
 
@@ -96,3 +95,28 @@ python3 experiments/analyze.py --results-dir results/
 | **Inter-Switch Links** | Primary: `s1-eth1 <-> s2-eth1` (Port 1, `10 Mbps`, `5ms` delay)<br>Backup: `s1-eth2 <-> s2-eth2` (Port 2, `10 Mbps`, `5ms` delay) |
 | **OpenFlow Controller** | `127.0.0.1:6653` (OpenFlow 1.3), REST API on `http://127.0.0.1:8080` |
 | **OVS Egress HTB Queues** | `Queue 1`: Sync Priority (`8–10 Mbps`)<br>`Queue 2`: Normal Background (`2–10 Mbps`)<br>`Queue 3`: Throttled Background (`0.5–2 Mbps`) |
+
+---
+
+## Experimental Results
+
+Six experiments (E1–E6) were executed in Mininet with 3 clients over 40 synchronization rounds each:
+
+| Experiment | Condition | SDN Mode |
+| :--- | :--- | :--- |
+| **E1** | Low traffic (no background load) | Priority OFF |
+| **E2** | Low traffic | Priority ON |
+| **E3** | Congested (9 Mbps UDP flood) | Priority OFF (baseline) |
+| **E4** | Congested (9 Mbps UDP flood) | Static Priority ON |
+| **E5** | Congested (9 Mbps UDP flood) | Dynamic SDN Control ON |
+| **E6** | Congested + Primary link failure | Dynamic + Failover |
+
+Generated outputs in `results/`:
+- `results/E1/` through `results/E6/` — Per-client CSV logs (`client_c1.csv`, etc.) and server logs
+- `results/experiment_summary.csv` — Statistical summary table
+- `results/comparison_chart.png` — RTT & sync error bar chart
+- `results/convergence_plot.png` — Clock error convergence over rounds
+- `results/controller_log.csv` — Controller decision events
+- `results/port_stats.csv` — Per-port throughput and utilization over time
+
+Demo screenshots are in `outputs/`.

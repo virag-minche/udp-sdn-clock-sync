@@ -239,7 +239,17 @@ def start_sync(net, n_clients=3, skews=None, dscp=46, rounds=50, interval=0.2, r
     srv.cmd('pkill -f timesync_core.py 2>/dev/null')
     server_cmd = f"python3 {core_script} server --port 9999 --dscp {dscp} > {results_dir}/server.log 2>&1 &"
     srv.cmd(server_cmd)
-    time.sleep(1.0)
+    time.sleep(2.0)
+
+    # Verify server is actually listening before launching clients
+    for _retry in range(5):
+        check = srv.cmd('ss -uln | grep :9999')
+        if ':9999' in check:
+            info("*** Time Server confirmed listening on UDP 9999.\n")
+            break
+        time.sleep(0.5)
+    else:
+        warn("[WARN] Time Server may not be listening yet. Proceeding anyway.\n")
 
     # default skews in seconds
     default_pool = [0.35, -0.35, 0.80, -1.20, 0.50, -0.60, 0.90, -0.45, 0.65, -0.85]
@@ -253,11 +263,15 @@ def start_sync(net, n_clients=3, skews=None, dscp=46, rounds=50, interval=0.2, r
         log_file = os.path.join(results_dir, f"client_c{i}.csv")
 
         info(f"*** Launching Sync Client {c.name} (id={i}, skew={skew_val:+.2f}s, dscp={dscp}, rounds={rounds})...\n")
+        # Determine controller REST URL reachable from Mininet host namespace.
+        # Mininet hosts share the kernel, so 127.0.0.1 works for REST calls.
+        # If that fails, the ControllerReporter silently drops reports (non-blocking).
+        ctrl_url = "http://127.0.0.1:8080/sync/report"
         client_cmd = (
             f"python3 {core_script} client "
             f"--host 10.0.0.100 --port 9999 --id {i} --dscp {dscp} "
             f"--skew {skew_val} --rounds {rounds} --interval {interval} "
-            f"--controller http://127.0.0.1:8080/sync/report "
+            f"--controller {ctrl_url} "
             f"--log {log_file} > {results_dir}/client_{c.name}.log 2>&1 &"
         )
         c.cmd(client_cmd)
@@ -305,7 +319,7 @@ def run_scripted_experiment(net, args):
     )
 
     # wait for sync to finish, handle failover if enabled
-    total_wait = max(6, int(args.rounds * args.interval) + 4)
+    total_wait = max(15, int(args.rounds * args.interval * 1.5) + 8)
     info(f"*** Waiting {total_wait}s for sync clients to complete {args.rounds} rounds...\n")
 
     if args.failover and not args.no_backup:
@@ -335,6 +349,7 @@ def run_scripted_experiment(net, args):
     info(f" Output Directory: {results_dir}\n")
     info("============================================================\n")
 
+    total_logged = 0
     for i in range(1, args.clients + 1):
         csv_path = os.path.join(results_dir, f"client_c{i}.csv")
         if os.path.exists(csv_path):
@@ -342,8 +357,12 @@ def run_scripted_experiment(net, args):
                 lines = [line.strip() for line in f if line.strip()]
             data_rows = [l for l in lines if not l.startswith('#') and not l.startswith('timestamp')]
             info(f"  [+] Client c{i}: {len(data_rows)} rounds logged -> {csv_path}\n")
+            total_logged += len(data_rows)
         else:
             warn(f"  [-] Client c{i}: Log file {csv_path} not found.\n")
+
+    if total_logged == 0:
+        warn("[WARNING] All clients logged 0 rounds! Check server.log and client_c*.log for errors.\n")
 
     info("============================================================\n")
 

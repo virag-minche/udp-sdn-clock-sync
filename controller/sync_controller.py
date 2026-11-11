@@ -4,15 +4,7 @@
 # Ryu SDN controller for time synchronization project
 # Computer Networks Mini Project
 
-# Python 3.10+ compatibility shim for legacy networking libraries
-import collections
-import collections.abc
-for _name in ('MutableMapping', 'MutableSet', 'MutableSequence', 'Mapping', 'Sequence', 'Set', 'Iterable', 'Callable'):
-    if hasattr(collections.abc, _name) and not hasattr(collections, _name):
-        setattr(collections, _name, getattr(collections.abc, _name))
-
 import os
-import sys
 import time
 import json
 import csv
@@ -168,6 +160,10 @@ class SyncController(app_manager.RyuApp):
             self.dynamic_mode = env_dyn
         self.congested_state = False
         self.app_escalated_state = False
+        self.startup_time = time.time()
+        # Grace period: ignore high sync errors during the first 10 seconds
+        # (clients start with large clock skew that looks like bad sync)
+        self.warmup_grace_seconds = 10.0
 
         self.logger.info(
             "Initializing SyncController: Priority Mode = %s, Dynamic Congestion = %s",
@@ -637,6 +633,9 @@ class SyncController(app_manager.RyuApp):
         client_id = report["client_id"]
         error_ms = float(report["error_ms"])
 
+        # Skip escalation during warm-up grace period (clients start with large skew)
+        in_warmup = (time.time() - self.startup_time) < self.warmup_grace_seconds
+
         if client_id not in self.client_reports:
             self.client_reports[client_id] = {
                 "reports": [],
@@ -660,8 +659,8 @@ class SyncController(app_manager.RyuApp):
             client_entry["high_error_streak"] = 0
             client_entry["low_error_streak"] = 0
 
-        # escalate if error is high for consecutive reports
-        if not self.app_escalated_state and client_entry["high_error_streak"] >= SYNC_ERROR_ESCALATE_SAMPLES:
+        # escalate if error is high for consecutive reports (skip during warm-up)
+        if not in_warmup and not self.app_escalated_state and client_entry["high_error_streak"] >= SYNC_ERROR_ESCALATE_SAMPLES:
             self.app_escalated_state = True
             self._log_decision_event(
                 "APP_AWARE_ESCALATION",
