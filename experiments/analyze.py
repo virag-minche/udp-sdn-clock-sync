@@ -200,13 +200,14 @@ def generate_convergence_plot(datasets, out_path):
     if not HAS_MATPLOTLIB or not datasets:
         return
 
-    plt.figure(figsize=(9, 5))
-    for d in datasets:
+    plot_datasets = datasets[:12] if len(datasets) > 12 else datasets
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for d in plot_datasets:
         errs = d["errors"]
         rounds = d["rounds"]
-        plt.semilogy(rounds, errs, marker="o", markersize=2.5, linewidth=1.5, label=d["file"])
+        ax.semilogy(rounds, errs, marker="o", markersize=2.5, linewidth=1.5, label=d["file"])
 
-    plt.axhline(
+    ax.axhline(
         y=1.0,
         color="#D90429",
         linestyle="--",
@@ -214,11 +215,11 @@ def generate_convergence_plot(datasets, out_path):
         label="Pass Threshold (1.0 ms)"
     )
 
-    plt.xlabel("Synchronization Round (Sequence)", fontsize=11, fontweight="bold")
-    plt.ylabel("Absolute Clock Error |θ| (ms, Log Scale)", fontsize=11, fontweight="bold")
-    plt.title("Clock Synchronization Error Convergence Over Rounds", fontsize=12, fontweight="bold")
-    plt.grid(True, which="both", linestyle=":", alpha=0.5)
-    plt.legend(loc="upper right", fontsize=8.5)
+    ax.set_xlabel("Synchronization Round (Sequence)", fontsize=11, fontweight="bold")
+    ax.set_ylabel("Absolute Clock Error |θ| (ms, Log Scale)", fontsize=11, fontweight="bold")
+    ax.set_title("Clock Synchronization Error Convergence Over Rounds", fontsize=12, fontweight="bold")
+    ax.grid(True, which="both", linestyle=":", alpha=0.5)
+    ax.legend(loc="upper right", fontsize=7.5, ncol=2 if len(plot_datasets) > 6 else 1)
     plt.tight_layout()
     plt.savefig(out_path, dpi=160)
     plt.close()
@@ -239,8 +240,9 @@ def main():
     else:
         pattern1 = glob.glob(os.path.join(args.results_dir, "**", "client_*.csv"), recursive=True)
         pattern2 = glob.glob(os.path.join(args.results_dir, "client_*.csv"))
-        pattern3 = glob.glob("client_*.csv")
-        csv_files = sorted(set(pattern1 + pattern2 + pattern3))
+        csv_files = sorted(set(pattern1 + pattern2))
+        if not csv_files:
+            csv_files = sorted(glob.glob("client_*.csv"))
 
     if not csv_files:
         print(f"No client CSV files found in '{args.results_dir}'.")

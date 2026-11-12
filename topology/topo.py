@@ -321,30 +321,23 @@ def run_scripted_experiment(net, args):
     )
 
     # wait for sync to finish, handle failover if enabled
-    total_wait = max(25, int(args.rounds * args.interval * 2.0) + 10)
-    info(f"*** Waiting up to {total_wait}s for sync clients to complete {args.rounds} rounds...\n")
+    total_wait = max(12, int(args.rounds * args.interval) + 4)
+    info(f"*** Waiting {total_wait}s for sync clients to complete {args.rounds} rounds...\n")
 
     if args.failover and not args.no_backup:
-        third = max(3, total_wait // 3)
-        time.sleep(third)
+        half = max(4, total_wait // 2)
+        time.sleep(half)
         info("*** [E6 Challenge] Simulating Primary Bottleneck Link FAILURE (s1-eth1 <-> s2-eth1)...\n")
         bring_link_down(net, 's1', 's2', link_index=0)
-        time.sleep(5)
+        time.sleep(4)
         info("*** [E6 Challenge] Restoring Primary Bottleneck Link UP (s1-eth1 <-> s2-eth1)...\n")
         bring_link_up(net, 's1', 's2', link_index=0)
-        time.sleep(third)
+        time.sleep(half)
     else:
-        for sec in range(total_wait):
-            any_running = False
-            for c, _ in client_procs:
-                pids = c.cmd('pgrep -f "timesync_core.py client"').strip()
-                if pids:
-                    any_running = True
-                    break
-            if not any_running:
-                info(f"*** All sync clients completed their rounds in {sec + 1}s.\n")
-                break
-            time.sleep(1.0)
+        step = 3
+        for sec in range(total_wait, 0, -step):
+            info(f"    Remaining: {sec}s...\n")
+            time.sleep(min(step, sec))
 
     # clean up processes
     if not args.no_load:

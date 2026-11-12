@@ -35,7 +35,7 @@ fi
 
 # start ryu controller in background
 echo "[*] Starting Ryu SDN Controller (OpenFlow 1.3 + REST API on :8080)..."
-ryu-manager controller/sync_controller.py > results/ryu_experiments.log 2>&1 &
+ryu-manager controller/sync_controller.py --ofp-tcp-listen-port 6653 --wsapi-host 0.0.0.0 --wsapi-port 8080 > results/ryu_experiments.log 2>&1 &
 RYU_PID=$!
 
 # cleanup function on exit

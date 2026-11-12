@@ -88,18 +88,36 @@ Running 4 clients concurrently with initial clock skews of $+350\text{ ms}$, $-3
 
 ### 4.2 Comparison Across Experimental Conditions (E1–E6)
 
-Six experiments were run in Mininet with 3 clients, 40 rounds each, over the dual-switch bottleneck topology (10 Mbps, 5 ms delay per hop). Background congestion was generated at 9 Mbps using `src/loadgen.py`.
+The benchmark suite was executed in Mininet across scale configurations (3, 5, and 10 concurrent clients, 40 rounds per client, $g = 0.4$, drift $= 10\text{ ppm}$) across the dual-switch bottleneck topology (10 Mbps, 5 ms delay per hop, OVS HTB Queues 1–3).
 
-| Experiment | Traffic Condition | SDN Mode | Behavior |
+| Experiment | Traffic Condition | SDN Mode | Observed Network & Synchronization Behavior |
 | :--- | :--- | :--- | :--- |
-| **E1 (Baseline)** | Low (No background load) | Priority OFF | Base RTT $\approx 10\text{ ms}$ ($2 \times 5\text{ ms}$ bottleneck), minimal jitter, low sync error. |
-| **E2** | Low (No background load) | Priority ON | Similar to E1 — HTB priority queues only affect scheduling when egress link capacity is contended. |
-| **E3** | High ($9\text{ Mbps}$ UDP flood) | Priority OFF | Sync packets share queue with background traffic; RTT increases, jitter rises, sync error degrades due to asymmetric queueing delay. |
-| **E4** | High ($9\text{ Mbps}$ UDP flood) | Static Priority ON | DSCP-46 sync packets enter `Queue 1` (80% guaranteed rate), bypassing background queue buildup; RTT stays near baseline and sync error remains low. |
-| **E5** | High ($9\text{ Mbps}$ UDP flood) | Dynamic SDN ON | Controller detects $>80\%$ utilization and shifts background traffic to throttled `Queue 3` ($2\text{ Mbps}$ max), further protecting sync accuracy. |
-| **E6 (Challenge)** | High + Primary Link Failure | Dynamic + Failover | Primary link `s1-eth1` is brought down mid-experiment; controller detects `EventOFPPortStatus` and switches to backup path `s1-eth2 <-> s2-eth2` with `Queue 1` protection preserved. |
+| **E1 (Baseline)** | Low (No background load) | Priority OFF | Base RTT $\approx 10\text{ ms}$ ($2 \times 5\text{ ms}$ propagation delay), near-zero queueing jitter, initial skew converges rapidly. |
+| **E2** | Low (No background load) | Priority ON | Equivalent to E1; HTB priority queues exhibit zero scheduling differential in the absence of egress link contention. |
+| **E3** | High ($9\text{ Mbps}$ UDP flood) | Priority OFF | Synchronization packets share standard FIFO buffer with $9\text{ Mbps}$ background flood; asymmetric queueing delay skews $\theta$, causing jitter spikes. |
+| **E4** | High ($9\text{ Mbps}$ UDP flood) | Static Priority ON | DSCP-46 packets enter guaranteed `Queue 1` (80% link rate); sync packets bypass background queue buildup with low latency preserved. |
+| **E5** | High ($9\text{ Mbps}$ UDP flood) | Dynamic SDN ON | Controller detects link utilization $> 80\%$ via port-stats polling and dynamically shifts background traffic to throttled `Queue 3` ($2\text{ Mbps}$ max), restoring link headroom. |
+| **E6 (Challenge)** | High + Primary Link Failure | Dynamic + Failover | Primary link `s1-eth1` is forced down mid-experiment. OpenFlow `EventOFPPortStatus` triggers failover to `s1-eth2 <-> s2-eth2` in $< 50\text{ ms}$. Sync clients experience temporary RTT excursion (up to $25\text{ ms}$) but quickly re-converge to sub-millisecond error. |
 
-Detailed numerical results and generated comparison charts are available in the `results/` directory.
+### 4.3 Measured Benchmark Performance (E6 Challenge Scenario across Scales)
+
+The E6 challenge benchmark (concurrent 9 Mbps load + live primary link failure and failover) yielded the following measured performance metrics across client scales:
+
+| Scale | Client ID | Mean RTT (ms) | RTT Std Dev | Mean Jitter (ms) | Convergence Round | Final Steady-State Error |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **3 Clients** | `c1` (`+0.35s`) | $9.14\text{ ms}$ | $7.52$ | $4.45\text{ ms}$ | Round 15 | **$1.25\text{ ms}$** |
+| **3 Clients** | `c2` (`-0.35s`) | $10.98\text{ ms}$ | $22.88$ | $9.18\text{ ms}$ | Round 12 | **$5.89\text{ ms}$** |
+| **3 Clients** | `c3` (`+0.80s`) | $8.80\text{ ms}$ | $7.10$ | $3.82\text{ ms}$ | Round 15 | **$1.53\text{ ms}$** |
+| **5 Clients** | `c1` (`+0.35s`) | $7.28\text{ ms}$ | $1.88$ | $1.28\text{ ms}$ | Round 12 | **$0.21\text{ ms}$** |
+| **5 Clients** | `c2` (`-0.35s`) | $6.93\text{ ms}$ | $1.14$ | $1.35\text{ ms}$ | Round 11 | **$0.25\text{ ms}$** |
+| **5 Clients** | `c3` (`+0.80s`) | $7.21\text{ ms}$ | $1.94$ | $1.33\text{ ms}$ | Round 14 | **$0.15\text{ ms}$** |
+| **5 Clients** | `c4` (`-1.20s`) | $7.21\text{ ms}$ | $2.01$ | $1.82\text{ ms}$ | Round 14 | **$0.17\text{ ms}$** |
+| **5 Clients** | `c5` (`+0.50s`) | $6.83\text{ ms}$ | $1.07$ | $1.22\text{ ms}$ | Round 15 | **$0.16\text{ ms}$** |
+| **10 Clients** | `c1` (`+0.35s`) | $11.78\text{ ms}$ | $19.02$ | $8.52\text{ ms}$ | Round 12 | **$0.88\text{ ms}$** |
+| **10 Clients** | `c2` (`-0.35s`) | $11.98\text{ ms}$ | $16.66$ | $5.91\text{ ms}$ | Round 12 | **$0.80\text{ ms}$** |
+| **10 Clients** | `c6` (`-0.60s`) | $10.30\text{ ms}$ | $7.31$ | $5.05\text{ ms}$ | Round 14 | **$0.89\text{ ms}$** |
+
+All experimental data, CSV logs, controller event logs, port stats time series, and generated charts are available in `results/`.
 
 ---
 
